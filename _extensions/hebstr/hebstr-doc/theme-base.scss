@@ -1,0 +1,547 @@
+/*-- scss:defaults --*/
+
+$font-family-sans-serif: "Luciole", system-ui, sans-serif !default;
+$font-family-monospace: "Fira Code", ui-monospace, monospace !default;
+$toc-font-size: 0.825rem !default;
+$callout-icon-scale: -10% !default;
+
+$code-foreground-color: #ffffff !default;
+$code-background-color: #262624 !default;
+$code-comment-color: #6c675f !default;
+$code-window-titlebar-bg: #212120 !default;
+$code-window-border: #383835 !default;
+$code-window-line-divider: #383835 !default;
+$code-window-muted: #938e87 !default;
+$code-window-line-number: #5a5955 !default;
+
+/*-- scss:rules --*/
+
+:root {
+  --primary: #{$primary};
+  --secondary: #{$secondary};
+  --primary-back: #{$primary-back};
+  --primary-surface: #{$primary-surface};
+  --primary-dark: #{$primary-dark};
+  --neutral: #{$neutral};
+  --em-background-color: #{$em-background-color};
+  --surface-default: #{$surface-default};
+  --caption-color: #{$caption-color};
+  --figure-shadow: #{$figure-shadow};
+  --str-color: #{$str-color};
+  --dig-color: #{$dig-color};
+  --tab-background: #{$tab-background};
+  --code-foreground-color: #{$code-foreground-color};
+  --code-background-color: #{$code-background-color};
+  --code-comment-color: #{$code-comment-color};
+  --code-window-titlebar-bg: #{$code-window-titlebar-bg};
+  --code-window-border: #{$code-window-border};
+  --code-window-line-divider: #{$code-window-line-divider};
+  --code-window-muted: #{$code-window-muted};
+  --code-window-line-number: #{$code-window-line-number};
+  --callout-note-color: #{$callout-note-color};
+  --callout-tip-color: #{$callout-tip-color};
+  --callout-caution-color: #{$callout-caution-color};
+  --callout-warning-color: #{$callout-warning-color};
+  --callout-important-color: #{$callout-important-color};
+  --callout-mix-base: #{$callout-mix-base};
+  --callout-text-mix: #{$callout-text-mix};
+  --callout-bg-mix: #{$callout-bg-mix};
+}
+
+html {
+  scrollbar-color: var(--primary) var(--primary-back);
+  scrollbar-width: thin;
+}
+
+body {
+  background-color: var(--primary-surface);
+}
+
+.cb1, .cb2, .nb {
+  font-weight: bold;
+}
+
+.cb1 {
+  color: var(--primary);
+}
+
+.cb2 {
+  color: var(--secondary);
+}
+
+.nb {
+  color: color-mix(in srgb, var(--neutral), white 30%);
+}
+
+.nc, .str, .dig {
+  background-color: var(--em-background-color);
+  font-family: $font-family-monospace;
+  font-size: 0.9rem;
+}
+
+.nc {
+  color: var(--neutral);
+}
+
+.str {
+  color: var(--str-color);
+}
+
+.dig {
+  color: var(--dig-color);
+}
+
+.sm-em {
+  font-style: italic;
+}
+
+.nav-tabs {
+  margin-top: 2rem;
+}
+
+.tab-content {
+  background-color: var(--tab-background);
+  margin-bottom: 2rem;
+}
+
+#title-block-header {
+  background-color: var(--primary-back);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  .title {
+    margin-top: 0.5rem;
+    border-bottom: none;
+    color: var(--primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+  .subtitle {
+    font-size: 24px;
+    color: var(--primary-dark);
+  }
+  .quarto-title-meta-heading,
+  .block-title {
+    color: var(--primary-dark);
+  }
+  .quarto-title-block > div {
+    gap: 1.5rem;
+  }
+  .quarto-color-scheme-toggle.hebstr-title-toggle {
+    display: inline-flex;
+    color: var(--primary-dark);
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    &:hover {
+      color: var(--primary);
+    }
+  }
+}
+
+.quarto-color-scheme-toggle {
+  > i.bi::before {
+    background-image: none !important;
+    font-family: "Font Awesome 7 Free" !important;
+    // font-weight: 900 !important;
+    content: "\f185";
+    color: inherit;
+  }
+  &.alternate > i.bi::before {
+    content: "\f186";
+  }
+}
+
+#quarto-margin-sidebar {
+  text-align: left;
+  padding-left: 1.5rem;
+  background-color: var(--primary-back);
+  #toc-title {
+    display: none;
+  }
+  .toc-active {
+    > ul a {
+      border-left: 2px solid var(--primary-surface);
+      padding-bottom: 0.3rem;
+    }
+    :is(ul > li, ul > li > ul > li) > a.active {
+      border-left: 2px solid var(--primary);
+    }
+  }
+}
+
+.header-section-number {
+  color: var(--primary-dark);
+  font-weight: 700;
+}
+
+h2, h3, h4, h5 {
+  margin-top: 1.5em;
+  margin-bottom: 1rem;
+}
+
+h1, h2, h3, h4, h5 {
+  border-bottom: 3px solid var(--primary-back);
+  padding-bottom: 0.3rem;
+  font-weight: normal;
+}
+
+h1 {
+  font-size: 1.8rem;
+}
+
+h2 {
+  margin-left: 0.5rem;
+  font-size: 1.4rem;
+}
+
+h3 {
+  margin-left: 1rem;
+  font-size: 1.2rem;
+}
+
+h4 {
+  margin-left: 2rem;
+  font-size: 1.1rem;
+}
+
+h5 {
+  margin-top: 1.5em;
+  margin-left: 2.5rem;
+  font-size: 1rem;
+}
+
+.figure-img {
+  margin-bottom: 0.8rem;
+}
+
+.quarto-float {
+  &-caption {
+    font-size: 0.95rem;
+    font-weight: bold;
+    line-height: 1.5;
+    color: var(--caption-color);
+  }
+  &-subcaption {
+    font-weight: normal;
+    font-size: 0.85rem;
+    color: var(--neutral);
+  }
+  &-fig {
+    padding-bottom: 1em;
+  }
+  &-tbl {
+    margin-top: 2rem;
+    text-align: center;
+  }
+}
+
+div.csl-right-inline {
+  padding-left: 0;
+  padding-bottom: 0.5em;
+}
+
+// CODE ------------------------------------------------------------------------
+
+div.sourceCode {
+  background-color: var(--code-background-color) !important;
+  color: var(--code-foreground-color);
+  border-top: 1px solid var(--code-background-color);
+  border-radius: 12px;
+  padding: 1em;
+  margin: 1em 0;
+  font-weight: bold;
+  line-height: 1.4;
+  ::selection {
+    background-color: var(--code-comment-color);
+    color: var(--code-foreground-color);
+  }
+}
+
+code:not(.sourceCode) {
+  color: var(--primary);
+  background-color: var(--primary-back) !important;
+  padding: 0.2rem 0.4rem !important;
+  font-size: 0.95rem;
+}
+
+code span {
+  .va {
+    color: var(--code-foreground-color);
+  }
+  .dv, .fl {
+    color: #ff7869;
+  }
+  .cn {
+    color: #ffbc6a;
+    font-weight: bold;
+  }
+  .st, .ss {
+    color: #c5ff93;
+  }
+  .op, .ot, .sc {
+    color: #a2fff6;
+    font-weight: normal;
+  }
+  .kw, .cf, .im {
+    color: #d08aff;
+    font-weight: bold;
+  }
+  .fu, .bu, .ex {
+    color: #90E1FF;
+  }
+  .co, .do {
+    font-style: normal !important;
+    color: var(--code-comment-color);
+  }
+  .at {
+    color: var(--code-foreground-color);
+  }
+}
+
+.code-copy-button {
+  margin: 1rem;
+  border-radius: 5px;
+  background-color: var(--code-background-color);
+  &:hover {
+    background-color: var(--code-comment-color);
+  }
+}
+
+pre {
+  > code.sourceCode {
+    > span {
+      background-color: var(--code-background-color);
+      color: var(--code-foreground-color);
+      > a {
+        color: var(--code-comment-color);
+      }
+    }
+  }
+  code:not(.sourceCode) {
+    background-color: var(--code-background-color);
+    color: var(--code-comment-color);
+    padding: 1rem;
+  }
+}
+
+body div[data-code-filename] > details,
+body details.code-fold {
+  > summary {
+    width: fit-content;
+    font-family: $font-family-monospace;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    color: var(--neutral);
+    background-color: transparent;
+    margin-bottom: 0;
+    padding: 0.4rem 1rem;
+    border-radius: 10px;
+    border: 2px solid currentColor;
+  }
+  &[open] > summary {
+    border: 2px solid var(--code-window-titlebar-bg);
+    background-color: var(--code-window-titlebar-bg);
+    color: var(--code-window-muted);
+  }
+}
+
+body div[data-code-filename] > details {
+  &[open] > summary {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+body div[data-code-filename] {
+  .code-with-filename.code-window-auto,
+  .code-with-filename.code-window-default {
+    margin: 0;
+    background-color: var(--code-window-titlebar-bg);
+    border: 1px solid var(--code-window-border);
+    border-top-left-radius: 0;
+    .code-with-filename-file {
+      display: none;
+    }
+    pre.numberSource {
+      margin-left: 0;
+      padding: 1rem;
+      code > span {
+        position: static;
+        left: auto;
+      }
+    }
+  }
+}
+
+.code-with-filename.code-window-default,
+.code-with-filename.code-window-auto {
+  --code-window-titlebar-height: 2.5rem;
+  position: relative;
+  margin: 1.2em 0;
+  background-color: var(--code-window-titlebar-bg);
+  border: 1px solid var(--code-window-border);
+  border-radius: 10px;
+  overflow: hidden;
+
+  .code-with-filename-file {
+    height: var(--code-window-titlebar-height);
+    background-color: var(--code-window-titlebar-bg);
+    border-bottom: 1px solid var(--code-window-border);
+    gap: 0;
+    pre {
+      flex: 1;
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      pointer-events: none;
+      font-family: $font-family-monospace;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      color: var(--code-window-muted);
+    }
+  }
+
+  .code-copy-outer-scaffold {
+    position: static;
+  }
+
+  .code-copy-outer-scaffold,
+  div.sourceCode,
+  pre.sourceCode {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+  }
+
+  pre.sourceCode {
+    padding: 0.8em 1em;
+  }
+
+  .code-copy-button {
+    position: absolute;
+    top: 0;
+    right: 8px;
+    z-index: 2;
+    height: var(--code-window-titlebar-height);
+    width: var(--code-window-titlebar-height);
+    margin: 0 !important;
+    padding: 0;
+    background: transparent !important;
+    color: var(--code-window-muted);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s ease;
+  }
+
+  pre > code.sourceCode {
+    counter-reset: line;
+    white-space: normal;
+
+    > span {
+      counter-increment: line;
+      display: block;
+      line-height: 1.6;
+      text-indent: -2.8em;
+      padding-left: 2.8em;
+      white-space: pre;
+
+      &::before {
+        content: counter(line);
+        display: inline-block;
+        width: 2em;
+        margin-right: 0.8em;
+        padding-right: 0.5em;
+        text-align: right;
+        color: var(--code-window-line-number);
+        border-right: 1px solid var(--code-window-line-divider);
+        user-select: none;
+      }
+
+      > a:first-child {
+        display: none;
+      }
+    }
+  }
+}
+
+// CALLOUT ---------------------------------------------------------------------
+
+.callout {
+  border-radius: 5px;
+  .callout-title-container {
+    font-size: 1rem;
+    text-align: left;
+    margin-top: 0.4rem;
+    margin-bottom: 0.8rem;
+    padding-left: 0.25rem;
+    padding-right: 1.3rem;
+  }
+  &.callout-titled:has(.callout-body > *) .callout-title-container {
+    margin-bottom: 0.4rem;
+  }
+  .callout-body {
+    padding-right: 1.3rem;
+  }
+}
+
+.callout.callout-style-simple .callout-body {
+  margin-top: 0;
+}
+
+.callout:not(.no-icon).callout-titled.callout-style-simple .callout-body {
+  padding-left: 1.75rem;
+}
+
+.callout.callout-style-simple {
+  .callout-toggle::before {
+    height: 1.2rem;
+    width: 1.2rem;
+    background-size: 1.2rem;
+    margin-top: 0.3rem;
+  }
+  .callout-icon::before {
+    background-image: none !important;
+    height: auto;
+    font-family: "Font Awesome 7 Free";
+    font-style: normal;
+    font-weight: 900;
+    font-size: 1.1rem;
+  }
+}
+
+$callout-types: (
+  "note": ("\f05a", 40%, 0%, 20%),
+  "important": ("\f06a", 30%, 0%, 10%),
+  "tip": ("\f0eb", 60%, 0%, 25%),
+  "caution": ("\f06d", 25%, 10%, 30%),
+  "warning": ("\f071", 25%, 0%, 15%),
+);
+
+@each $type, $conf in $callout-types {
+  $icon: nth($conf, 1);
+  $border-light: nth($conf, 2);
+  $header-dark: nth($conf, 3);
+  $body-dark: nth($conf, 4);
+
+  div.callout.callout-#{$type} {
+    border: 2px solid color-mix(in srgb, var(--callout-#{$type}-color), var(--callout-mix-base) #{$border-light});
+    border-left: 5px solid var(--callout-#{$type}-color);
+    background-color: color-mix(in srgb, var(--callout-#{$type}-color), var(--callout-mix-base) var(--callout-bg-mix));
+    .callout-icon::before {
+      content: "#{$icon}";
+    }
+    .callout-header {
+      @if $header-dark == 0% {
+        color: var(--callout-#{$type}-color);
+      } @else {
+        color: color-mix(in srgb, var(--callout-#{$type}-color), var(--callout-text-mix) #{$header-dark});
+      }
+    }
+    .callout-body {
+      color: color-mix(in srgb, var(--callout-#{$type}-color), var(--callout-text-mix) #{$body-dark});
+    }
+  }
+}

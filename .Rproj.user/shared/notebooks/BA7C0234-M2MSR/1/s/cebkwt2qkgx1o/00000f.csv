@@ -1,0 +1,18 @@
+"0","fig_uv <- function(type){
+  fig <- .groups[[type]] |> 
+    map(~ data |> 
+        ggplot() +
+        geom_count(aes(x = ., y = after_stat(count)), size = 3, color = ""steelblue"") +
+        scale_y_continuous(n.breaks = 8) |> 
+        plot_grid(ncol = 2) +
+        plot_annotation(tag_levels = 'y') |> 
+  
+         for (i in seq_along(fig)) {
+          p <- fig[[i]]
+          print(p)
+    )}
+"
+"2","Erreur : ')' inattendu(e) dans :
+""          print(p)
+    )""
+"

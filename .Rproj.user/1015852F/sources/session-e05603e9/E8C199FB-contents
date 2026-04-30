@@ -1,0 +1,30 @@
+[format]
+# Preferred line width (1-320, default: 80)
+line-width = 100
+
+# Spaces per indentation level (1-24, default: 2)
+indent-width = 2
+
+# Indentation style: "space" or "tab" (default: "space")
+indent-style = "space"
+
+# Line endings: "auto", "lf", "crlf", "native" (default: "auto")
+line-ending = "auto"
+
+# Preserve intentional line breaks (default: true)
+persistent-line-breaks = true
+
+# Files to exclude from formatting (gitignore patterns)
+exclude = []
+
+# Use default exclusions (default: true)
+default-exclude = true
+
+# Functions whose contents won't be reformatted (avoids adding # fmt: skip)
+skip = []
+
+# Function calls auto-formatted as tables (e.g. tribble, fcase)
+table = []
+
+# Use default table formatting rules (default: true)
+default-table = true

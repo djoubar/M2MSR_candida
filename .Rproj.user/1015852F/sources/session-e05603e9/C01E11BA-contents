@@ -1,0 +1,43 @@
+################################################################################
+#                                                                              #
+#                            M2MSR_TBL4_R_LOG_MIXTE                            #
+#                                                                              #
+################################################################################ 
+rm (list = ls())
+source("scripts/_setup.R")
+data <- data |> 
+  select(iep, demo_centre, resultat_candida_def, hc_glucanes_max, hc_mannanes_max, hc_cgr, 
+         hc_pfc, hc_cp, hc_vvc, hc_vi_cat, hc_dialyse, hc_neutro_min, 
+         demo_atcd_diabete, hospit_fibro, hc_noradre)
+
+mod.m <- glmer(data = data,
+               formula = resultat_candida_def ~ hc_glucanes_max+ hc_mannanes_max + 
+                 hc_cgr + hc_pfc + hc_cp + hc_vvc + hc_vi_cat + hc_dialyse +  
+                 demo_atcd_diabete + hospit_fibro + (1 | iep) + (1|demo_centre),
+               family = "binomial")
+summary(mod.m)
+
+tbl4m_mv <- tbl_regression(mod.m, exponentiate = TRUE)
+
+tbl4m_uv <-
+  tbl_uvregression(
+    data = data,
+    method = glmer,
+    y = resultat_candida_def,
+    formula = "{y} ~ {x} + (1|iep) + (1|demo_centre)",
+    method.args = list(family = binomial),
+    exponentiate = TRUE)
+
+tbl4 <- tbl_merge(
+  tbls = list(tbl4m_uv, tbl4m_mv),
+  tab_spanner = c("Univariée", "Multivariée")
+)
+
+# tbl4 |>
+#   as_gt() |>
+#   gtsave(filename = "tbl4.html")
+
+pacman::p_load(easystats)
+plot_rlog_mixte <- mod.m %>% 
+  model_parameters(exponentiate = TRUE) %>% 
+  plot()

@@ -1,0 +1,28 @@
+{
+    "id": "F2AEA47B",
+    "path": "~/M2MSR/scripts/_setup.R",
+    "project_path": "scripts/_setup.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1776958399856.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "1569,0",
+        "scrollLine": "1552",
+        "useRainbowParens": "true"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1777559955,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1777559955,
+    "read_only": false,
+    "read_only_alternatives": []
+}

@@ -1,0 +1,26 @@
+{
+    "id": "FAE213DA",
+    "path": "~/M2MSR/scripts/tbl2_fun/tbl_2_bonferonni.R",
+    "project_path": "scripts/tbl2_fun/tbl_2_bonferonni.R",
+    "type": "r_source",
+    "hash": "37022873",
+    "contents": "",
+    "dirty": false,
+    "created": 1777545266652.0,
+    "source_on_save": false,
+    "relative_order": 11,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "233,28",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1777545272,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1777545272,
+    "read_only": false,
+    "read_only_alternatives": []
+}

@@ -1,0 +1,29 @@
+/*-- scss:defaults --*/
+
+$primary: #66c2ff !default;
+$primary-back: color-mix(in srgb, #{$primary}, black 82%) !default;
+$primary-surface: color-mix(in srgb, #{$primary}, black 84%) !default;
+$primary-dark: color-mix(in srgb, #{$primary}, white 35%) !default;
+$secondary: #ff5252 !default;
+
+$body-bg: #161616 !default;
+$body-color: #e8e8e8 !default;
+
+$neutral: #b0b0b0 !default;
+$em-background-color: #232323 !default;
+$surface-default: #1d1d1d !default;
+$caption-color: #e8e8e8 !default;
+$figure-shadow: #0a0a0a !default;
+
+$str-color: #6dca8a !default;
+$dig-color: #ff9090 !default;
+$tab-background: #1d1d1d !default;
+
+$callout-note-color: #66c2ff !default;
+$callout-tip-color: #5fc06a !default;
+$callout-caution-color: #ffc870 !default;
+$callout-warning-color: #ff8a4d !default;
+$callout-important-color: #ff5252 !default;
+$callout-mix-base: #161616 !default;
+$callout-text-mix: white !default;
+$callout-bg-mix: 88% !default;

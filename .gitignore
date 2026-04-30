@@ -1,0 +1,5 @@
+donnees/
+**/*_cache/
+_freeze/
+.quarto/
+*.hmtl

@@ -1,0 +1,24 @@
+<script>
+(function () {
+  function moveToggle() {
+    var toggle = document.querySelector('.quarto-color-scheme-toggle');
+    var titleEl = document.querySelector('#title-block-header h1.title');
+    if (!toggle || !titleEl) return false;
+    if (toggle.parentNode === titleEl) return true;
+    toggle.classList.remove('top-right');
+    toggle.classList.add('hebstr-title-toggle');
+    titleEl.appendChild(toggle);
+    return true;
+  }
+  function tryMove(retries) {
+    if (moveToggle()) return;
+    if (retries <= 0) return;
+    requestAnimationFrame(function () { tryMove(retries - 1); });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { tryMove(20); });
+  } else {
+    tryMove(20);
+  }
+})();
+</script>

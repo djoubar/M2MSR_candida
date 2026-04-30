@@ -1,0 +1,165 @@
+################################################################################
+#                                                                              #
+#                             M2MSR_FIG1_UNIVARIEES                            #
+#                                                                              #
+################################################################################ 
+source("scripts/_setup.R")
+
+
+uv_cat <- function(data, save_plots = TRUE, output_dir = "figures/uv") {
+  categories <- list(
+    demo = "demo_",
+    admission = "adm_",
+    hc = "hc_",
+    hospit = "hospit_"
+  )
+  
+  var_label(data) <- list(
+    demo_centre = "Centre",
+    demo_atcd_hemato = "Antécédent de maladie hématologique maligne",
+    demo_age = "Age",
+    demo_sexe = "Sexe",
+    demo_atcd_tumeur = "Antécédent de tumeur solide",
+    demo_atcd_pancreatite = "Antécédent de pancréatite aigue",
+    demo_atcd_diabete = "Antécédent de diabète",
+    adm_igs2 = "IGS 2 à l'admission",
+    adm_pancreatite_aigue = "Admission pour pancréatite aigue",
+    adm_poids = "Poids à l'admission",
+    adm_vi_cat = "Ventilation invasive à l'admission",
+    adm_pfio2_min = "PaO2/FiO2 minimal à l'admission",
+    adm_creat_max = "Créatinémie maximale (en mg/L) à l'admission",
+    adm_uree_max = "Urée maximale (en g/L) à l'admission",
+    adm_dialyse = "Dialyse à l'admission",
+    adm_temp_min = "Température minimale (en °C) à l'admission",
+    adm_temp_max = "Température maximale (en °C) à l'admission",
+    adm_diurese_tot = "Diurèse totale à l'admission",
+    adm_diurese_norm = "Diurèse normalisée",
+    adm_lactates_max = "Lactatémie maximale (en mmol/L) à l'admission",
+    adm_lactates_moy = "Lactatémie moyenne (en mmol/L) à l'admission",
+    adm_neutro_min = "Neutrophiles (en G/L) à l'admission",
+    adm_lympho_min = "Lymphocytes (en G/L) à l'admission",
+    adm_cgr = "Culot Globulaires à l'admission",
+    adm_pfc = "Plasma frais congelé à l'admission",
+    adm_cp = "Culot plaquettaire à l'admission",
+    hc_sofa_respi = "SOFA respiratoire à l'hémoculture",
+    hc_sofa_coag = "SOFA coagulation à l'hémoculture",
+    hc_sofa_hepatique = "SOFA hépatique à l'hémoculture",
+    hc_sofa_neuro = "SOFA neurologique à l'hémoculture",
+    hc_sofa_cardio = "SOFA cardiologique à l'hémoculture",
+    hc_sofa_renal = "SOFA rénal à l'hémoculture",
+    hc_sofa_tot = "SOFA total à l'hémoculture",
+    hc_temp_min = "Température minimale à l'hémoculture",
+    hc_temp_max = "Température maximale à l'hémoculture",
+    hc_diurese_tot = "Diurèse totale à l'hémoculture",
+    hc_diurese_norm = "Diurèse normalisée à l'hémoculture",
+    hc_pfio2_min = "PaO2/FiO2 à l'hémoculture",
+    hc_creat_max = "Créatinémie à l'hémoculture",
+    hc_uree_max = "Urémie à l'hémoculture",
+    hc_lactates_max = "Lactatémie à l'hémoculture",
+    hc_lactates_moy = "Lactatémie moy à l'hémoculture",
+    hc_neutro_min = "Neutropénie min à l'hémoculture",
+    hc_lympho_min = "Lymphopénie à l'hémoculture",
+    hc_glucanes_max = "Glucanes à l'hémoculture",
+    hc_mannanes_max = "Mannanes à l'hémoculture",
+    hc_vi_cat = "Ventilation invasive à l'hémoculture",
+    hc_dialyse = "Dialyse à l'hémoculture",
+    hc_kta = "KTA à l'hémoculture",
+    hc_vvc = "VVC à l'hémoculture",
+    hc_ktd = "Cathéter de dialyse à l'hémoculture",
+    hc_ecmo = "ECMO à l'hémoculture",
+    hc_cgr = "CGR à l'hémoculture",
+    hc_pfc = "PFC à l'hémoculture",
+    hc_cp = "CP à l'hémoculture",
+    hc_albu_20 = "Albu 20% à l'hémoculture",
+    hc_albu_4 = "Albu 4% à l'hémoculture",
+    hc_bicar = "Bicarbonates à l'hémoculture",
+    hc_gelo = "Gélo à l'hémoculture",
+    hc_nacl = "NaCl à l'hémoculture",
+    hc_plasmalyte = "Plasmalyte à l'hémoculture",
+    hc_ringer = "RL à l'hémoculture",
+    hc_voluven = "Voluven à l'hémoculture",
+    hc_adre = "Adrénaline à l'hémoculture",
+    hc_dobu = "Dobutamine à l'hémoculture",
+    hc_isoprenaline = "Isopréaline à l'hémoculture",
+    hc_noradre = "Noradrénaline à l'hémoculture",
+    hc_terlipressine = "Terlipressine à l'hémoculture",
+    hospit_vi_duree = "Durée de ventilation invasive à l'hémoculture",
+    hospit_parenterale_duree = "Durée de nutrition parentérale à l'hémoculture",
+    hospit_vvc_duree = "Durée de VVC à l'hémoculture",
+    hospit_kta_duree = "Durée de KTA à l'hémoculture",
+    hospit_ktd_duree = "Durée de KTD à l'hémoculture",
+    hospit_ecmo_duree = "Durée ECMO à l'hémoculture",
+    hospit_atb_duree = "Durée ATBT à l'hémoculture",
+    hospit_ctc_duree = "Durée CTC à l'hémoculture",
+    hospit_immunosup_duree = "Durée immunosuppression à l'hémoculture",
+    hospit_neutropen_duree = "Durée neutropénie à l'hémoculture",
+    hospit_neutrophi_duree = "Durée neutrophilie à l'hémoculture",
+    hospit_lymphopenie_duree = "Durée lymphopénie à l'hémoculture",
+    hospit_cgr = "Nombres CGR avant l'hémoculture",
+    hospit_pfc = "Nombres PFC avant l'hémoculture",
+    hospit_cp = "Nombres CP avant l'hémoculture",
+    hospit_fibro = "Fibroscopie pendant l'hospitalisation"
+  )
+  
+  # Créer le répertoire de sortie si nécessaire
+  if (save_plots && !dir.exists(output_dir)) {
+    dir.create(output_dir)
+  }
+  
+  plot_factor <- function(var) {
+    p <- ggplot(data, aes(x = !!sym(var))) +
+      geom_bar(fill = "#457B9D", alpha = 0.7) +
+      geom_text(aes(label = ..count..), stat = "count", vjust = -0.2, colour = "black", size = 0.5) +
+      labs(x = var, y = "Effectif") +
+      theme_minimal()
+    if (save_plots) {
+      ggsave(filename = file.path(output_dir, paste0("factor_", var, ".png")), plot = p, width = 8, height = 6, dpi = 300)
+    }
+    return(p)
+  }
+  
+  plot_numeric <- function(var) {
+    p <- ggplot(data, aes(x = !!sym(var))) +
+      geom_density(fill = "#E63946", alpha = 0.7) +
+      geom_vline(aes(xintercept = median(!!sym(var))), color = "black", linewidth = 0.3, linetype = "dashed")+
+      labs(x = var, y = "Fréquence") +
+      theme_minimal()
+    if (save_plots) {
+      ggsave(filename = file.path(output_dir, paste0("numeric_", var, ".png")), plot = p, width = 8, height = 6, dpi = 300)
+    }
+    return(p)
+  }
+  
+  generate_category_figure <- function(category, prefix) {
+    cols <- names(data)[grepl(prefix, names(data))]
+    if (length(cols) == 0) {
+      message(paste("Aucune colonne trouvée pour la catégorie", category))
+      return(NULL)
+    }
+    plots <- map(cols, ~ {
+      if (is.factor(data[[.x]])) {
+        plot_factor(.x)
+      } else if (is.numeric(data[[.x]])) {
+        plot_numeric(.x)
+      } else {
+        message(paste("Type non supporté pour la colonne", .x))
+        return(NULL)
+      }
+    })
+    plots <- compact(plots)
+    if (length(plots) > 0) {
+      combined_plot <- wrap_plots(plots = plots, ncol = 2)
+      theme(plot.margin = margin(1,1,1,1,"cm"))
+      return(combined_plot)
+    } else {
+      return(NULL)
+    }
+  }
+  
+  figures <- map2(names(categories), categories, generate_category_figure)
+  return(figures)
+}
+
+# Générer les graphiques et les sauvegarder
+figures <- uv_cat(data, save_plots = TRUE, output_dir = "figures/uv")
+

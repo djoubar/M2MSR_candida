@@ -1,0 +1,84 @@
+title: hebstr-doc
+description: "Shared multi-format Quarto theme (HTML, Typst, DOCX) with Luciole font and accessible callouts."
+author: hebstr
+version: 0.12.0
+quarto-required: ">=1.9.36"
+contributes:
+  shortcodes:
+    - filters/add-code-files.lua
+  formats:
+    common:
+      number-sections: true
+      number-depth: 4
+      toc: true
+      toc-depth: 4
+      colorlinks: true
+      default-image_extension: png
+      crossref:
+        title-delim: "\\."
+        tbl-title: "Table"
+      tbl-cap-location: top
+      fig-cap-location: bottom
+      callout-appearance: simple
+      fig-align: center
+      knitr:
+        opts_chunk:
+          collapse: true
+          comment: "#>"
+          echo: false
+          message: false
+          warning: false
+    html:
+      page-layout: full
+      embed-resources: true
+      date: last-modified
+      mainfont: "Luciole"
+      monofont: "Fira Code"
+      fontsize: 1.2rem
+      linestretch: 1.75
+      toc-expand: true
+      anchor-sections: false
+      code-link: false
+      code-fold: true
+      code-copy: always
+      html-table-processing: none
+      html-math-method: plain
+      theme:
+        light: [theme-light.scss, theme-base.scss]
+        dark: [theme-dark.scss, theme-base.scss]
+      css: fonts/fonts.css
+      include-after-body:
+        - filters/toggle-position.html
+      lightbox: true
+      grid:
+        sidebar-width: 0px
+        body-width: 1100px
+        margin-width: 600px
+        gutter-width: 3rem
+      filters:
+        - at: pre-quarto
+          path: _extensions/mcanouil/code-window/main.lua
+        - at: post-quarto
+          path: _extensions/mcanouil/code-window/_modules/hotfix/typst-title-fix.lua
+      extensions:
+        code-window:
+          enabled: true
+          auto-filename: true
+          style: default
+    typst:
+      mainfont: "Luciole"
+      font-paths: fonts
+      papersize: a4
+      margin:
+        x: 1.5cm
+        y: 1.5cm
+      keep-typ: false
+      include-in-header: template.typ
+      filters:
+        - at: pre-quarto
+          path: _extensions/mcanouil/code-window/main.lua
+        - at: post-quarto
+          path: _extensions/mcanouil/code-window/_modules/hotfix/typst-title-fix.lua
+    docx:
+      reference-doc: template.dotx
+      number-sections: false

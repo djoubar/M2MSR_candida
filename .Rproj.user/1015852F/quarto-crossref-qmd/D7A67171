@@ -1,0 +1,32 @@
+{
+    "entries": [
+        {
+            "file": "M2MSR.qmd",
+            "type": "fig",
+            "id": "uv-demo",
+            "suffix": "",
+            "title": "Variables démographiques"
+        },
+        {
+            "file": "M2MSR.qmd",
+            "type": "fig",
+            "id": "uv-adm",
+            "suffix": "",
+            "title": "Variables à l'admission"
+        },
+        {
+            "file": "M2MSR.qmd",
+            "type": "fig",
+            "id": "uv-hospit",
+            "suffix": "",
+            "title": "Variables au cours de l'hospitalisation"
+        },
+        {
+            "file": "M2MSR.qmd",
+            "type": "fig",
+            "id": "uv-hc",
+            "suffix": "",
+            "title": "Variables à l'hémoculture"
+        }
+    ]
+}

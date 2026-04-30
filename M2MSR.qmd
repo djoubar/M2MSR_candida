@@ -1,0 +1,241 @@
+---
+title: "M2MSR"
+author: "BAERT Julien"
+date: last-modified
+format:
+  hebstr-doc-html: default
+editor: source
+lang: fr
+execute:
+  freeze: auto
+  # cache: true
+---
+
+```{css}
+/*
+p {
+  text-align: justify
+}
+```
+
+```{r}
+#| label: _setup.R
+source("scripts/_setup.R")
+```
+
+{{< script scripts/_setup.R >}}
+
+------------------------------------------------------------------------
+
+# [**Identification de facteurs de risques de candidémie acquise en réanimation : étude rétrospective monocentrique au CHU de Lille**]{.underline}
+
+## [Introduction]{.underline}
+
+Candida est une levure saprophyte du revêtement cutané et de la muqueuse oro-digestive chez l’être humain. Le genre Candida comprend plusieurs espèces, dont albicans est la plus fréquente. Ces champignons sont responsables d’infections sanguines (candidémies) et d’invasion de tissus profonds (candidoses profondes) chez l’être humain. Ces candidoses invasives sont la pathologie fongique nosocomiale la plus fréquente dans le monde occidental (1).
+
+Les candidémies sont particulièrement fréquentes chez les patients hospitalisés en réanimation, représentant 8% des hémocultures positives et 15% des infections nosocomiales dans ces services (3). Les patients de réanimation en présentent en effet de nombreux facteurs de risque : certains dispositifs invasifs tels que les cathéters veineux centraux, les cathéters de dialyse, ou la ventilation mécanique, qui sont des outils thérapeutiques employés quasi-exclusivement en réanimation ; la nutrition parentérale, administrée uniquement par ces cathéters profonds ; les chirurgies abdominales lourdes ou les pancréatites aigues nécrosantes. Par ailleurs, une hospitalisation prolongée, associée à une exposition répétée aux antibiotiques, favorisent la colonisation à Candida, première étape vers l’infection invasive (4,5).
+
+Les dernières décennies ont été marquées par une incidence croissante des candidoses invasives en réanimation, sans amélioration significative de leur pronostic (6,7). Leur pronostic est dépendant de la précocité d’initiation du traitement antifongique (8,9). Or le diagnostic des candidoses invasives repose sur les hémocultures, dont la sensibilité est imparfaite (10) et le délai de pousse tardif, ce qui impacte négativement le pronostic des patients (11).
+
+Pour pallier ces limites, les cliniciens s’appuient sur les facteurs de risque et des biomarqueurs, tels que les β-D-glucanes, pour identifier les patients à risque et introduire précocement un traitement antifongique. Ces stratégies empiriques ou préemptives entraînent toutefois une surutilisation des antifongiques sans bénéfice démontré sur la survie des patients (12).
+
+*\>\>\> A compléter*
+
+## [Méthodes]{.underline}
+
+### Source des données
+
+Il s'agit d'une étude observationnelle monocentrique rétrospective, utilisant les données des patients hospitalisés en soins intensifs et réanimation au CHU de Lille depuis 2013, contenues dans l’entrepôt de données de santé *Include* du CHU de Lille. Celui-ci intègre différentes sources informatisées de données recueillies dans le cadre d’une prise en charge au CHU de Lille, notamment le système de gestion des données de réanimation ICCA (Philips), le système d’information de laboratoire MOLIS (CompuGroupMedical) et le logiciel CORA PMSI pour le codage des diagnostics et des actes CCAM.
+
+L'extraction des données a été réalisée par les ingénieures data d'*Include* (Mme Charlotte GEAY, Mme Léa GRUMIAUX et Mme Marie Amélie RISPAL). La structuration des données, la comparaison des données, les analyses statistiques ont été réalisées sur le logiciel R, version 4.5.2.
+
+### Population
+
+La population éligible est la suivante :
+
+- Patients hospitalisés en réanimation ou en surveillance continue au CHU de Lille (hôpitaux Huriez et Institut Cœur Poumon & Salengro, hors service de réanimation neurochirurgicale) depuis plus de 48 heures,
+
+- Ayant été prélevés d’au moins une hémoculture (plusieurs hémocultures peuvent être prélevées chez un même patient durant son séjour en réanimation).
+
+### Critère de jugement principal
+
+L'objectif de notre modélisation est de prédire le risque de candidémie inaugurale acquise en réanimation. Notre variable d'intérêt est donc la présence ou non d'une candidémie acquise en réanimation.
+
+### Feature Extraction
+
+Les données ont été extraites à différentes temporalitées de l'hospitalisation. Les données démographiques sont récoltées à l'admission et considérées comme inchangées au décours. Les données reflétants l'état à l'admission du patient du patient sont extraites dans les 24 heures suivant l'horaire d'admission en soins intensifs. Les données reflétant l'état à l'hémoculture sont récoltées sur les 24 heures précédant la réalisation de la première hémoculture. Les données d'exposition au cours de l'hospitalisation sont récoltées sur l'ensemble de l'hospitalisation, préalablement à l'hémoculture. La feature extraction des données est résumée dans le @tbl_feature_extraction.
+
+### Analyses statistiques
+
+Les variables catégorielles sont décrites en effectifs & pourcentage. Les variables continues sont présentées par médiane et intervalle interquartile. Une description démographique & univariée est réalisée dans un premier temps.
+
+Sont réalisées dans un second temps des analyses bivariées afin de de décrire le lien entre la présence d'une candidémie & les variables extraites.
+
+Les variables pertinentes cliniquement, constantes avec la littérature, ou en faveur d'un sur-risque de candidémie lors de l'analyse bivariée seront incluses dans une analyse multivariée. L'analyse multivariée sera réalisée via régression logistique mixte avec effet aléatoire via le patient.
+
+Afin de raisonner par "épisode de sepsis" et pallier à la faible sensibilité des hémocultures, celle-ci étaient regroupées, pour un même individu, en blocs. Un bloc était séparé du prochain si l'intervalle de temps entre la dernière hémoculture du bloc et la première du bloc suivant était strictement supérieure à 24 heures. Un bloc était considéré comme positif si au moins une hémoculture du bloc était positive à Candida.
+
+L'objectif étant d'identifier une candidémie inaugurale, toutes les hémocultures suivants une hémoculture positive à *Candida* sont supprimées.
+
+### Données manquantes
+
+Après extraction, certaines données n'ont pu être retrouvées, faute d'analyse ou de réalisation de l'examen. Un tableau récapitulatif des données manquantes est présenté ci-dessous
+
+```{r}
+#| label: tbl_NA
+#| echo: true
+#| code-fold: false
+colSums(is.na(df_base))
+```
+
+Les analyses ou techniques thérapeutiques non routinières sont considérées *Missing Not At Random*, et sont imputées à la négative (ex : BD glucanes, épuration extra-rénale).
+
+Des imputations multiples sont réalisées pour les données manquantes considérées *Missing at Random.*
+
+### Cadre réglementaire
+
+La conformité au Règlement Général sur la Protection des Données (RGPD) du traitement de ces données par le CHU de Lille sur le fondement de l’intérêt public à des fins de recherche a été validée par la Commission Nationale de l’Informatique et des Libertés (CNIL) (Délibération n°2019-103). Les responsables d’Include ont pris toutes les mesures pour mener les futurs projets de recherche conformément à la loi française et européenne.
+
+## [Résultats]{.underline}
+
+### Flowchart
+
+Après extraction des hémocultures de l'entrepôt de données de santé, nous procédons à une analyse exploratoire des données. Nous identifions donc **104 620** hémocultures, avec **9813 séjours**, chez **xxx** individus (\@fig_flow_chart).
+
+### Description de la population
+
+Dans notre population d'étude, les patients étaient majoritairement de sexe masculin (62%), et d'âge médian de ... années. xx% présentaient des antécédents de maladie hématologique maligne, xx% de diabète, et xx% de ... A l'admission, xx% présentaient une chirurgie abdominale, xx% présentaient une défaillance hémodynamique, et xx% étaient ventilés de manière invasive. L'ensemble de la description est représentée dans @tbl_demographique.
+
+```{r}
+#| label: tbl_demographique
+#| message: false
+#| warning: false
+#| fig-cap: Tableau 1 - Description démographique de la population
+#| lightbox: true
+source("scripts/tbl1_demo.R")
+
+tbl1_gt <- tbl1 |>
+  as_gt()
+tbl1_gt
+```
+
+{{< script scripts/tbl1_demo.R >}}
+
+### Analyse univariée
+
+```{r}
+#| label: figures fonction
+source("scripts/fig1_uv.R")
+```
+
+{{< script scripts/fig1_uv.R >}}
+
+Les données démographiques sont représentées dans la @fig-uv-demo.
+
+```{r}
+#| label: fig-uv-demo
+#| fig-width: 10
+#| fig-height: 15
+#| fig-cap: Variables démographiques
+#| fig-align: "center"
+#| lightbox: true
+print(figures[[1]])
+```
+
+Les données à l'admission sont représentées dans la @fig-uv-adm.
+
+```{r}
+#| label: fig-uv-adm
+#| fig-width: 10
+#| fig-height: 40
+#| fig-cap: Variables à l'admission
+#| fig-align: "center"
+#| lightbox: true
+print(figures[[2]])
+```
+
+Les données à l'hémoculture de l'hospitalisation sont représentées dans la @fig-uv-hc .
+
+```{r}
+#| label: fig-uv-hc
+#| fig-width: 10
+#| fig-height: 40
+#| fig-cap: Variables à l'hémoculture
+#| fig-align: "center"
+#| lightbox: true
+print(figures[[3]])
+```
+
+Les données d'exposition au cours de l'hospitalisation sont représentées dans la @fig-uv-hospit .
+
+```{r}
+#| label: fig-uv-hospit
+#| fig-width: 10
+#| fig-height: 20
+#| fig-cap: Variables au cours de l'hospitalisation
+#| fig-align: "center"
+#| lightbox: true
+print(figures[[4]])
+```
+
+### Analyse bivariée
+
+Nous réalisons une comparaison bi-variées, avec correction du risque d'inflation du risque alpha via la méthode de *false detection rate (FDR).* Des analyses avec correction via *Bonferroni-Holmes* ont également été réalisées à titre exploratoire.
+
+Des différences significatives sont identifiées quant à la gravité rénale à l'admission (créatinémie et urée supérieures chez les patients futurs candidémiques ; avec diurèse inférieure), hémodynamique (lactatémie max & moy supérieure), transfusion à l'admission. Ces facteurs sont constants à l'hémoculture, avec des patients plus souvent lymphopéniques, ayant des marqueurs fongiques supérieurs
+
+```{r}
+#| label: tbl_bv
+#| tbl-cap: Tableau 2 - Analyse bivariée de la survenue d'une candidémie
+#| lightbox: true
+source("scripts/tbl2_bv.R")
+
+tbl2_gt <- tbl2 |>
+  as_gt()
+
+tbl2_gt
+```
+
+{{< script scripts/tbl2_bv.R >}}
+
+### Modèle de régression logistique mixte (1\| iep + hôpital)
+
+```{r}
+#| label: tbl_rlog_m
+#| tbl-cap: Tableau 4 - OR univariés & multivariés de survenue d'une candidémie (R log)
+source("scripts/tbl4_rlogmixte.R")
+
+tbl4_gt <- tbl4 |>
+  as_gt()
+
+tbl4_gt
+```
+
+{{< script scripts/tbl4_rlogmixte.R >}}
+
+Le forest plot est représenté dans @fig_fp_rlog_mxt.
+
+```{r}
+#| label: fig_fp_rlog_mxt
+#| fig-cap: Forrest plot du modèle logistique mixte
+#| fig-cap-location: top
+#| lightbox: true
+plot_rlog_mixte
+```
+
+### Random Forrest
+
+```{r}
+#| label: fig_rf
+#| fig-cap: Random Forrest
+#| fig-cap-location: top
+#| echo: TRUE
+#| lightbox: true
+source("scripts/tbl6_RandomForrest.R")
+
+plotRF
+```
+
+{{< script scripts/tbl6_RandomForrest.R >}}
+
+## [4. Discussion]{.underline}
