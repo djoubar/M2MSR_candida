@@ -1,7 +1,7 @@
 title: hebstr-doc
-description: "Shared multi-format Quarto theme (HTML, Typst, DOCX) with Luciole font and accessible callouts."
+description: "A multi-format Quarto theme (HTML, Typst, DOCX)"
 author: hebstr
-version: 0.12.0
+version: 1.0.0
 quarto-required: ">=1.9.36"
 contributes:
   shortcodes:
@@ -12,6 +12,7 @@ contributes:
       number-depth: 4
       toc: true
       toc-depth: 4
+      toc-title: " "
       colorlinks: true
       default-image_extension: png
       crossref:
@@ -42,11 +43,15 @@ contributes:
       code-fold: true
       code-copy: always
       html-table-processing: none
-      html-math-method: plain
       theme:
         light: [theme-light.scss, theme-base.scss]
         dark: [theme-dark.scss, theme-base.scss]
       css: fonts/fonts.css
+      include-in-header:
+        - text: |
+            <script>
+            window.MathJax = { chtml: { mtextInheritFont: true } };
+            </script>
       include-after-body:
         - filters/toggle-position.html
       lightbox: true

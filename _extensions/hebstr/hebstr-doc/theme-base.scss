@@ -95,13 +95,43 @@ body {
   font-style: italic;
 }
 
-.nav-tabs {
-  margin-top: 2rem;
+.blockquote {
+  color: currentColor;
+  border-color: currentColor;
 }
 
-.tab-content {
-  background-color: var(--tab-background);
-  margin-bottom: 2rem;
+mjx-container {
+  color: var(--primary-dark);
+}
+
+.panel-tabset {
+  --tab-surface: color-mix(in srgb, var(--primary), transparent 93%);
+  .nav-tabs {
+    margin-top: 2rem;
+    --bs-nav-tabs-border-color: none;
+    --bs-nav-tabs-link-hover-border-color: var(--primary-back);
+    --bs-nav-link-color: var(--primary-dark);
+    --bs-nav-link-hover-color: var(--primary);
+    --bs-nav-tabs-link-active-color: var(--primary);
+    --bs-nav-tabs-link-active-bg: var(--tab-surface);
+    --bs-nav-tabs-link-active-border-color: var(--primary-back) var(--primary-back) var(--tab-surface);
+  }
+  .nav-link.active {
+    border-bottom-color: var(--primary);
+    border-radius: 10px 10px 0 0;
+  }
+  .nav-link:not(.active) {
+    background-color: var(--primary-back);
+    border-bottom-color: var(--tab-surface);
+    border-radius: 10px 10px 0 0;
+  }
+  .tab-content {
+    background-color: var(--tab-surface);
+    border-color: var(--tab-surface);
+    border-top: 1px solid var(--tab-surface);
+    border-radius: 0 10px 10px 10px;
+    margin-bottom: 2rem;
+  }
 }
 
 #title-block-header {
@@ -154,10 +184,17 @@ body {
 
 #quarto-margin-sidebar {
   text-align: left;
-  padding-left: 1.5rem;
+  padding: 1rem 1rem 0 1.5rem;
   background-color: var(--primary-back);
-  #toc-title {
-    display: none;
+  h2#toc-title {
+    font-size: 0.95rem;
+    color: var(--primary-dark);
+    margin: 0 0 0.3rem 0.2rem;
+  }
+  nav a#toc-title {
+    font-size: inherit;
+    color: inherit;
+    margin: 0;
   }
   .toc-active {
     > ul a {

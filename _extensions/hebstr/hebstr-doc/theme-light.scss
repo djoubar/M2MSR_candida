@@ -21,9 +21,20 @@ $tab-background: #ffffff !default;
 
 $callout-note-color: #0099FF !default;
 $callout-tip-color: #3fb618 !default;
-$callout-caution-color: #f0ad4e !default;
+$callout-caution-color: #ffb300 !default;
 $callout-warning-color: #ff6a00 !default;
 $callout-important-color: #FF0000 !default;
 $callout-mix-base: white !default;
 $callout-text-mix: black !default;
 $callout-bg-mix: 97% !default;
+
+$navbar-bg: mix($primary, white, 5%) !default;
+$navbar-fg: mix($primary, black, 50%) !default;
+$navbar-hl: $primary !default;
+
+$sidebar-bg: mix($primary, white, 5%) !default;
+$sidebar-fg: $body-color !default;
+$sidebar-hl: $primary !default;
+
+$footer-bg: mix($primary, white, 5%) !default;
+$footer-fg: mix($primary, black, 50%) !default;

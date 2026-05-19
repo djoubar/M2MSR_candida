@@ -27,3 +27,14 @@ $callout-important-color: #ff5252 !default;
 $callout-mix-base: #161616 !default;
 $callout-text-mix: white !default;
 $callout-bg-mix: 88% !default;
+
+$navbar-bg: mix($primary, black, 16%) !default;
+$navbar-fg: $body-color !default;
+$navbar-hl: $primary !default;
+
+$sidebar-bg: mix($primary, black, 16%) !default;
+$sidebar-fg: $body-color !default;
+$sidebar-hl: $primary !default;
+
+$footer-bg: mix($primary, black, 16%) !default;
+$footer-fg: $body-color !default;
