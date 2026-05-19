@@ -3,3 +3,9 @@ donnees/
 _freeze/
 .quarto/
 *.hmtl
+models/
+M2MSR_cache/
+M2MSR_files/
+figures/
+M2MSR.qmd
+M2MSR.rmarkdown
