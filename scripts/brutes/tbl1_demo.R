@@ -3,37 +3,28 @@
 #                            M2MSR_TBL1_DEMOGRAPHIQUE                          #
 #                                                                              #
 ################################################################################
-.df_tbl1 <- df_base
-
-theme_gtsummary_language(language = "fr", decimal.mark = ",", big.mark = " ")
-set_flextable_defaults(
-  font.family = "Serif",
-  font.size = 12,
-  padding = 2,
-  border.color = "#CCCCCC",
-  line_spacing = 1.3,
-  line_width = 2
-)
+df_tbl1 <- df_base
 
 # Selection des donnees patients (1 par iep)
-.df_tbl1 <- .df_tbl1 |>
+df_tbl1 <- df_tbl1 |>
   arrange(iep, date_hemoc) |>
   distinct(iep, .keep_all = TRUE)
 
+
 tbl1 <-
   tbl_summary(
-    data = .df_tbl1,
+    data = df_tbl1,
     missing = "no",
     include = c(
       # informations démographiques/atcd
-      demo_type_rea,
-      demo_uf,
+      # demo_uf,
       demo_age,
       demo_sexe,
       demo_atcd_hemato,
       demo_atcd_diabete,
       demo_atcd_pancreatite,
       demo_atcd_tumeur,
+      demo_type_rea,
       # variables à l'admission
       ## gravité
       adm_igs2,
@@ -44,26 +35,67 @@ tbl1 <-
       adm_poids,
       adm_temp_min,
       adm_temp_max,
-      adm_diurese_tot,
+      # adm_diurese_tot,
       adm_diurese_norm,
       ## biologiques
       adm_creat_max,
-      adm_uree_max,
+      # adm_uree_max,
       adm_pfio2_min,
       adm_lactates_max,
-      adm_lactates_moy,
+      # adm_lactates_moy,
+      adm_leuco_min,
       adm_neutro_min,
       adm_lympho_min,
       # ## thérapeutiques
       adm_vi_cat,
-      adm_amines
+      adm_amines,
+      hc_delai,
+      deces_rea,
     ),
-    labels(
-      demo_type_rea ~ "Type de Réanimation",
-      demo_uf ~ "Unité Fonctionelle",
-      adm_sofa_tot ~ "Score SOFA à l'admission",
-      adm_choc ~ "Choc à l'admission",
-      adm_amines ~ "Amines à l'admission"
+    label = list(
+      demo_sexe = "Sexe masculin",
+      demo_type_rea = "Hospitalisation en réanimation médicale",
+      demo_uf = "Unité Fonctionelle",
+      adm_sofa_tot = "Score SOFA à l'admission",
+      adm_choc = "Choc à l'admission",
+      adm_amines = "Amines à l'admission",
+      hc_delai = "Délai entre admission & hémoculture",
+      deces_rea ~ "Décès en réanimation"
+    ),
+    statistic = list(
+      all_continuous() ~ "{median} ({min}, {max})",
+      all_categorical() ~
+        "{n} ({p}%)"
+    ),
+    type = list(
+      c(
+        demo_sexe,
+        demo_type_rea,
+        demo_atcd_hemato,
+        demo_atcd_diabete,
+        demo_atcd_pancreatite,
+        demo_atcd_tumeur,
+        adm_pancreatite_aigue,
+        adm_choc,
+        adm_vi_cat,
+        adm_amines,
+        deces_rea
+      ) ~ "dichotomous"
+    ),
+    value = list(
+      c(
+        demo_atcd_hemato,
+        demo_atcd_diabete,
+        demo_atcd_pancreatite,
+        demo_atcd_tumeur,
+        adm_pancreatite_aigue,
+        adm_choc,
+        adm_vi_cat,
+        adm_amines,
+        deces_rea
+      ) ~ "Oui",
+      demo_type_rea ~ "Medicale",
+      demo_sexe ~ "Masculin"
     )
   ) |>
   bold_labels() |>

@@ -3,43 +3,7 @@
 #                                M2MSR_1_SETUP                                 #
 #                                                                              #
 ################################################################################
-Sys.setenv(OMP_NUM_THREADS = "10")
-Sys.setenv(MKL_NUM_THREADS = "10")
-Sys.setenv(OPENBLAS_NUM_THREADS = "10")
-Sys.setenv(VECLIB_MAXIMUM_THREADS = "10")
-Sys.setenv(NUMEXPR_NUM_THREADS = "10")
-
-library(tidyverse)
-library(readxl)
-library(questionr)
-library(gtsummary)
-library(flextable)
-library(patchwork)
-library(labelled)
-library(gt)
-library(lme4)
-library(glmnet)
-library(pacman)
-library(parameters)
-library(see)
-library(geepack)
-library(Hmisc)
-library(mice)
-library(rsample)
-library(hebstr)
-library(MuMIn)
-library(rms)
-library(DT)
-library(pROC)
-
-conflicted::conflicts_prefer(
-  dplyr::filter,
-  dplyr::rename,
-  dplyr::lag,
-  .quiet = FALSE
-)
-
-df_base <- read_xlsx("~/M2MSR/donnees/data_fusionnee.xlsx") |>
+df_base <- read_xlsx("~/M2MSR/donnees/20260521_extraction_fusionnee.xlsx") |>
   set_names(tolower) |>
   mutate(demo_sexe = as.factor(sexe_y)) |>
   select(
@@ -67,9 +31,9 @@ df_base <- df_base |>
     date_adm_hospit = admission_hopital,
     date_adm_rea = admission_rea,
     date_sortie_rea = sortie_rea,
-    demo_uf = libelle_uf_y,
     # informations démographiques/atcd
     demo_centre = base,
+    demo_uf = libelle_uf_y,
     demo_age = age_entree,
     demo_atcd_hemato = atcd_maladie_hemato_maligne,
     demo_atcd_diabete = atcd_diabete,
@@ -100,6 +64,7 @@ df_base <- df_base |>
     adm_lactates_moy = mean_lactates_24h_apres_adm,
     adm_neutro_min = min_neutrophiles_24h_apres_adm,
     adm_lympho_min = min_lymphocytes_24h_apres_adm,
+    adm_leuco_min = min_leucocytes_24h_apres_adm,
     # thérapeutiques
     adm_vi_cat = ventilation_mecanique_invasive_24h_apres_adm,
     adm_dialyse = dialyse_24h_apres_adm,
@@ -142,6 +107,7 @@ df_base <- df_base |>
     hc_lympho_min = min_lymphocytes_24h_avant_hemoc,
     hc_glucanes_max = max_biomarqueurs_glucane_avant_hemoc,
     hc_mannanes_max = max_biomarqueurs_mannane_avant_hemoc,
+    hc_leuco_min = min_leucocytes_24h_avant_hemoc,
     # thérapeutiques
     hc_vi_cat = ventilation_mecanique_invasive_24h_avant_hemoc,
     hc_dialyse = dialyse_24h_avant_hemoc,
@@ -1164,6 +1130,7 @@ df_base <- df_base |>
     demo_atcd_tumeur = factor(demo_atcd_tumeur, levels = c("0", "1"), labels = c("Non", "Oui")),
     demo_atcd_hemato = factor(demo_atcd_hemato, levels = c("0", "1"), labels = c("Non", "Oui")),
     demo_atcd_diabete = factor(demo_atcd_diabete, levels = c("0", "1"), labels = c("Non", "Oui")),
+    deces_rea = factor(deces_rea, levels = c("0", "1"), labels = c("Non", "Oui")),
     demo_atcd_transplantation = factor(
       demo_atcd_transplantation,
       levels = c("0", "1"),
@@ -1278,6 +1245,7 @@ df_base <- df_base |>
     hc_pfc = factor(hc_pfc, levels = c("0", "1"), labels = c("Non", "Oui")),
     hc_cp = factor(hc_cp, levels = c("0", "1"), labels = c("Non", "Oui")),
     hc_delai = date_hemoc - date_adm_rea,
+    duree_hospit = date_sortie_rea - date_adm_rea,
     hc_amines = as.factor(ifelse(
       hc_adre > 0 | hc_noradre > 0 | hc_dobu > 0 | hc_isoprenaline > 0 | hc_terlipressine > 0,
       "Oui",
@@ -1378,13 +1346,13 @@ df_base <- df_base |>
     ),
     adm_transfu = as.factor(ifelse(
       adm_cgr == "Oui" | adm_pfc == "Oui" | adm_cp == "Oui",
-      "1",
-      "0"
+      "Oui",
+      "Non"
     )),
     hc_transfu = as.factor(ifelse(
       hc_cgr == "Oui" | hc_pfc == "Oui" | hc_cp == "Oui",
-      "1",
-      "0"
+      "Oui",
+      "Non"
     )),
     hospit_parenterale_cat = as.factor(ifelse(
       hospit_parenterale_duree > 0,
@@ -1403,32 +1371,26 @@ df_base <- df_base |>
 ################################################################################
 
 df_base <- df_base |>
-  # 1_Intervalles de temps, groupes et résultat définitif
+  # 1. Regroupement par épisode de sepsis
   group_by(n_sejour) |>
   arrange(n_sejour, date_hemoc) |>
   mutate(
-    n_prvl = row_number(),
     diff = as.numeric(difftime(date_hemoc, lag(date_hemoc), units = "hours"), na.rm = TRUE),
-    groupehc = cumsum(ifelse(is.na(diff) | diff <= 24, 0, 1)) + 1
+    groupehc = cumsum(ifelse(is.na(diff) | diff > 24, 1, 0))
   ) |>
   ungroup() |>
+  # 2. Marquer les groupes avec candidémie
   group_by(n_sejour, groupehc) |>
-  mutate(resultat_candida_def = ifelse(any(resultat_candida == "positif", na.rm = TRUE), 1, 0)) |>
+  mutate(resultat_candida_def = any(resultat_candida == "positif", na.rm = TRUE)) |>
   ungroup() |>
-  # 2/ Suppression des groupes d'hémocultures suivants un groupe d'hémoculture positif
+  # 3. Supprimer les groupes QUI SUIVENT un groupe positif
   group_by(n_sejour) |>
-  arrange(n_sejour, date_hemoc, groupehc) |>
+  arrange(n_sejour, groupehc) |>
   mutate(
-    has_positif = cumsum(
-      ifelse(
-        resultat_candida_def == "1" & !(groupehc == lag(groupehc, default = first(groupehc))),
-        "1",
-        "0"
-      )
-    )
+    suppress_after = cummax(ifelse(lag(resultat_candida_def, default = FALSE), 1, 0))
   ) |>
   ungroup() |>
-  filter(has_positif == 0)
+  filter(suppress_after == 0)
 
 ################################################################################
 #                                 4_COMPLETER                                  #
@@ -1495,161 +1457,15 @@ df_base <- df_base |>
     )
   )
 
-df_base <- df_base |>
-  mutate(across(
-    starts_with("demo_atcd"),
-    ~ fct_explicit_na(., na_level = "Non")
-  ))
+# df_base <- df_base |>
+#   mutate(across(
+#     starts_with("demo_atcd"),
+#     ~ fct_explicit_na(., na_level = "Non")
+#   ))
 
 ################################################################################
 #                                 3_REORDONNER                                 #
 ################################################################################
-df_base <- df_base %>%
-  select(
-    # dates et informations de base
-    id_hemoc,
-    iep,
-    resultat_candida_def,
-    groupehc,
-    n_prvl,
-    date_adm_hospit,
-    date_adm_rea,
-    date_hemoc,
-    date_sortie_rea,
-
-    # informations démographiques/atcd
-    demo_centre,
-    demo_type_rea,
-    demo_uf,
-    demo_age,
-    demo_sexe,
-    demo_atcd_hemato,
-    demo_atcd_diabete,
-    demo_atcd_pancreatite,
-    demo_atcd_tumeur,
-    demo_atcd_transplantation,
-
-    # variables à l'admission
-    adm_choc,
-    ## gravité
-    adm_igs2,
-    adm_sofa_tot,
-    adm_sofa_respi,
-    adm_sofa_coag,
-    adm_sofa_hepatique,
-    adm_sofa_neuro,
-    adm_sofa_cardio,
-    adm_sofa_renal,
-    adm_pancreatite_aigue,
-    ## cliniques
-    adm_poids,
-    adm_temp_min,
-    adm_temp_max,
-    adm_diurese_tot,
-    adm_diurese_norm,
-    ## biologiques
-    adm_creat_max,
-    adm_uree_max,
-    adm_pfio2_min,
-    adm_lactates_max,
-    adm_lactates_moy,
-    adm_neutro_min,
-    adm_lympho_min,
-    ## thérapeutiques
-    adm_vi_cat,
-    adm_dialyse,
-    adm_cgr,
-    adm_pfc,
-    adm_cp,
-    adm_transfu,
-    adm_albu_20,
-    adm_albu_4,
-    adm_bicar,
-    adm_gelo,
-    adm_nacl,
-    adm_plasmalyte,
-    adm_ringer,
-    adm_amines,
-    adm_adre,
-    adm_dobu,
-    adm_isoprenaline,
-    adm_noradre,
-    adm_terlipressine,
-
-    # variables à l'hémoculture
-    hc_delai,
-    hc_choc,
-    ## gravité
-    hc_sofa_respi,
-    hc_sofa_coag,
-    hc_sofa_hepatique,
-    hc_sofa_neuro,
-    hc_sofa_cardio,
-    hc_sofa_renal,
-    hc_sofa_tot,
-    ## cliniques
-    hc_temp_min,
-    hc_temp_max,
-    hc_diurese_tot,
-    hc_diurese_norm,
-    ## biologiques
-    hc_pfio2_min,
-    hc_creat_max,
-    hc_uree_max,
-    hc_lactates_max,
-    hc_lactates_moy,
-    hc_neutro_min,
-    hc_lympho_min,
-    hc_glucanes_max,
-    hc_mannanes_max,
-    ## thérapeutiques
-    hc_vi_cat,
-    hc_dialyse,
-    hc_kta,
-    hc_vvc,
-    hc_ktd,
-    hc_ecmo,
-    hc_catheter_majeur,
-    hc_cgr,
-    hc_pfc,
-    hc_cp,
-    hc_transfu,
-    hc_albu_20,
-    hc_albu_4,
-    hc_bicar,
-    hc_gelo,
-    hc_nacl,
-    hc_plasmalyte,
-    hc_ringer,
-    hc_voluven,
-    hc_amines,
-    hc_adre,
-    hc_dobu,
-    hc_isoprenaline,
-    hc_noradre,
-    hc_terlipressine,
-
-    # variables expo hospit
-    hospit_vi_duree,
-    hospit_parenterale_duree,
-    hospit_vvc_duree,
-    hospit_kta_duree,
-    hospit_ktd_duree,
-    hospit_ecmo_duree,
-    hospit_atb_duree,
-    hospit_ctc_duree,
-    hospit_immunosup_duree,
-    hospit_neutropen_duree,
-    hospit_neutrophi_duree,
-    hospit_lymphopenie_duree,
-    hospit_cgr,
-    hospit_pfc,
-    hospit_cp,
-    hospit_fibro,
-    hospit_chirurgie_majeure,
-    hospit_chirurgie_abdominale
-  )
-
 var_label(df_base) <- list(
   demo_centre = "Centre",
   demo_atcd_hemato = "Antécédent de maladie hématologique maligne",
@@ -1742,11 +1558,171 @@ var_label(df_base) <- list(
   hospit_chirurgie_majeure = "Chirurgie majeure pendant l'hospitalisation"
 )
 
+df_base <- df_base %>%
+  select(
+    # dates et informations de base
+    id_hemoc,
+    iep,
+    resultat_candida_def,
+    # resultat_candida,
+    groupehc,
+    # n_prvl,
+    date_adm_hospit,
+    date_adm_rea,
+    date_hemoc,
+    date_sortie_rea,
+    duree_hospit,
+    date_deces,
+    deces_rea,
+    # informations démographiques/atcd
+    demo_centre,
+    demo_type_rea,
+    demo_uf,
+    demo_age,
+    demo_sexe,
+    demo_atcd_hemato,
+    demo_atcd_diabete,
+    demo_atcd_pancreatite,
+    demo_atcd_tumeur,
+    demo_atcd_transplantation,
+
+    # variables à l'admission
+    adm_choc,
+    ## gravité
+    adm_igs2,
+    adm_sofa_tot,
+    adm_sofa_respi,
+    adm_sofa_coag,
+    adm_sofa_hepatique,
+    adm_sofa_neuro,
+    adm_sofa_cardio,
+    adm_sofa_renal,
+    adm_pancreatite_aigue,
+    ## cliniques
+    adm_poids,
+    adm_temp_min,
+    adm_temp_max,
+    adm_diurese_tot,
+    adm_diurese_norm,
+    ## biologiques
+    adm_creat_max,
+    adm_uree_max,
+    adm_pfio2_min,
+    adm_lactates_max,
+    adm_lactates_moy,
+    adm_leuco_min,
+    adm_neutro_min,
+    adm_lympho_min,
+    ## thérapeutiques
+    adm_vi_cat,
+    adm_dialyse,
+    adm_cgr,
+    adm_pfc,
+    adm_cp,
+    adm_transfu,
+    adm_albu_20,
+    adm_albu_4,
+    adm_bicar,
+    adm_gelo,
+    adm_nacl,
+    adm_plasmalyte,
+    adm_ringer,
+    adm_amines,
+    adm_adre,
+    adm_dobu,
+    adm_isoprenaline,
+    adm_noradre,
+    adm_terlipressine,
+
+    # variables à l'hémoculture
+    hc_delai,
+    hc_choc,
+    ## gravité
+    hc_sofa_respi,
+    hc_sofa_coag,
+    hc_sofa_hepatique,
+    hc_sofa_neuro,
+    hc_sofa_cardio,
+    hc_sofa_renal,
+    hc_sofa_tot,
+    ## cliniques
+    hc_temp_min,
+    hc_temp_max,
+    hc_diurese_tot,
+    hc_diurese_norm,
+    ## biologiques
+    hc_pfio2_min,
+    hc_creat_max,
+    hc_uree_max,
+    hc_lactates_max,
+    hc_lactates_moy,
+    hc_neutro_min,
+    hc_leuco_min,
+    hc_lympho_min,
+    hc_glucanes_max,
+    hc_mannanes_max,
+    ## thérapeutiques
+    hc_vi_cat,
+    hc_dialyse,
+    hc_kta,
+    hc_vvc,
+    hc_ktd,
+    hc_ecmo,
+    hc_catheter_majeur,
+    hc_cgr,
+    hc_pfc,
+    hc_cp,
+    hc_transfu,
+    hc_albu_20,
+    hc_albu_4,
+    hc_bicar,
+    hc_gelo,
+    hc_nacl,
+    hc_plasmalyte,
+    hc_ringer,
+    hc_voluven,
+    hc_amines,
+    hc_adre,
+    hc_dobu,
+    hc_isoprenaline,
+    hc_noradre,
+    hc_terlipressine,
+
+    # variables expo hospit
+    hospit_vi_duree,
+    hospit_parenterale_duree,
+    hospit_vvc_duree,
+    hospit_kta_duree,
+    hospit_ktd_duree,
+    hospit_ecmo_duree,
+    hospit_atb_duree,
+    hospit_ctc_duree,
+    hospit_immunosup_duree,
+    hospit_neutropen_duree,
+    hospit_neutrophi_duree,
+    hospit_lymphopenie_duree,
+    hospit_cgr,
+    hospit_pfc,
+    hospit_cp,
+    hospit_fibro,
+    hospit_chirurgie_majeure,
+    hospit_chirurgie_abdominale
+  )
+#
 df_base <- df_base |>
   arrange(iep, groupehc) |>
   group_by(iep, groupehc) |>
   slice(1) |>
   ungroup() |>
   mutate(
-    resultat_candida_def = factor(resultat_candida_def, levels = c("0", "1"), labels = c("0", "1"))
+    resultat_candida_def = factor(
+      resultat_candida_def,
+      levels = c(0, 1),
+      labels = c("Négative", "Positive")
+    ),
+    date_candidemie = as.POSIXct(ifelse(
+      resultat_candida_def == "Positive",
+      date_hemoc,
+      NA
+    ))
   )
