@@ -1,6 +1,6 @@
-# imp <- read_rds("donnees/df_impute.rds")
-source("scripts/brutes/_setup.R")
-# df_stepwise <- complete(imp, 1)
+imp <- read_rds("donnees/df_impute.rds")
+# source("scripts/brutes/_setup.R")
+df_base <- complete(imp, 1)
 # names(df_base)
 # str(df_base)
 
