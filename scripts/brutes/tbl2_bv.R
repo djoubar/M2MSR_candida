@@ -211,6 +211,7 @@ tbl2_hc <-
         hc_ecmo,
         hc_cgr,
         hc_pfc,
+        hc_cp,
         hc_transfu,
         hc_amines
       ) ~ "Oui",
