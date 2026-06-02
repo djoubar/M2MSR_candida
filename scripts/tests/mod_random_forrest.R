@@ -1,6 +1,5 @@
 ###### RF
 set.seed(123)
-library(randomForest)
 
 df_rf <- df_base |>
   arrange(iep, date_hemoc) |>

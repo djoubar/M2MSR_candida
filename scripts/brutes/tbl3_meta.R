@@ -42,11 +42,11 @@ mod_meta <- glmer(
 tbl3 <- tbl_regression(mod_meta, exponentiate = TRUE)
 summary(mod_meta)
 
-# # AUC
-# pred_cond <- predict(mod_meta, type = "response", re.form = NULL)
-# auc_cond <- pROC::roc(df_meta$resultat_candida_def, pred_cond)
-# auc_cond$auc
-# g1_auc_meta <- plot(auc_cond, main = "Courbe ROC (prédictions conditionnelles)")
+df_meta$score <- predict(mod_meta, type = "response")
+
+roc_meta <- ggroc(roc_obj, colour = "black", size = 0.5) +
+  ggtitle(paste("Modèle Forward - AUC =", round(auc(roc_meta), 3))) +
+  theme_minimal()
 
 # # Courbe calibration
 # dd <- datadist(df_base)

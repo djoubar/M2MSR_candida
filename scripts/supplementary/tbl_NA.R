@@ -1,4 +1,6 @@
-tblNA <- tbl_custom_summary(
+source("scripts/brutes/_setup.R")
+
+tbl_NA <- tbl_custom_summary(
   df_base,
   missing = "no",
   include = c(
@@ -46,15 +48,15 @@ tblNA <- tbl_custom_summary(
       hc_vvc,
       hc_ktd,
       hc_ecmo,
-      hc_cathéter_majeur,
+      hc_catheter_majeur,
       hc_cgr,
       hc_pfc,
       hc_transfu,
       hc_cp,
       hc_amines,
-      hospit_fibroscopie,
-      hc_chirurgie_majeure,
-      hc_chirurgie_abdo,
+      hospit_fibro,
+      hospit_chirurgie_majeure,
+      hospit_chirurgie_abdominale,
       adm_amines
     ) ~ "dichotomous"
   ),
@@ -84,18 +86,18 @@ tblNA <- tbl_custom_summary(
       hc_vvc,
       hc_ktd,
       hc_ecmo,
-      hc_cathéter_majeur,
+      hc_catheter_majeur,
       hc_transfu,
       hc_cgr,
       hc_pfc,
       hc_cp,
       hc_amines,
-      hospit_fibroscopie,
-      hc_chirurgie_majeure,
-      hc_chirurgie_abdo,
+      hospit_fibro,
+      hospit_chirurgie_majeure,
+      hospit_chirurgie_abdominale,
       adm_amines
     ) ~ "Oui",
-    c(hc_cathéter_majeur) ~ "1",
+    c(hc_catheter_majeur) ~ "1",
     c(hc_glucanes_max, hc_mannanes_max) ~ "Positif",
     demo_type_rea ~ "Medicale",
     demo_sexe ~ "Masculin"

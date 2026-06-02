@@ -1708,7 +1708,7 @@ df_base <- df_base %>%
     hospit_chirurgie_majeure,
     hospit_chirurgie_abdominale
   )
-#
+
 df_base <- df_base |>
   arrange(iep, groupehc) |>
   group_by(iep, groupehc) |>

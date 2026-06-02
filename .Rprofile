@@ -1,4 +1,4 @@
-RhpcBLASctl::blas_set_num_threads(20)
+RhpcBLASctl::blas_set_num_threads(10)
 conflicted::conflicts_prefer(
   dplyr::filter,
   dplyr::rename,
@@ -8,7 +8,7 @@ conflicted::conflicts_prefer(
   tidycmprsk::cuminc,
   .quiet = TRUE
 )
-.quiet = TRUE
+
 library(tidyverse)
 library(readxl)
 library(questionr)
@@ -39,6 +39,8 @@ library(ggsurvfit)
 library(tidycmprsk)
 library(survival)
 library(survminer)
+library(randomForest)
+library(rms)
 
 
 theme_gtsummary_language(language = "fr", decimal.mark = ",", big.mark = " ")
