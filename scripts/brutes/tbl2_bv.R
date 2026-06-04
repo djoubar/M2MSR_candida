@@ -152,7 +152,7 @@ tbl2_hc <-
       all_continuous() ~ "{median} ({min}, {max})",
       all_dichotomous() ~ "{n} ({p}%)"
     ),
-    include = all_of(starts_with("hc")),
+    include = c(all_of(starts_with("hc")), -hc_catheter_majeur, -hc_nacl),
     label = list(
       hc_delai = "Délai entre admission et prélèvements de l'hémoculture",
       hc_choc = "Etat de choc",
@@ -280,4 +280,9 @@ tbl2 <-
       "Données dans les 48 heures précédant la suspicion d'infection",
       "Données au cours de l'hospitalisation préalablement à l'hémoculture"
     )
+  ) |>
+  as_gt() |>
+  gt::tab_style(
+    style = gt::cell_text(weight = "bold"),
+    locations = gt::cells_row_groups(groups = everything())
   )

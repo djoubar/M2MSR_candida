@@ -35,15 +35,20 @@ na_percent <- df_base %>%
   ) %>%
   arrange(desc(pct_na)) # Trie par % de NA décroissant
 
+na_percent <- na_percent |>
+  subset(pct_na != 0)
+
 # 4. Histogramme horizontal
-ggplot(na_percent, aes(x = pct_na, y = reorder(variable, pct_na))) +
-  geom_col(fill = "steelblue", width = 0.7) +
+figNA <-
+  ggplot(na_percent, aes(x = pct_na, y = reorder(variable, pct_na))) +
+  geom_col(fill = "blue1", width = 0.8) +
   geom_vline(
     xintercept = 30, # Ligne à 30%
     linetype = "dashed", # Style pointillé
     color = "red", # Couleur rouge
-    linewidth = 1 # Épaisseur de la ligne
+    linewidth = 0.3 # Épaisseur de la ligne
   ) +
+  geom_text(aes(label = round(pct_na, 1)), hjust = -0.3, colour = "black") +
   labs(
     x = "Pourcentage de valeurs manquantes (%)",
     y = "Variable",

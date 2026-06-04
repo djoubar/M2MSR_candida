@@ -1,4 +1,4 @@
-RhpcBLASctl::blas_set_num_threads(10)
+# RhpcBLASctl::blas_set_num_threads(20)
 conflicted::conflicts_prefer(
   dplyr::filter,
   dplyr::rename,
@@ -6,6 +6,7 @@ conflicted::conflicts_prefer(
   dplyr::recode,
   gtsummary::select,
   tidycmprsk::cuminc,
+  readxl::read_xlsx,
   .quiet = TRUE
 )
 
@@ -41,6 +42,7 @@ library(survival)
 library(survminer)
 library(randomForest)
 library(rms)
+library(officer)
 
 
 theme_gtsummary_language(language = "fr", decimal.mark = ",", big.mark = " ")

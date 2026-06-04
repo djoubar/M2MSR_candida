@@ -1,0 +1,831 @@
+% Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  french,
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod,
+  justified]{scrartcl}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+\ifLuaTeX
+  \usepackage{luacolor}
+  \usepackage[soul]{lua-ul}
+\else
+  \usepackage{soul}
+\fi
+
+
+\ifLuaTeX
+\usepackage[bidi=basic,shorthands=off]{babel}
+\else
+\usepackage[bidi=default,shorthands=off]{babel}
+\fi
+\ifLuaTeX
+  \usepackage{selnolig} % disable illegal ligatures
+\fi
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
+
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{array}
+\usepackage{anyfontsize}
+\usepackage{multirow}
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table des matières}
+\else
+  \newcommand\contentsname{Table des matières}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{Liste des Figures}
+\else
+  \newcommand\listfigurename{Liste des Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{Liste des Tables}
+\else
+  \newcommand\listtablename{Liste des Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{Liste des Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Stratification du risque de candidémie en soins intensifs/réanimation},
+  pdfauthor={BAERT Julien},
+  pdflang={fr},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Stratification du risque de candidémie en soins
+intensifs/réanimation}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{Mémoire Master 2 Méthodologie et statistiques en recherche
+biomédicale}
+\author{BAERT Julien}
+\date{2026-06-04}
+\begin{document}
+\maketitle
+
+\renewcommand*\contentsname{Table des matières}
+{
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{\texorpdfstring{\ul{Introduction}}{Introduction}}\label{introduction}
+
+\emph{Candida} est une levure saprophyte du revêtement cutané et de la
+muqueuse oro-digestive chez l'être humain. Ces champignons peuvent
+provoquer des infections sanguines (candidémies) et des atteintes de
+tissus profonds (candidoses invasives), représentant la pathologie
+fongique nosocomiale la plus fréquente dans les pays occidentaux (1).
+Les candidémies sont particulièrement fréquentes chez les patients
+hospitalisés en réanimation, représentant 8\% des hémocultures positives
+et 15\% des infections nosocomiales dans ces services (2). Les patients
+de réanimation en présentent en effet de nombreux facteurs de risque :
+certains dispositifs invasifs tels que les cathéters veineux centraux,
+les cathéters de dialyse, ou la ventilation mécanique, qui sont des
+outils thérapeutiques employés quasi-exclusivement en réanimation ; la
+nutrition parentérale, administrée uniquement par ces cathéters profonds
+; les chirurgies abdominales lourdes ou les pancréatites aigues
+nécrosantes. Par ailleurs, une hospitalisation prolongée, associée à une
+exposition répétée aux antibiotiques, favorisent la colonisation à
+\emph{Candida}, première étape vers l'infection invasive (4,5).
+
+Les dernières décennies ont été marquées par une incidence croissante
+des candidoses invasives en réanimation, sans amélioration significative
+de leur pronostic (6,7). Leur pronostic est dépendant de la précocité
+d'initiation du traitement antifongique (8,9). Or le diagnostic des
+candidoses invasives repose sur les hémocultures, dont la sensibilité
+est imparfaite et le délai de pousse tardif, ce qui impacte négativement
+le pronostic des patients (10). Pour pallier ces limites, les cliniciens
+s'appuient sur les facteurs de risque et des biomarqueurs, tels que les
+β-D-glucanes, pour identifier les patients à risque et introduire
+précocement un traitement antifongique. Ces stratégies empiriques ou
+préemptives entraînent toutefois une surutilisation des antifongiques
+sans bénéfice démontré sur la survie des patients (11).
+
+Des scores prédictifs ont été développés à partir de critères cliniques
+et, dans certains cas, des variables biologiques, afin de dichotomiser
+les patients en populations haut risque/bas risque (12-14). Les
+recommandations actuelles portent plutôt sur une stratification des
+patients en plusieurs groupes de risque, avec plusieurs niveaux de
+risque (15,16). Devant les changements démographiques de patients
+hospitalisés en réanimation, des changements épidémiologiques de
+candidoses invasives (17) l'évolution des pratiques médicales, le
+développement de nouveaux outils diagnostiques tel que la PCR, nous
+proposons un nouveau score prédicitif afin de stratifier le risque de
+candidémie acquise en réanimation chez les patients de réanimation en 3
+catégories :
+
+\begin{itemize}
+\item
+  Une population à bas risque, permettant d'éliminer l'hypothèse d'une
+  candidémie
+\item
+  Une population à risque intermédiaire, auprès de laquelle les
+  marqueurs fongiques ou les nouvelles méthodes de biologie moléculaire
+  sont à proposer
+\item
+  Une population à haut risque (\ul{\textgreater{}} 20\%) chez il faut
+  instaurer un traitement antifongique empirique d'emblée.
+\end{itemize}
+
+\section{\texorpdfstring{\ul{Méthodes}}{Méthodes}}\label{muxe9thodes}
+
+\subsection{Source des données}\label{source-des-donnuxe9es}
+
+Il s'agit d'une étude observationnelle monocentrique rétrospective,
+utilisant les données des patients hospitalisés en soins intensifs et
+réanimation au CHU de Lille depuis 2013, contenues dans l'entrepôt de
+données de santé \emph{Include} du CHU de Lille. Celui-ci intègre
+différentes sources informatisées de données recueillies dans le cadre
+d'une prise en charge au CHU de Lille, notamment le système de gestion
+des données de réanimation ICCA (Philips), le système d'information de
+laboratoire MOLIS (CompuGroupMedical) et le logiciel CORA PMSI pour le
+codage des diagnostics et des actes CCAM.
+
+L'extraction des données a été réalisée par les ingénieures data
+d'\emph{Include} (Mme Charlotte GEAY, Mme Léa GRUMIAUX et Mme Marie
+Amélie RISPAL). La structuration des données, la comparaison des
+données, les analyses statistiques ont été réalisées sur le logiciel R,
+version 4.6.0.
+
+\subsection{Population}\label{population}
+
+La population éligible est la suivante :
+
+\begin{itemize}
+\item
+  Patients hospitalisés en réanimation ou en surveillance continue au
+  CHU de Lille (hôpitaux Huriez, Institut Cœur Poumon \& Salengro, hors
+  service de réanimation neurochirurgicale) depuis plus de 48 heures,
+\item
+  Ayant été prélevés d'au moins une hémoculture après 48 heures
+  d'hospitalisation en réanimation (plusieurs hémocultures peuvent être
+  prélevées chez un même patient durant son séjour en réanimation).
+\end{itemize}
+
+\subsection{Critère de jugement
+principal}\label{crituxe8re-de-jugement-principal}
+
+L'objectif de notre modélisation est la stratitification du risque de
+candidémie inaugurale acquise en soins intensifs/réanimation. Afin
+d'être au plus proche de la réflexion du clinicien, nous procédons à un
+regroupement des hémocultures par épisode de suspicion d'infection. En
+effet, lors d'une suspicion d'infection, plusieurs hémocultures sont
+prélevées à des temporalités proches, afin d'identifier au mieux l'agent
+infectieux responsable \& un site d'infection s'il en existe (exemple :
+infections de cathéters). Les hémocultures sont donc regroupées jusqu'à
+ce que la dernière hémoculture prélevée pour un même patient soit
+séparée d'un délai strictement supérieur à 24 heures de la prochaine
+hémoculture. Une fois les hémocultures regroupées, si l'une des
+hémocultures d'un groupe était positive à \emph{Candida}, nous
+considérions toutes les hémocultures de ce groupe comme positives à
+\emph{Candida}. Enfin, seules les données de la première hémoculture du
+groupe étaient gardées, afin de placer notre modélisation à la phase la
+plus initiale de l'épisode de suspicion d'infection.
+
+L'objectif étant d'identifier une candidémie inaugurale, toutes les
+hémocultures suivants une hémoculture positive à \emph{Candida} sont
+supprimées.
+
+La méthode de regroupement est résumée dans la figure
+Figure~\ref{fig-regroupement}.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=4.48in,height=\textheight,keepaspectratio]{figures/regroupement.png}
+
+}
+
+\caption{\label{fig-regroupement}Regroupement des hémocultures par
+épisode de suspicion d'infection}
+
+\end{figure}%
+
+\subsection{Variables et feature
+Extraction}\label{variables-et-feature-extraction}
+
+Les variables candidates pour la modélisation étaient identifiées en
+fonction de facteurs de risques identifiés dans la littérature (18). Les
+données démographiques sont récoltées à l'admission et considérées comme
+inchangées au décours. Ces données portaient sur le lieu
+d'hospitalisation, l'âge à l'admission, les antécédents de maladie
+hématologique maligne, de transplantation d'organe solide, de diabète,
+de pancréatite aigue, et de tumeurs d'organes solides.
+
+Les données cliniques et biologiques reflétants l'état à l'admission du
+patient du patient sont extraites dans les 24 heures suivant l'horaire
+d'admission en soins intensifs, ainsi que dans les 24 heures précédant
+la réalisation de l'hémoculture : score IGS2, score SOFA, poids,
+températures minimale et maximale, diurèse totale et normalisée,
+exposition à des amines (adrénaline, noradrénaline, terlipressine,
+dobutamine), la présence d'une ventilation invasive, la présence d'une
+épuration extra-rénale, ainsi que la présence d'un remplissage
+vasculaire. Les valeurs maximales de créatinémie, lactatémie et urémie
+étaient récoltées ; les valeurs minimales de leucocytémie et de rapport
+PaO2/FiO2. La présence d'un état de choc était définie par la présence
+d'amines, d'une lactatémie \textgreater{} 2 mmol/L ou d'un score SOFA
+cardiovasculaire \textgreater\{.underline\} à 3.
+
+Afin de quantifier les expositions au cours de l'hospitalisation en
+réanimation, la présence de fibroscopie(s) digestive(s), de chirurgie(s)
+abdominale(s), de chirurgie(s) majeures, les durées de ventilation
+mécanique invasive, de nutrition parentérale, les durées de présence de
+cathéters (artériels, veineux centraux, de dialyse, ou d'ECMO), la durée
+d'exposition aux antibiotiques, aux immunosuppresseurs ou aux
+corticoïdes, et le nombre de culots globulaires, plaquettaires \& poches
+de plasma étaient également récoltées. Les durées de neutrophilie
+(définie comme \textgreater{} 7 G/L), neutropénie (définie comme
+\textless{} 0,5 G/L) et de lymphopénie (définie comme lymphocytes
+\textless{} 0.1 G/L) étaient identifiées.
+
+\subsection{Analyses statistiques}\label{analyses-statistiques}
+
+Les variables catégorielles sont décrites en effectifs \& pourcentage.
+Les variables continues sont présentées par médiane, minimale et
+maximale. Une description démographique \& univariée est réalisée dans
+un premier temps. Sont réalisées dans un second temps des analyses
+bivariées afin de de décrire le lien entre la présence d'une candidémie
+\& les variables extraites. Les variables pertinentes cliniquement,
+constantes avec la littérature, ou en faveur d'un sur-risque de
+candidémie lors de l'analyse bivariée ont été incluses dans une analyse
+multivariée. L'analyse multivariée est réalisée via régression
+logistique mixte avec effet aléatoire via le patient. La modélisation
+finale était évaluée par évaluation de l'aire sous la courbe ROC
+(Receiving Operation Characteristic) \& par courbe de calibration.
+
+Tous les tests statistiques étaient bilatéraux avec un niveau de
+significativité fixé à p \textless{} 0.05. Les variables catégorielles
+sont décrites en effectifs \& pourcentage. Les variables continues sont
+présentées par médiane, minimale et maximale. \#\#\# Données manquantes
+
+Après extraction, certaines données n'ont pu être retrouvées, faute
+d'analyse ou de réalisation de l'examen. Un tableau récapitulatif des
+données manquantes est présenté ci-dessous. Des imputations multiples
+sont réalisées pour les données manquantes considérées \emph{Missing at
+Random.}
+
+\subsection{Cadre réglementaire}\label{cadre-ruxe9glementaire}
+
+La conformité au Règlement Général sur la Protection des Données (RGPD)
+du traitement de ces données par le CHU de Lille sur le fondement de
+l'intérêt public à des fins de recherche a été validée par la Commission
+Nationale de l'Informatique et des Libertés (CNIL) (Délibération
+n°2019-103). Les responsables d'Include ont pris toutes les mesures pour
+mener les futurs projets de recherche conformément à la loi française et
+européenne.
+
+\section{\texorpdfstring{\ul{Résultats}}{Résultats}}\label{ruxe9sultats}
+
+\subsection{Caractéristiques de la
+population}\label{caractuxe9ristiques-de-la-population}
+
+Après extraction des hémocultures de l'entrepôt de données de santé,
+nous procédons à une analyse exploratoire des données. Nous identifions
+donc \textbf{104 620} hémocultures, avec \textbf{9813 séjours}, chez
+\textbf{9714} individus (@fig\_flowchart). A noter qu'en moyenne, chaque
+individu se voyait prélever \ul{2 hémocultures par séjour}.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=2.2in,height=\textheight,keepaspectratio]{figures/flow_chart.png}
+
+}
+
+\caption{\label{fig-flowchart}Flow chart}
+
+\end{figure}%
+
+\subsection{Description de la
+population}\label{description-de-la-population}
+
+Dans notre population d'étude, les patients étaient majoritairement de
+sexe masculin (66\%), et d'âge médian de 61 ans. 4.7\% présentaient des
+antécédents de maladie hématologique maligne, 26\% de diabète, et 18\%
+de tumeurs solides. A l'admission, 84\% présentaient un état de choc et
+67 \% étaient ventilés de manière invasive. L'ensemble de la description
+est représentée dans le @tbl\_demographique.
+
+\begin{table}
+\caption{Description démographique de la population}\tabularnewline
+
+\fontsize{12.0pt}{14.0pt}\selectfont
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lc}
+\toprule
+\textbf{Caractéristique} & \textbf{N = 9 714}\textsuperscript{\textit{1}} \\ 
+\midrule\addlinespace[2.5pt]
+{\bfseries Age} & 61 (12, 97) \\ 
+{\bfseries Sexe masculin} & 6 443 (66\%) \\ 
+{\bfseries Antécédent de maladie hématologique maligne} & 455 (4,7\%) \\ 
+{\bfseries Antécédent de diabète} & 2 514 (26\%) \\ 
+{\bfseries Antécédent de pancréatite aigue} & 162 (1,7\%) \\ 
+{\bfseries Antécédent de tumeur solide} & 1 740 (18\%) \\ 
+{\bfseries Hospitalisation en réanimation médicale} & 7 312 (75\%) \\ 
+{\bfseries IGS 2 à l'admission} & 46 (1, 135) \\ 
+{\bfseries Admission pour pancréatite aigue} & 58 (0,6\%) \\ 
+{\bfseries Score SOFA à l'admission} & 10,0 (0,0, 21,0) \\ 
+{\bfseries Choc à l'admission} & 6 443 (84\%) \\ 
+{\bfseries Poids à l'admission} & 78 (0, 482) \\ 
+{\bfseries Température minimale (en °C) à l'admission} & 36,10 (18,20, 39,40) \\ 
+{\bfseries Température maximale (en °C) à l'admission} & 37,90 (33,10, 42,60) \\ 
+{\bfseries Diurèse normalisée} & 12 (0, 269) \\ 
+{\bfseries Créatinémie maximale (en mg/L) à l'admission} & 12 (0, 251) \\ 
+{\bfseries PaO2/FiO2 minimal à l'admission} & 182 (14, 648) \\ 
+{\bfseries Lactatémie maximale (en mmol/L) à l'admission} & 2,10 (0,30, 30,00) \\ 
+{\bfseries adm\_leuco\_min} & 11 (0, 692) \\ 
+{\bfseries Neutrophiles (en G/L) à l'admission} & 11 (0, 159) \\ 
+{\bfseries Lymphocytes (en G/L) à l'admission} & 0,70 (0,00, 240,70) \\ 
+{\bfseries Ventilation invasive à l'admission} & 6 550 (67\%) \\ 
+{\bfseries Amines à l'admission} & 5 352 (55\%) \\ 
+{\bfseries Délai entre admission \& hémoculture} & 3,5 days (2,0 days, 94,9 days) \\ 
+{\bfseries Décès en réanimation} & 2 746 (28\%) \\ 
+\bottomrule
+\end{tabular*}
+\begin{minipage}{\linewidth}
+\vspace{.05em}
+\textsuperscript{\textit{1}}Médiane (Min, Max); n (\%)\\
+\end{minipage}
+\end{table}
+
+\subsection{Modélisation}\label{moduxe9lisation}
+
+En analyse univariée, xxx facteurs étaient associés au risque de
+candidémie. Les facteurs xxx étaient au contraire associés négativement.
+Les variables sélectionnées étaient ensuite analysée en régression
+multivariée. Les facteurs xxx .
+
+L'AUC étaient de xxx ; Se Sp VPP VPN. Courbe de calibration.
+
+\subsection{Score et prédiction}\label{score-et-pruxe9diction}
+
+AJOUTER la suite xxxxxx
+
+\section{\texorpdfstring{\ul{Discussion}}{Discussion}}\label{discussion}
+
+Dans cette étude monocentrique rétrospective, xxx étaient associés à un
+surrisque de candidémie acquise en réanimation. Un nouveau score
+prédictif était réalisé, avec des performances diagnostiques
+satisfaisantes, permettant de stratifier la population décrite en 3
+catégories de risque : une population à très faible risque prédit,
+permettant d'éliminer presque formellement le risque de candidémie, une
+population à risque modéré, pour laquelle des examens spécifiques (PCR,
+marqueurs fongiques) peuvent être indiqués, et une population à haut
+risque, pour laquelle il faudrait probablement introduire un traitement
+antifongique empirique.
+
+La population étudiée est fortement représentative, avec une variété de
+patients hospitalisés dans différents secteurs de réanimation. En effet,
+notre modélisation intéresse à la fois les secteurs médicaux,
+chirurgicaux, les patients immunodéprimés ou non ; ces facteurs étant
+largement employés pour stratifier le risque de candidémie. Notre étude
+est également la plus grande de part sa taille (citer les autres études
+qui sont toutes plus petites). Ainsi, notre étude, malgré son caractère
+monocentrique, peut probablement être généralisée à une large population
+; et probablement être appliquée à de multiples services de soins
+intensifs \& de réanimation. La validité externe de notre score
+prédictif reste à évaluer de façon prospective, à échelle
+multicentrique.
+
+Une autre force de notre étude est sa cohérence avec la littérature
+
+Notre étude est toutefois limitée par son caractère monocentrique, qui
+malgré un recrutement largerte d'informations entre les deux -
+Monocentrique - Complexité de l'équation \textgreater\textgreater{}
+implémenter dans logiciels au lit du malade ?
+
+\section{\texorpdfstring{\ul{Bibliographie}}{Bibliographie}}\label{bibliographie}
+
+1.~~~~~ Arendrup MC, Sulim S, Holm A, Nielsen L, Nielsen SD, Knudsen JD,
+et al.~Diagnostic Issues, Clinical Characteristics, and Outcomes for
+Patients with Fungemia.~J Clin Microbiol. sept~2011;49(9):3300‑8.~
+
+2.~~~~~ Paiva JA, Pereira JM,~Tabah~A, Mikstacki A, De Carvalho
+FB,~Koulenti~D, et al.~Characteristics and risk factors for 28-day
+mortality of hospital~acquired~fungemias~in ICUs: data from the EUROBACT
+study. Crit Care. 9 mars 2016;20(1):53.~
+
+3.~~~~~ Arendrup MC. Epidemiology of invasive candidiasis: Current
+Opinion in Critical Care. oct 2010;16(5):445‑52.~
+
+4.~~~~~ Vincent JL. International Study of the Prevalence and Outcomes
+of Infection in Intensive Care Units.~JAMA. 2~déc~2009;302(21):2323.~
+
+5.~~~~~ The French Mycosis Study
+Group,~Lortholary~O,~Renaudat~C,~Sitbon~K, Madec Y,~Denoeud-Ndam L, et
+al.~Worrisome~trends in incidence and mortality of candidemia in
+intensive care units (Paris area, 2002--2010).~Intensive Care Med. sept
+2014;40(9):1303‑12~
+
+6.~~~~~ Lamoth~F, Lockhart SR, Berkow EL, Calandra T. Changes in the
+epidemiological landscape of invasive candidiasis. Journal of
+Antimicrobial Chemotherapy. 1~janv~2018;73(suppl\_1):i4‑13.~
+
+7.~~~~~ Cleveland AA, Farley MM, Harrison LH, Stein B, Hollick R,
+Lockhart SR, et al.~Changes in Incidence and Antifungal Drug Resistance
+in Candidemia: Results~From~Population-Based Laboratory Surveillance in
+Atlanta and Baltimore, 2008-2011. Clinical Infectious Diseases.
+15~nov~2012;55(10):1352‑61.~
+
+8.~~~~~ Kollef~M, Micek S, Hampton N, Doherty JA, Kumar A. Septic Shock
+Attributed to Candida Infection: Importance of Empiric Therapy and
+Source Control. Clinical Infectious Diseases.
+15~juin~2012;54(12):1739‑46.~
+
+9.~~~~~ Guinea J. Global trends in the distribution of Candida species
+causing candidemia. Clinical Microbiology and
+Infection.~juin~2014;20:510.~
+
+10.~ Garey KW, Rege M, Pai MP, Mingo DE, Suda KJ, Turpin RS, et al.~Time
+to Initiation of Fluconazole Therapy Impacts Mortality in Patients with
+Candidemia: A Multi-Institutional Study.~
+
+11.~ Timsit JF, Azoulay E, Schwebel C, Charles PE, Cornet M, Souweine B,
+et al.~Empirical Micafungin Treatment and Survival Without Invasive
+Fungal Infection in Adults With ICU-Acquired
+Sepsis,~\emph{Candida}~Colonization, and Multiple Organ Failure: The
+EMPIRICUS Randomized Clinical Trial. JAMA. 18 oct 2016;316(15):1555.
+
+\textbf{\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_}
+
+\section{\texorpdfstring{\ul{Supplementary
+Data}}{Supplementary Data}}\label{supplementary-data}
+
+\subsection{Données manquantes}\label{donnuxe9es-manquantes}
+
+Le nombre de données manquantes à la phase à l'issue de l'extraction
+sont détaillées dans @fig\_NA . Seules les variables pour lesquelles des
+données manquantes étaient présentes sont représentées.
+
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{M2MSR_files/figure-pdf/fig_NA-1.pdf}}
+
+}
+
+\caption{Données manquantes}
+
+\end{figure}%
+
+\textbf{\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_}
+
+\subsection{Comparaisons bivariées}\label{comparaisons-bivariuxe9es}
+
+Nous réalisons une comparaison bi-variées, avec correction du risque
+d'inflation du risque alpha via la méthode de \emph{false detection rate
+(FDR)}.
+
+\begin{table}
+\caption{Analyse bivariée de la survenue d'une candidémie}\tabularnewline
+
+\fontsize{12.0pt}{14.0pt}\selectfont
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lcccc}
+\toprule
+\textbf{Caractéristique} & \textbf{Négative}  N = 29 577\textsuperscript{\textit{1}} & \textbf{Positive}  N = 376\textsuperscript{\textit{1}} & \textbf{p-valeur}\textsuperscript{\textit{2}} & \textbf{q-valeur}\textsuperscript{\textit{3}} \\ 
+\midrule\addlinespace[2.5pt]
+\multicolumn{5}{l}{{\bfseries Données démographiques}} \\[2.5pt] 
+\midrule\addlinespace[2.5pt]
+Hospitalisation en réanimation médicale & 21 341 (72\%) & 290 (77\%) & 0,032 & 0,15 \\ 
+Age & 60 (12, 97) & 59 (16, 88) & 0,7 & 0,7 \\ 
+Sexe & 20 189 (68\%) & 253 (67\%) & 0,7 & 0,7 \\ 
+Antécédent de maladie hématologique maligne & 1 310 (4,5\%) & 25 (6,7\%) & 0,037 & 0,15 \\ 
+Antécédent de diabète & 7 598 (26\%) & 103 (28\%) & 0,4 & 0,6 \\ 
+Antécédent de pancréatite aigue & 492 (1,7\%) & 10 (2,7\%) & 0,13 & 0,4 \\ 
+Antécédent de tumeur solide & 4 670 (16\%) & 67 (18\%) & 0,3 & 0,6 \\ 
+Antécédent de transplantation d'organe solide & 1 647 (5,6\%) & 17 (4,5\%) & 0,4 & 0,6 \\ 
+\midrule\addlinespace[2.5pt]
+\multicolumn{5}{l}{{\bfseries Données à l'admission}} \\[2.5pt] 
+\midrule\addlinespace[2.5pt]
+Etat de choc & 20 343 (86\%) & 283 (90\%) & 0,018 & 0,030 \\ 
+IGS 2 & 47 (0, 135) & 52 (8, 135) & <0,001 & <0,001 \\ 
+Pancréatite aigue & 295 (1,1\%) & 2 (0,6\%) & 0,6 & 0,6 \\ 
+Poids & 80 (0, 482) & 80 (0, 250) & 0,5 & 0,5 \\ 
+Température minimale (en °C) & 36,10 (18,20, 39,40) & 36,10 (28,80, 39,00) & 0,2 & 0,3 \\ 
+Température maximale (en °C) & 37,90 (33,10, 42,60) & 37,85 (34,10, 40,70) & 0,2 & 0,3 \\ 
+Diurèse totale & 900 (0, 12 600) & 700 (0, 5 005) & <0,001 & <0,001 \\ 
+Diurèse normalisée & 11 (0, 269) & 9 (0, 62) & <0,001 & <0,001 \\ 
+Créatinémie maximale (en mg/L) & 12 (0, 251) & 16 (1, 178) & <0,001 & <0,001 \\ 
+Urée maximale (en g/L) & 0,56 (0,03, 7,91) & 0,70 (0,03, 4,20) & <0,001 & <0,001 \\ 
+PaO2/FiO2 minimal & 164 (14, 648) & 142 (26, 543) & 0,003 & 0,006 \\ 
+Lactatémie maximale (en mmol/L) & 2,30 (0,30, 30,00) & 2,80 (0,50, 23,00) & <0,001 & <0,001 \\ 
+Lactatémie moyenne (en mmol/L)  & 1,75 (0,24, 22,00) & 2,15 (0,42, 16,60) & <0,001 & <0,001 \\ 
+Leucocytes (en G/L) & 11 (0, 692) & 11 (0, 389) & 0,5 & 0,6 \\ 
+Neutrophiles (en G/L) & 10 (0, 159) & 10 (0, 70) & 0,8 & 0,8 \\ 
+Lymphocytes (en G/L) & 0,70 (0,00, 240,70) & 0,60 (0,00, 191,20) & 0,034 & 0,049 \\ 
+Ventilation mécanique invasive & 21 555 (73\%) & 283 (75\%) & 0,3 & 0,4 \\ 
+Dialyse & 2 903 (9,8\%) & 50 (13\%) & 0,024 & 0,037 \\ 
+Culot Globulaires & 2 997 (10\%) & 68 (18\%) & <0,001 & <0,001 \\ 
+Plasma frais congelé & 732 (2,5\%) & 22 (5,9\%) & <0,001 & <0,001 \\ 
+Culot plaquettaire & 1 371 (4,6\%) & 42 (11\%) & <0,001 & <0,001 \\ 
+Transfusion & 3 816 (13\%) & 94 (25\%) & <0,001 & <0,001 \\ 
+Amines  & 17 543 (59\%) & 249 (66\%) & 0,007 & 0,012 \\ 
+\midrule\addlinespace[2.5pt]
+\multicolumn{5}{l}{{\bfseries Données dans les 48 heures précédant la suspicion d'infection}} \\[2.5pt] 
+\midrule\addlinespace[2.5pt]
+Délai entre admission et prélèvements de l'hémoculture & 9 days (2 days, 520 days) & 10 days (2 days, 293 days) & 0,5 & 0,5 \\ 
+Etat de choc & 11 775 (60\%) & 218 (76\%) & <0,001 & <0,001 \\ 
+Température minimale  & 36,70 (15,10, 40,00) & 36,60 (32,50, 39,00) & 0,016 & 0,020 \\ 
+Température maximale  & 38,30 (33,80, 42,20) & 38,20 (35,40, 40,30) & 0,4 & 0,4 \\ 
+Diurèse totale  & 1 100 (0, 19 300) & 650 (0, 7 200) & <0,001 & <0,001 \\ 
+Diurèse normalisée  & 14 (0, 243) & 9 (0, 67) & <0,001 & <0,001 \\ 
+PaO2/FiO2  & 200 (16, 648) & 178 (31, 524) & 0,048 & 0,056 \\ 
+Créatinémie  & 9 (1, 148) & 12 (1, 92) & <0,001 & <0,001 \\ 
+Urémie  & 0,57 (0,02, 4,50) & 0,71 (0,06, 4,49) & <0,001 & <0,001 \\ 
+Lactatémie maximale & 1,40 (0,10, 27,00) & 1,80 (0,50, 20,00) & <0,001 & <0,001 \\ 
+Lactatémie moyenne  & 1,23 (0,10, 20,00) & 1,60 (0,47, 15,83) & <0,001 & <0,001 \\ 
+Neutropénie min  & 10 (0, 81) & 12 (0, 50) & 0,010 & 0,012 \\ 
+Leucocytes (en G/L) & 12 (0, 580) & 12 (0, 125) & 0,7 & 0,7 \\ 
+Lymphopénie  & 0,90 (0,00, 465,30) & 0,70 (0,00, 3,80) & <0,001 & <0,001 \\ 
+Glucanes positifs & 6 623 (39\%) & 143 (57\%) & <0,001 & <0,001 \\ 
+Mannanes positifs & 3 749 (23\%) & 104 (44\%) & <0,001 & <0,001 \\ 
+Ventilation invasive  & 19 850 (67\%) & 295 (78\%) & <0,001 & <0,001 \\ 
+Dialyse  & 4 274 (14\%) & 100 (27\%) & <0,001 & <0,001 \\ 
+KTA  & 18 227 (62\%) & 266 (71\%) & <0,001 & <0,001 \\ 
+VVC  & 22 787 (77\%) & 326 (87\%) & <0,001 & <0,001 \\ 
+Cathéter de dialyse  & 5 864 (20\%) & 119 (32\%) & <0,001 & <0,001 \\ 
+ECMO  & 1 563 (5,3\%) & 24 (6,4\%) & 0,3 & 0,4 \\ 
+CGR  & 2 237 (7,6\%) & 64 (17\%) & <0,001 & <0,001 \\ 
+PFC  & 147 (0,5\%) & 7 (1,9\%) & 0,003 & 0,005 \\ 
+CP  & 1 049 (3,5\%) & 47 (13\%) & <0,001 & <0,001 \\ 
+Transfusion  & 2 855 (9,7\%) & 84 (22\%) & <0,001 & <0,001 \\ 
+Amines  & 9 802 (33\%) & 177 (47\%) & <0,001 & <0,001 \\ 
+\midrule\addlinespace[2.5pt]
+\multicolumn{5}{l}{{\bfseries Données au cours de l'hospitalisation préalablement à l'hémoculture}} \\[2.5pt] 
+\midrule\addlinespace[2.5pt]
+Durée de ventilation invasive  & 130 (0, 6 205) & 158 (0, 6 245) & 0,030 & 0,045 \\ 
+Durée de nutrition parentérale  & 0,0 (0,0, 161,0) & 1,5 (0,0, 77,0) & <0,001 & <0,001 \\ 
+Durée de VVC  & 9 (0, 235) & 10 (0, 218) & 0,030 & 0,045 \\ 
+Durée de KTA  & 8 (0, 178) & 9 (0, 93) & 0,026 & 0,045 \\ 
+Durée de KTD  & 0 (0, 227) & 0 (0, 144) & <0,001 & <0,001 \\ 
+Durée ECMO  & 0,00 (0,00, 88,00) & 0,00 (0,00, 90,00) & 0,14 & 0,2 \\ 
+Durée ATBT  & 8 (0, 244) & 8 (0, 151) & 0,021 & 0,043 \\ 
+Durée CTC  & 0 (0, 267) & 2 (0, 270) & <0,001 & <0,001 \\ 
+Durée immunosuppression  & 0,00 (0,00, 163,00) & 0,00 (0,00, 35,00) & 0,5 & 0,5 \\ 
+Durée neutropénie  & 0,00 (0,00, 23,00) & 0,00 (0,00, 16,00) & 0,2 & 0,3 \\ 
+Durée neutrophilie  & 3,0 (0,0, 69,0) & 4,0 (0,0, 69,0) & 0,003 & 0,007 \\ 
+Durée lymphopénie  & 0,00 (0,00, 59,00) & 0,00 (0,00, 14,00) & <0,001 & <0,001 \\ 
+Nombres CGR avant l'hémoculture & 1 (0, 132) & 3 (0, 85) & <0,001 & <0,001 \\ 
+Nombres PFC avant l'hémoculture & 0,00 (0,00, 326,00) & 0,00 (0,00, 80,00) & <0,001 & <0,001 \\ 
+Nombres CP avant l'hémoculture & 0,00 (0,00, 104,00) & 0,00 (0,00, 48,00) & <0,001 & <0,001 \\ 
+Fibroscopie pendant l'hospitalisation & 5 291 (18\%) & 78 (21\%) & 0,2 & 0,2 \\ 
+Chirurgie majeure pendant l'hospitalisation & 8 599 (29\%) & 120 (32\%) & 0,2 & 0,3 \\ 
+Chirurgie abdominale pendant l'hospitalisation & 5 394 (18\%) & 68 (18\%) & >0,9 & >0,9 \\ 
+\bottomrule
+\end{tabular*}
+\begin{minipage}{\linewidth}
+\vspace{.05em}
+\textsuperscript{\textit{1}}n (\%); Médiane (Min, Max)\\
+\textsuperscript{\textit{2}}test du khi-deux d'indépendance; test de Wilcoxon-Mann-Whitney\\
+\textsuperscript{\textit{3}}Correction du risque global d'erreur pour tests multiples\\
+\end{minipage}
+\end{table}
+
+\subsection{Modélisation stepwise à partir d'une imputation
+simple}\label{moduxe9lisation-stepwise-uxe0-partir-dune-imputation-simple}
+
+A titre exploratoire, des modélisations stepwise forward et backward ont
+été réalisées à partir d'un unique jeu imputé.
+
+\begin{figure}
+
+\begin{minipage}[t]{0.50\linewidth}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=6.66in,height=\textheight,keepaspectratio]{figures/FP_fwd.png}
+
+}
+
+\subcaption{Forrest Plot de la régression forward}
+
+\end{figure}%
+
+\end{minipage}%
+%
+\begin{minipage}[t]{0.50\linewidth}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=6.66in,height=\textheight,keepaspectratio]{figures/FP_bwd.png}
+
+}
+
+\subcaption{Forrest Plot de la régression backward}
+
+\end{figure}%
+
+\end{minipage}%
+\newline
+\begin{minipage}[t]{0.50\linewidth}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=6.66in,height=\textheight,keepaspectratio]{figures/ROC_fwd.png}
+
+}
+
+\subcaption{ROC curve de la régression forward}
+
+\end{figure}%
+
+\end{minipage}%
+%
+\begin{minipage}[t]{0.50\linewidth}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=6.66in,height=\textheight,keepaspectratio]{figures/ROC_bwd.png}
+
+}
+
+\subcaption{ROC curve de la régression backward}
+
+\end{figure}%
+
+\end{minipage}%
+\newline
+\begin{minipage}[t]{0.50\linewidth}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=3.2in,height=\textheight,keepaspectratio]{figures/CC_fwd.png}
+
+}
+
+\subcaption{Courbe de calibration de la régression forward}
+
+\end{figure}%
+
+\end{minipage}%
+%
+\begin{minipage}[t]{0.50\linewidth}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=3.2in,height=\textheight,keepaspectratio]{figures/CC_bwd.png}
+
+}
+
+\subcaption{Courbe de calibration de la régression backward}
+
+\end{figure}%
+
+\end{minipage}%
+\newline
+\begin{minipage}[t]{0.50\linewidth}
+Forrest plots, AUC \& Courbes de calibration des modélisations stepwise
+forward \& backward après imputation simple\end{minipage}%
+
+\end{figure}%
+
+\subsection{Code}\label{code}
+
+\href{https://github.com/djoubar/M2MSR_candida}{Voir le code sur GitHub}
+
+
+
+
+\end{document}

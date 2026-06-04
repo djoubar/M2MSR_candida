@@ -3,7 +3,33 @@ imp <- read_rds("donnees/df_impute.rds")
 fit <- with(
   imp,
   glmer(
-    resultat_candida_def ~ hospit_ctc_duree +
+    resultat_candida_def ~ demo_type_rea +
+      demo_atcd_hemato +
+      demo_atcd_diabete +
+      adm_igs2 +
+      adm_diurese_norm +
+      adm_lactates_max +
+      hc_delai +
+      hc_diurese_norm +
+      hc_pfio2_min +
+      hc_lactates_max +
+      hc_dialyse +
+      hc_vvc +
+      hc_ktd +
+      hc_transfu +
+      hospit_vi_duree +
+      hospit_parenterale_duree +
+      hospit_vvc_duree +
+      hospit_kta_duree +
+      hospit_ktd_duree +
+      hospit_atb_duree +
+      hospit_cgr +
+      hospit_pfc +
+      hospit_cp +
+      hospit_fibro +
+      hospit_chirurgie_majeure +
+      hospit_chirurgie_abdominale +
+      hospit_ctc_duree +
       (1 | iep),
     family = "binomial"
   )
@@ -11,7 +37,7 @@ fit <- with(
 # tidy_fit <- broom.mixed::tidy(fit, conf.int = TRUE)
 # pooled_results <- pool(tidy_fit)
 pooled_results <- pool(fit)
-# saveRDS(pooled_results, file = "mod_imp_meta.rds")
+saveRDS(pooled_results, file = "mod_imp_meta.rds")
 summary(pooled_results)
 # tbl_fit <- tbl_regression(
 #   imp,
@@ -62,84 +88,46 @@ ggplot(tidy_pooled, aes(x = OR, y = term)) +
 #===============================================================================
 #                                  AUC/ROC
 #===============================================================================
-auc_list <- with(
-  imp,
-  sapply(1:2, function(i) {
-    imp_data <- complete(imp, i)
-    fit_i <- glmer(
-      resultat_candida_def ~ hospit_ctc_duree + (1 | iep),
-      data = imp_data,
-      family = "binomial"
-    )
-    pred_probs <- predict(fit_i, type = "response")
-    auc(roc(imp_data$resultat_candida_def, pred_probs))
-  })
-)
-# Pooler manuellement (moyenne + IC)
+# ===== 1. AUC =====
+auc_list <- numeric(imp$m) # Initialise pour toutes les imputations
+
+for (i in 1:imp$m) {
+  # Boucle sur TOUTES les imputations (ex: 1:50)
+  imp_data <- complete(imp, i)
+  fit_i <- glmer(
+    resultat_candida_def ~ hospit_ctc_duree + (1 | iep),
+    data = imp_data,
+    family = "binomial"
+  )
+  pred_probs <- predict(fit_i, type = "response")
+  auc_list[i] <- auc(roc(imp_data$resultat_candida_def, pred_probs))
+}
+
 auc_pooled <- list(
   estimate = mean(auc_list),
   conf.int = quantile(auc_list, probs = c(0.025, 0.975))
 )
-# Affiche l'AUC poolée
-auc_pooled
 
-
-# 1. Fonction pour calculer la courbe ROC sur une imputation
-calc_roc <- function(data, fit) {
-  # Prédictions
-  pred_probs <- predict(fit, type = "response")
-  # Courbe ROC
-  roc_obj <- roc(data$resultat_candida_def, pred_probs)
-  # Extrait les points de la courbe (fpr = 1-specificity, tpr = sensitivity)
-  roc_df <- data.frame(
-    fpr = 1 - roc_obj$specificities, # False Positive Rate (x-axis)
-    tpr = roc_obj$sensitivities, # True Positive Rate (y-axis)
-    thresholds = roc_obj$thresholds
+# ===== 2. Courbe ROC =====
+roc_list <- lapply(1:imp$m, function(i) {
+  # Utilise imp$m pour toutes les imputations
+  imp_data <- complete(imp, i)
+  fit_i <- glmer(
+    resultat_candida_def ~ hospit_ctc_duree + (1 | iep),
+    data = imp_data,
+    family = "binomial"
   )
-  roc_df
-}
+  calc_roc(imp_data, fit_i)
+})
 
-# 2. Applique à chaque imputation
-roc_list <- with(
-  imp,
-  lapply(1:m, function(i) {
-    imp_data <- complete(imp, i)
-    fit_i <- glmer(
-      resultat_candida_def ~ hospit_ctc_duree + (1 | iep),
-      data = imp_data,
-      family = "binomial"
-    )
-    calc_roc(imp_data, fit_i)
-  })
-)
-
-# 3. Pooler les courbes ROC (moyenne des tpr pour chaque fpr)
-# Crée un data frame avec tous les points
+# Pooler les courbes ROC
 all_roc_points <- bind_rows(roc_list, .id = "imputation")
-
-# Calculer la moyenne des tpr pour chaque fpr (arrondi à 3 décimales pour le pooling)
 roc_pooled <- all_roc_points %>%
-  group_by(fpr = round(fpr, 3)) %>% # Regroupe par fpr arrondi
-  summarise(
-    tpr = mean(tpr), # Moyenne des tpr
-    .groups = "drop"
-  ) %>%
-  arrange(fpr) # Trie par fpr croissant
+  group_by(fpr = round(fpr, 3)) %>%
+  summarise(tpr = mean(tpr), .groups = "drop") %>%
+  arrange(fpr)
 
-# 4. Trace la courbe ROC poolée
-ggplot(roc_pooled, aes(x = fpr, y = tpr)) +
-  geom_line(color = "blue", size = 1) +
-  geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "red") + # Ligne AUC = 0.5
-  labs(
-    x = "Taux de faux positifs (1 - Spécificité)",
-    y = "Taux de vrais positifs (Sensibilité)",
-    title = "Courbe ROC poolée - Modèle mixte"
-  ) +
-  theme_minimal() +
-  theme(aspect.ratio = 1) # Carré pour une meilleure visualisation
-
-# 5. Ajoute l'AUC poolée (déjà calculée précédemment)
-auc_value <- summary(auc_pooled)$estimate
+# ===== 3. Trace la courbe ROC avec l'AUC =====
 ggplot(roc_pooled, aes(x = fpr, y = tpr)) +
   geom_line(color = "blue", size = 1) +
   geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "red") +
@@ -147,7 +135,7 @@ ggplot(roc_pooled, aes(x = fpr, y = tpr)) +
     "text",
     x = 0.95,
     y = 0.05,
-    label = paste0("AUC = ", round(auc_value, 3)),
+    label = paste0("AUC = ", round(auc_pooled$estimate, 3)), # ✅ Corrigé ici
     color = "blue",
     size = 4
   ) +

@@ -65,7 +65,7 @@ df_stepwise <- complete(imp, 1) %>%
     hc_amines = last(hc_amines),
 
     # Continues : pire valeur (max/min) ou moyenne
-    hc_delai = last(hc_delai), # Délai jusqu'à la 1ère hémoculture
+    hc_delai = as.numeric(last(hc_delai)), # Délai jusqu'à la 1ère hémoculture
     hc_temp_min = last(hc_temp_min),
     hc_temp_max = last(hc_temp_max),
     hc_diurese_norm = last(hc_diurese_norm),
@@ -244,6 +244,7 @@ fp_bwd <- ggplot(tidy_model_bwd, aes(x = OR, y = term)) +
   ) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 8, hjust = 0))
+
 #==============================================================================
 #                          PREDICTIONS / ROC / CC
 #==============================================================================
@@ -257,8 +258,8 @@ df_stepwise$risque <- ifelse(
   ifelse(df_stepwise$score <= 0.15, "Modéré", "Élevé")
 )
 
-table(df_stepwise$risque)
-tapply(df_stepwise$score, df_stepwise$risque, mean) # Moyennes par groupe
+# table(df_stepwise$risque)
+# tapply(df_stepwise$score, df_stepwise$risque, mean) # Moyennes par groupe
 
 roc_obj_fwd <- roc(response = df_stepwise$resultat_candida_def, predictor = df_stepwise$score)
 
@@ -268,7 +269,7 @@ roc_fwd <- ggroc(roc_obj_fwd, colour = "black", size = 0.5) +
 
 pred_probs <- predict(forward, type = "response")
 
-dd <- datadist(your_data)
+dd <- datadist(df_stepwise)
 options(datadist = "dd")
 
 fit_lrm <- lrm(
@@ -305,16 +306,8 @@ fit_lrm <- lrm(
 )
 
 # 3. Calcule la calibration
-cal <- calibrate(fit_lrm, method = "boot", B = 100)
-plot(cal, las = 1)
-
-# 4. Version ggplot2
-cal_df <- as.data.frame(cal)
-ggplot(cal_df, aes(x = predicted, y = observed)) +
-  geom_line(color = "blue", size = 1) +
-  geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "red") +
-  labs(x = "Probabilité prédite", y = "Probabilité observée") +
-  theme_minimal()
+cal_fwd <- calibrate(fit_lrm, method = "boot", b = 200)
+cc_fwd <- plot(cal)
 
 
 # BWD
@@ -326,8 +319,8 @@ df_stepwise$risque <- ifelse(
   ifelse(df_stepwise$score <= 0.15, "Modéré", "Élevé")
 )
 
-table(df_stepwise$risque)
-tapply(df_stepwise$score, df_stepwise$risque, mean) # Moyennes par groupe
+# table(df_stepwise$risque)
+# tapply(df_stepwise$score, df_stepwise$risque, mean) # Moyennes par groupe
 
 roc_obj_bwd <- roc(response = df_stepwise$resultat_candida_def, predictor = df_stepwise$score)
 
@@ -337,12 +330,12 @@ roc_bwd <- ggroc(roc_obj_bwd, colour = "black", size = 0.5) +
 
 pred_probs <- predict(backward, type = "response")
 
-dd <- datadist(your_data)
+dd <- datadist(df_stepwise)
 options(datadist = "dd")
 
 fit_lrm <- lrm(
   resultat_candida_def ~
-    temps +
+    # temps +
     demo_type_rea +
     demo_age +
     adm_temp_min +
@@ -378,13 +371,12 @@ fit_lrm <- lrm(
 )
 
 # 3. Calcule la calibration
-cal <- calibrate(fit_lrm, method = "boot", B = 100)
-# plot(cal, las = 1)
+cal_bwd <- calibrate(fit_lrm, method = "boot", B = 100)
+cc_bwd <- plot(cal)
 
-# 4. Version ggplot2
-cal_df <- as.data.frame(cal)
-ggplot(cal_df, aes(x = predicted, y = observed)) +
-  geom_line(color = "blue", size = 1) +
-  geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "red") +
-  labs(x = "Probabilité prédite", y = "Probabilité observée") +
-  theme_minimal()
+ggsave(filename = "figures/FP_fwd.png", plot = fp_fwd)
+ggsave(filename = "figures/FP_bwd.png", plot = fp_bwd)
+ggsave(filename = "figures/ROC_fwd.png", plot = roc_fwd)
+ggsave(filename = "figures/ROC_bwd.png", plot = roc_bwd)
+save(path = "figures/CC_fwd.png", plot = cc_fwd)
+save(filename = "figures/CC_bwd.png", plot = cc_bwd)

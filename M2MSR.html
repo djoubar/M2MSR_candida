@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
 
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<head>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta charset="utf-8" />
+<meta name="generator" content="quarto-1.9.38" />
 
-<meta name="author" content="BAERT Julien">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 
-<title>M2MSR</title>
+<meta name="author" content="BAERT Julien" />
+
+<title>Stratification du risque de candidémie en soins intensifs/réanimation</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,51 +28,50 @@ ul.task-list li input[type="checkbox"] {
 }
 </style>
 
-
-<script src="M2MSR_files/libs/clipboard/clipboard.min.js"></script>
-<script src="M2MSR_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="M2MSR_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="M2MSR_files/libs/quarto-html/popper.min.js"></script>
-<script src="M2MSR_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="M2MSR_files/libs/quarto-html/anchor.min.js"></script>
-<link href="M2MSR_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="M2MSR_files/libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="M2MSR_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="M2MSR_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="M2MSR_files/libs/bootstrap/bootstrap-3a99ac1af619e988b020f8c332c47ec0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<script src="M2MSR_files/libs/quarto-contrib/glightbox/glightbox.min.js"></script>
-<link href="M2MSR_files/libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="M2MSR_files/libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<!-- htmldependencies:E3FAD763 -->
 
 
+<link rel="stylesheet" href="p {
+  text-align: justify;
+}" />
 </head>
 
-<body class="fullcontent quarto-light">
+<body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <div id="quarto-toc-target"></div>
+</div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">M2MSR</h1>
+<h1 class="title">Stratification du risque de candidémie en soins intensifs/réanimation</h1>
+<p class="subtitle lead">Mémoire Master 2 Méthodologie et statistiques en recherche biomédicale</p>
 </div>
 
 
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Auteur·rice</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">BAERT Julien <a href="mailto:julien1.baert@chu-lille.fr" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            CHU de Lille
+          </p>
+      </div>
+  </div>
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Auteur·rice</div>
-    <div class="quarto-title-meta-contents">
-             <p>BAERT Julien </p>
-          </div>
-  </div>
-    
+      
     <div>
     <div class="quarto-title-meta-heading">Date de publication</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">1 juin 2026</p>
+      <p class="date">4 juin 2026</p>
     </div>
   </div>
   
@@ -81,86 +82,144 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-
-<hr>
-<section id="stratification-du-risque-de-candidémie-en-soins-intensifsréanimation" class="level1">
-<h1><u><strong>Stratification du risque de candidémie en soins intensifs/réanimation</strong></u></h1>
-<section id="introduction" class="level2">
-<h2 class="anchored" data-anchor-id="introduction"><u>Introduction</u></h2>
-<p><em>Candida</em> est une levure saprophyte du revêtement cutané et de la muqueuse oro-digestive chez l’être humain. Ces champignons peuvent provoquer des infections sanguines (candidémies) et des atteintes de tissus profonds (candidoses invasives), représentant la pathologie fongique nosocomiale la plus fréquente dans les pays occidentaux (1).</p>
-<p>Les candidémies sont particulièrement fréquentes chez les patients hospitalisés en réanimation, représentant 8% des hémocultures positives et 15% des infections nosocomiales dans ces services (2). Les patients de réanimation en présentent en effet de nombreux facteurs de risque : certains dispositifs invasifs tels que les cathéters veineux centraux, les cathéters de dialyse, ou la ventilation mécanique, qui sont des outils thérapeutiques employés quasi-exclusivement en réanimation ; la nutrition parentérale, administrée uniquement par ces cathéters profonds ; les chirurgies abdominales lourdes ou les pancréatites aigues nécrosantes. Par ailleurs, une hospitalisation prolongée, associée à une exposition répétée aux antibiotiques, favorisent la colonisation à <em>Candida</em>, première étape vers l’infection invasive (4,5).</p>
-<p>Les dernières décennies ont été marquées par une incidence croissante des candidoses invasives en réanimation, sans amélioration significative de leur pronostic (6,7). Leur pronostic est dépendant de la précocité d’initiation du traitement antifongique (8,9). Or le diagnostic des candidoses invasives repose sur les hémocultures, dont la sensibilité est imparfaite (10) et le délai de pousse tardif, ce qui impacte négativement le pronostic des patients (11).</p>
-<p>Pour pallier ces limites, les cliniciens s’appuient sur les facteurs de risque et des biomarqueurs, tels que les β-D-glucanes, pour identifier les patients à risque et introduire précocement un traitement antifongique. Ces stratégies empiriques ou préemptives entraînent toutefois une surutilisation des antifongiques sans bénéfice démontré sur la survie des patients (12). Des scores prédictifs ont été développés à partir de critères cliniques et, dans certains cas, des variables biologiques, afin de dichotomiser les patients en populations haut risque/bas risque (13-15). Cependant, devant des populations de patients hospitalisés en réanimation changeantes, l’évolution des pratiques médicales, le développement de nouveaux outils diagnostiques tel que la PCR, nous proposons une division du risque en 3 catégories :</p>
+<nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table des matières</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction"><u>Introduction</u></a></li>
+  <li><a href="#méthodes" id="toc-méthodes"><u>Méthodes</u></a>
+  <ul>
+  <li><a href="#source-des-données" id="toc-source-des-données">Source des données</a></li>
+  <li><a href="#population" id="toc-population">Population</a></li>
+  <li><a href="#critère-de-jugement-principal" id="toc-critère-de-jugement-principal">Critère de jugement principal</a></li>
+  <li><a href="#variables-et-feature-extraction" id="toc-variables-et-feature-extraction">Variables et feature Extraction</a></li>
+  <li><a href="#analyses-statistiques" id="toc-analyses-statistiques">Analyses statistiques</a></li>
+  <li><a href="#cadre-réglementaire" id="toc-cadre-réglementaire">Cadre réglementaire</a></li>
+  </ul></li>
+  <li><a href="#résultats" id="toc-résultats"><u>Résultats</u></a>
+  <ul>
+  <li><a href="#caractéristiques-de-la-population" id="toc-caractéristiques-de-la-population">Caractéristiques de la population</a></li>
+  <li><a href="#description-de-la-population" id="toc-description-de-la-population">Description de la population</a></li>
+  <li><a href="#modélisation" id="toc-modélisation">Modélisation</a></li>
+  <li><a href="#score-et-prédiction" id="toc-score-et-prédiction">Score et prédiction</a></li>
+  </ul></li>
+  <li><a href="#discussion" id="toc-discussion"><u>Discussion</u></a></li>
+  <li><a href="#bibliographie" id="toc-bibliographie"><u>Bibliographie</u></a></li>
+  <li><a href="#supplementary-data" id="toc-supplementary-data"><u>Supplementary Data</u></a>
+  <ul>
+  <li><a href="#données-manquantes" id="toc-données-manquantes">Données manquantes</a></li>
+  <li><a href="#comparaisons-bivariées" id="toc-comparaisons-bivariées">Comparaisons bivariées</a></li>
+  <li><a href="#modélisation-stepwise-à-partir-dune-imputation-simple" id="toc-modélisation-stepwise-à-partir-dune-imputation-simple">Modélisation stepwise à partir d’une imputation simple</a></li>
+  <li><a href="#code" id="toc-code">Code</a></li>
+  </ul></li>
+  </ul>
+</nav>
+<hr />
+<section id="introduction" class="level1">
+<h1><u>Introduction</u></h1>
+<p><em>Candida</em> est une levure saprophyte du revêtement cutané et de la muqueuse oro-digestive chez l’être humain. Ces champignons peuvent provoquer des infections sanguines (candidémies) et des atteintes de tissus profonds (candidoses invasives), représentant la pathologie fongique nosocomiale la plus fréquente dans les pays occidentaux (1). Les candidémies sont particulièrement fréquentes chez les patients hospitalisés en réanimation, représentant 8% des hémocultures positives et 15% des infections nosocomiales dans ces services (2). Les patients de réanimation en présentent en effet de nombreux facteurs de risque : certains dispositifs invasifs tels que les cathéters veineux centraux, les cathéters de dialyse, ou la ventilation mécanique, qui sont des outils thérapeutiques employés quasi-exclusivement en réanimation ; la nutrition parentérale, administrée uniquement par ces cathéters profonds ; les chirurgies abdominales lourdes ou les pancréatites aigues nécrosantes. Par ailleurs, une hospitalisation prolongée, associée à une exposition répétée aux antibiotiques, favorisent la colonisation à <em>Candida</em>, première étape vers l’infection invasive (4,5).</p>
+<p>Les dernières décennies ont été marquées par une incidence croissante des candidoses invasives en réanimation, sans amélioration significative de leur pronostic (6,7). Leur pronostic est dépendant de la précocité d’initiation du traitement antifongique (8,9). Or le diagnostic des candidoses invasives repose sur les hémocultures, dont la sensibilité est imparfaite et le délai de pousse tardif, ce qui impacte négativement le pronostic des patients (10). Pour pallier ces limites, les cliniciens s’appuient sur les facteurs de risque et des biomarqueurs, tels que les β-D-glucanes, pour identifier les patients à risque et introduire précocement un traitement antifongique. Ces stratégies empiriques ou préemptives entraînent toutefois une surutilisation des antifongiques sans bénéfice démontré sur la survie des patients (11).</p>
+<p>Des scores prédictifs ont été développés à partir de critères cliniques et, dans certains cas, des variables biologiques, afin de dichotomiser les patients en populations haut risque/bas risque (12-14). Les recommandations actuelles portent plutôt sur une stratification des patients en plusieurs groupes de risque, avec plusieurs niveaux de risque (15,16). Devant les changements démographiques de patients hospitalisés en réanimation, des changements épidémiologiques de candidoses invasives (17) l’évolution des pratiques médicales, le développement de nouveaux outils diagnostiques tel que la PCR, nous proposons un nouveau score prédicitif afin de stratifier le risque de candidémie acquise en réanimation chez les patients de réanimation en 3 catégories :</p>
 <ul>
 <li><p>Une population à bas risque, permettant d’éliminer l’hypothèse d’une candidémie</p></li>
-<li><p>-Une population à risque intermédiaire, auprès de laquelle les marqueurs fongiques ou les nouvelles méthodes de biologie moléculaire sont à proposer</p></li>
-<li><p>Une population à haut risque (&gt; 20%) chez qui il semble licite de proposer un traitement antifongique empirique d’emblée.</p></li>
+<li><p>Une population à risque intermédiaire, auprès de laquelle les marqueurs fongiques ou les nouvelles méthodes de biologie moléculaire sont à proposer</p></li>
+<li><p>Une population à haut risque (<u>&gt;</u> 20%) chez il faut instaurer un traitement antifongique empirique d’emblée.</p></li>
 </ul>
 </section>
-<section id="méthodes" class="level2">
-<h2 class="anchored" data-anchor-id="méthodes"><u>Méthodes</u></h2>
-<section id="source-des-données" class="level3">
-<h3 class="anchored" data-anchor-id="source-des-données">Source des données</h3>
+<section id="méthodes" class="level1">
+<h1><u>Méthodes</u></h1>
+<section id="source-des-données" class="level2">
+<h2>Source des données</h2>
 <p>Il s’agit d’une étude observationnelle monocentrique rétrospective, utilisant les données des patients hospitalisés en soins intensifs et réanimation au CHU de Lille depuis 2013, contenues dans l’entrepôt de données de santé <em>Include</em> du CHU de Lille. Celui-ci intègre différentes sources informatisées de données recueillies dans le cadre d’une prise en charge au CHU de Lille, notamment le système de gestion des données de réanimation ICCA (Philips), le système d’information de laboratoire MOLIS (CompuGroupMedical) et le logiciel CORA PMSI pour le codage des diagnostics et des actes CCAM.</p>
 <p>L’extraction des données a été réalisée par les ingénieures data d’<em>Include</em> (Mme Charlotte GEAY, Mme Léa GRUMIAUX et Mme Marie Amélie RISPAL). La structuration des données, la comparaison des données, les analyses statistiques ont été réalisées sur le logiciel R, version 4.6.0.</p>
 </section>
-<section id="population" class="level3">
-<h3 class="anchored" data-anchor-id="population">Population</h3>
-<p>La population éligible est la suivante : - Patients hospitalisés en réanimation ou en surveillance continue au CHU de Lille (hôpitaux Huriez, Institut Cœur Poumon &amp; Salengro, hors service de réanimation neurochirurgicale) depuis plus de 48 heures, - Ayant été prélevés d’au moins une hémoculture (plusieurs hémocultures peuvent être prélevées chez un même patient durant son séjour en réanimation).</p>
+<section id="population" class="level2">
+<h2>Population</h2>
+<p>La population éligible est la suivante :</p>
+<ul>
+<li><p>Patients hospitalisés en réanimation ou en surveillance continue au CHU de Lille (hôpitaux Huriez, Institut Cœur Poumon &amp; Salengro, hors service de réanimation neurochirurgicale) depuis plus de 48 heures,</p></li>
+<li><p>Ayant été prélevés d’au moins une hémoculture après 48 heures d’hospitalisation en réanimation (plusieurs hémocultures peuvent être prélevées chez un même patient durant son séjour en réanimation).</p></li>
+</ul>
 </section>
-<section id="critère-de-jugement-principal" class="level3">
-<h3 class="anchored" data-anchor-id="critère-de-jugement-principal">Critère de jugement principal</h3>
-<p>L’objectif de notre modélisation est la stratitification du risque de candidémie inaugurale acquise en soins intensifs/réanimation. Afin d’être au plus proche de la réflexion du clinicien, nous procédons à un regroupement des hémocultures par épisode de suspicion d’infection. En effet, lors d’une suspicion d’infection, plusieurs hémocultures sont prélevées à des temporalités proches, afin d’identifier au mieux l’agent infectieux responsable. Les hémocultures sont donc regroupées par épisode de suspicion d’infection, jusqu’à ce que la dernière hémoculture prélevée pour un même patient soit séparée d’un délai strictement supérieur à 24 heures de la prochaine hémoculture. Une fois les hémocultures regroupées, si l’une des hémocultures d’un groupe était positive à <em>Candida</em>, nous considérions toutes les hémocultures de ce groupe comme positives à <em>Candida</em>. Enfin, seules les données de la première hémoculture du groupe étaient gardées, afin de placer notre modélisation à la phase la plus initiale de l’épisode de suspicion d’infection.</p>
+<section id="critère-de-jugement-principal" class="level2">
+<h2>Critère de jugement principal</h2>
+<p>L’objectif de notre modélisation est la stratitification du risque de candidémie inaugurale acquise en soins intensifs/réanimation. Afin d’être au plus proche de la réflexion du clinicien, nous procédons à un regroupement des hémocultures par épisode de suspicion d’infection. En effet, lors d’une suspicion d’infection, plusieurs hémocultures sont prélevées à des temporalités proches, afin d’identifier au mieux l’agent infectieux responsable &amp; un site d’infection s’il en existe (exemple : infections de cathéters). Les hémocultures sont donc regroupées jusqu’à ce que la dernière hémoculture prélevée pour un même patient soit séparée d’un délai strictement supérieur à 24 heures de la prochaine hémoculture. Une fois les hémocultures regroupées, si l’une des hémocultures d’un groupe était positive à <em>Candida</em>, nous considérions toutes les hémocultures de ce groupe comme positives à <em>Candida</em>. Enfin, seules les données de la première hémoculture du groupe étaient gardées, afin de placer notre modélisation à la phase la plus initiale de l’épisode de suspicion d’infection.</p>
 <p>L’objectif étant d’identifier une candidémie inaugurale, toutes les hémocultures suivants une hémoculture positive à <em>Candida</em> sont supprimées.</p>
+<p>La méthode de regroupement est résumée dans la figure <a href="#fig-regroupement" class="quarto-xref">Figure 1</a>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-regroupement" class="quarto-float quarto-figure quarto-figure-center" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-regroupement-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="figures/regroupement.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure 1: Regroupement des hémocultures par épisode de suspicion d’infection"><img src="figures/regroupement.png" class="img-fluid quarto-figure quarto-figure-center" width="672" /></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-regroupement-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 1: Regroupement des hémocultures par épisode de suspicion d’infection
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 </section>
-<section id="variables-et-feature-extraction" class="level3">
-<h3 class="anchored" data-anchor-id="variables-et-feature-extraction">Variables et feature Extraction</h3>
-<p>Les données démographiques sont récoltées à l’admission et considérées comme inchangées au décours. Ces données portaient sur le lieu d’hospitalisation, l’âge à l’admission, les antécédents de maladie hématologique maligne, de transplantation d’organe solide, de diabète, de pancréatite aigue, et de tumeurs d’organes solides.</p>
-<p>Les données cliniques et biologiques reflétants l’état à l’admission du patient du patient sont extraites dans les 24 heures suivant l’horaire d’admission en soins intensifs, ainsi que dans les 24 heures précédant la réalisation de l’hémoculture : score IGS2, score SOFA, poids, températures minimale et maximale, diurèse totale et normalisée, exposition à des amines (adrénaline, noradrénaline, terlipressine, dobutamine) était identifiée, la présence d’une ventilation invasive, la présence d’une épuration extra-rénale, ainsi que la présence d’un remplissage vasculaire. Les valeurs maximales de créatinémie, lactatémie et urémie étaient récoltées ; les valeurs minimales de leucocytémie et de rapport PaO2/FiO2. La présence d’un état de choc était définie par la présence d’amines, d’une lactatémie &gt; 4 mmol/L ou d’un score SOFA cardiovasculaire &gt;{.underline} à 3.</p>
-<p>Afin de quantifier les exposisions antérieures en réanimation, la présence de fibroscopie(s) digestive(s), de chirurgie(s) abdominale(s), de chirurgie(s) majeures, les durées de ventilation mécanique invasive, de nutrition parentérale, les durées de présence de cathéters (artériels, veineux centraux, de dialyse, ou d’ECMO), la durée d’exposition aux antibiotiques, aux immunosuppresseurs ou aux corticoïdes, et le nombre de culots globulaires, plaquettaires &amp; poches de plasma étaient également récoltées. Les durées de neutrophilie (définie comme &gt; 7 G/L), neutropénie (définie comme &lt; 0,5 G/L) et de lymphopénie (définie comme lymphocytes &lt; 0.1 G/L) étaient identifiées.</p>
+<section id="variables-et-feature-extraction" class="level2">
+<h2>Variables et feature Extraction</h2>
+<p>Les variables candidates pour la modélisation étaient identifiées en fonction de facteurs de risques identifiés dans la littérature (18). Les données démographiques sont récoltées à l’admission et considérées comme inchangées au décours. Ces données portaient sur le lieu d’hospitalisation, l’âge à l’admission, les antécédents de maladie hématologique maligne, de transplantation d’organe solide, de diabète, de pancréatite aigue, et de tumeurs d’organes solides.</p>
+<p>Les données cliniques et biologiques reflétants l’état à l’admission du patient du patient sont extraites dans les 24 heures suivant l’horaire d’admission en soins intensifs, ainsi que dans les 24 heures précédant la réalisation de l’hémoculture : score IGS2, score SOFA, poids, températures minimale et maximale, diurèse totale et normalisée, exposition à des amines (adrénaline, noradrénaline, terlipressine, dobutamine), la présence d’une ventilation invasive, la présence d’une épuration extra-rénale, ainsi que la présence d’un remplissage vasculaire. Les valeurs maximales de créatinémie, lactatémie et urémie étaient récoltées ; les valeurs minimales de leucocytémie et de rapport PaO2/FiO2. La présence d’un état de choc était définie par la présence d’amines, d’une lactatémie &gt; 2 mmol/L ou d’un score SOFA cardiovasculaire &gt;{.underline} à 3.</p>
+<p>Afin de quantifier les expositions au cours de l’hospitalisation en réanimation, la présence de fibroscopie(s) digestive(s), de chirurgie(s) abdominale(s), de chirurgie(s) majeures, les durées de ventilation mécanique invasive, de nutrition parentérale, les durées de présence de cathéters (artériels, veineux centraux, de dialyse, ou d’ECMO), la durée d’exposition aux antibiotiques, aux immunosuppresseurs ou aux corticoïdes, et le nombre de culots globulaires, plaquettaires &amp; poches de plasma étaient également récoltées. Les durées de neutrophilie (définie comme &gt; 7 G/L), neutropénie (définie comme &lt; 0,5 G/L) et de lymphopénie (définie comme lymphocytes &lt; 0.1 G/L) étaient identifiées.</p>
 </section>
-<section id="analyses-statistiques" class="level3">
-<h3 class="anchored" data-anchor-id="analyses-statistiques">Analyses statistiques</h3>
-<p>Les variables catégorielles sont décrites en effectifs &amp; pourcentage. Les variables continues sont présentées par médiane, minimale et maximale. Une description démographique &amp; univariée est réalisée dans un premier temps.Sont réalisées dans un second temps des analyses bivariées afin de de décrire le lien entre la présence d’une candidémie &amp; les variables extraites. Les variables pertinentes cliniquement, constantes avec la littérature, ou en faveur d’un sur-risque de candidémie lors de l’analyse bivariée ont été incluses dans une analyse multivariée. L’analyse multivariée sera réalisée via régression logistique mixte avec effet aléatoire via le patient.</p>
-</section>
-<section id="données-manquantes" class="level3">
-<h3 class="anchored" data-anchor-id="données-manquantes">Données manquantes</h3>
+<section id="analyses-statistiques" class="level2">
+<h2>Analyses statistiques</h2>
+<p>Les variables catégorielles sont décrites en effectifs &amp; pourcentage. Les variables continues sont présentées par médiane, minimale et maximale. Une description démographique &amp; univariée est réalisée dans un premier temps. Sont réalisées dans un second temps des analyses bivariées afin de de décrire le lien entre la présence d’une candidémie &amp; les variables extraites. Les variables pertinentes cliniquement, constantes avec la littérature, ou en faveur d’un sur-risque de candidémie lors de l’analyse bivariée ont été incluses dans une analyse multivariée. L’analyse multivariée est réalisée via régression logistique mixte avec effet aléatoire via le patient. La modélisation finale était évaluée par évaluation de l’aire sous la courbe ROC (Receiving Operation Characteristic) &amp; par courbe de calibration.</p>
+<p>Tous les tests statistiques étaient bilatéraux avec un niveau de significativité fixé à p &lt; 0.05. Les variables catégorielles sont décrites en effectifs &amp; pourcentage. Les variables continues sont présentées par médiane, minimale et maximale. ### Données manquantes</p>
 <p>Après extraction, certaines données n’ont pu être retrouvées, faute d’analyse ou de réalisation de l’examen. Un tableau récapitulatif des données manquantes est présenté ci-dessous. Des imputations multiples sont réalisées pour les données manquantes considérées <em>Missing at Random.</em></p>
 </section>
-<section id="cadre-réglementaire" class="level3">
-<h3 class="anchored" data-anchor-id="cadre-réglementaire">Cadre réglementaire</h3>
+<section id="cadre-réglementaire" class="level2">
+<h2>Cadre réglementaire</h2>
 <p>La conformité au Règlement Général sur la Protection des Données (RGPD) du traitement de ces données par le CHU de Lille sur le fondement de l’intérêt public à des fins de recherche a été validée par la Commission Nationale de l’Informatique et des Libertés (CNIL) (Délibération n°2019-103). Les responsables d’Include ont pris toutes les mesures pour mener les futurs projets de recherche conformément à la loi française et européenne.</p>
 </section>
 </section>
-<section id="résultats" class="level2">
-<h2 class="anchored" data-anchor-id="résultats"><u>Résultats</u></h2>
-<section id="flowchart" class="level3">
-<h3 class="anchored" data-anchor-id="flowchart">Flowchart</h3>
-<p>Après extraction des hémocultures de l’entrepôt de données de santé, nous procédons à une analyse exploratoire des données. Nous identifions donc <strong>104 620</strong> hémocultures, avec <strong>9813 séjours</strong>, chez <strong>9714</strong> individus (@fig_flow_chart). A noter qu’en moyenne, chaque individu se voyait prélever <u>2 hémocultures par séjour</u>.</p>
-<!-- ![Alt text](flow_chart.png) -->
-</section>
-<section id="description-de-la-population" class="level3">
-<h3 class="anchored" data-anchor-id="description-de-la-population">Description de la population</h3>
-<p>Dans notre population d’étude, les patients étaient majoritairement de sexe masculin (66%), et d’âge médian de 61 ans. 4.7% présentaient des antécédents de maladie hématologique maligne, 26% de diabète, et 18% de tumeurs solides. A l’admission, 84% présentaient un état de choc et 67 % étaient ventilés de manière invasive. L’ensemble de la description est représentée dans le tableau 1.</p>
-<div class="cell" data-tbl-cap="Tableau 1 - Description démographique de la population">
+<section id="résultats" class="level1">
+<h1><u>Résultats</u></h1>
+<section id="caractéristiques-de-la-population" class="level2">
+<h2>Caractéristiques de la population</h2>
+<p>Après extraction des hémocultures de l’entrepôt de données de santé, nous procédons à une analyse exploratoire des données. Nous identifions donc <strong>104 620</strong> hémocultures, avec <strong>9813 séjours</strong>, chez <strong>9714</strong> individus (<span class="citation" data-cites="fig_flowchart">@fig_flowchart</span>). A noter qu’en moyenne, chaque individu se voyait prélever <u>2 hémocultures par séjour</u>.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fydfwquagu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#fydfwquagu table {
+<div id="fig-flowchart" class="quarto-float quarto-figure quarto-figure-center" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-flowchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="figures/flow_chart.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure 2: Flow chart"><img src="figures/flow_chart.png" class="img-fluid quarto-figure quarto-figure-center" width="330" /></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-flowchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 2: Flow chart
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="description-de-la-population" class="level2">
+<h2>Description de la population</h2>
+<p>Dans notre population d’étude, les patients étaient majoritairement de sexe masculin (66%), et d’âge médian de 61 ans. 4.7% présentaient des antécédents de maladie hématologique maligne, 26% de diabète, et 18% de tumeurs solides. A l’admission, 84% présentaient un état de choc et 67 % étaient ventilés de manière invasive. L’ensemble de la description est représentée dans le @tbl_demographique.</p>
+<div class="cell" data-tbl-cap="Description démographique de la population">
+<div class="cell-output-display">
+<div id="vpbteokhud" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#vpbteokhud table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#fydfwquagu thead, #fydfwquagu tbody, #fydfwquagu tfoot, #fydfwquagu tr, #fydfwquagu td, #fydfwquagu th {
+#vpbteokhud thead, #vpbteokhud tbody, #vpbteokhud tfoot, #vpbteokhud tr, #vpbteokhud td, #vpbteokhud th {
   border-style: none;
 }
 
-#fydfwquagu p {
+#vpbteokhud p {
   margin: 0;
   padding: 0;
 }
 
-#fydfwquagu .gt_table {
+#vpbteokhud .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -186,12 +245,12 @@ ul.task-list li input[type="checkbox"] {
   border-left-color: #D3D3D3;
 }
 
-#fydfwquagu .gt_caption {
+#vpbteokhud .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#fydfwquagu .gt_title {
+#vpbteokhud .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -203,7 +262,7 @@ ul.task-list li input[type="checkbox"] {
   border-bottom-width: 0;
 }
 
-#fydfwquagu .gt_subtitle {
+#vpbteokhud .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -215,7 +274,7 @@ ul.task-list li input[type="checkbox"] {
   border-top-width: 0;
 }
 
-#fydfwquagu .gt_heading {
+#vpbteokhud .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -227,13 +286,13 @@ ul.task-list li input[type="checkbox"] {
   border-right-color: #D3D3D3;
 }
 
-#fydfwquagu .gt_bottom_border {
+#vpbteokhud .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#fydfwquagu .gt_col_headings {
+#vpbteokhud .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -248,7 +307,7 @@ ul.task-list li input[type="checkbox"] {
   border-right-color: #D3D3D3;
 }
 
-#fydfwquagu .gt_col_heading {
+#vpbteokhud .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -268,7 +327,7 @@ ul.task-list li input[type="checkbox"] {
   overflow-x: hidden;
 }
 
-#fydfwquagu .gt_column_spanner_outer {
+#vpbteokhud .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -280,15 +339,15 @@ ul.task-list li input[type="checkbox"] {
   padding-right: 4px;
 }
 
-#fydfwquagu .gt_column_spanner_outer:first-child {
+#vpbteokhud .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#fydfwquagu .gt_column_spanner_outer:last-child {
+#vpbteokhud .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#fydfwquagu .gt_column_spanner {
+#vpbteokhud .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -300,11 +359,11 @@ ul.task-list li input[type="checkbox"] {
   width: 100%;
 }
 
-#fydfwquagu .gt_spanner_row {
+#vpbteokhud .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#fydfwquagu .gt_group_heading {
+#vpbteokhud .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -330,7 +389,7 @@ ul.task-list li input[type="checkbox"] {
   text-align: left;
 }
 
-#fydfwquagu .gt_empty_group_heading {
+#vpbteokhud .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -345,15 +404,15 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 
-#fydfwquagu .gt_from_md > :first-child {
+#vpbteokhud .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#fydfwquagu .gt_from_md > :last-child {
+#vpbteokhud .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#fydfwquagu .gt_row {
+#vpbteokhud .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -372,7 +431,7 @@ ul.task-list li input[type="checkbox"] {
   overflow-x: hidden;
 }
 
-#fydfwquagu .gt_stub {
+#vpbteokhud .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -385,7 +444,7 @@ ul.task-list li input[type="checkbox"] {
   padding-right: 5px;
 }
 
-#fydfwquagu .gt_stub_row_group {
+#vpbteokhud .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -399,15 +458,15 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: top;
 }
 
-#fydfwquagu .gt_row_group_first td {
+#vpbteokhud .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#fydfwquagu .gt_row_group_first th {
+#vpbteokhud .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#fydfwquagu .gt_summary_row {
+#vpbteokhud .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -417,16 +476,16 @@ ul.task-list li input[type="checkbox"] {
   padding-right: 5px;
 }
 
-#fydfwquagu .gt_first_summary_row {
+#vpbteokhud .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#fydfwquagu .gt_first_summary_row.thick {
+#vpbteokhud .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#fydfwquagu .gt_last_summary_row {
+#vpbteokhud .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -436,7 +495,7 @@ ul.task-list li input[type="checkbox"] {
   border-bottom-color: #D3D3D3;
 }
 
-#fydfwquagu .gt_grand_summary_row {
+#vpbteokhud .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -446,7 +505,7 @@ ul.task-list li input[type="checkbox"] {
   padding-right: 5px;
 }
 
-#fydfwquagu .gt_first_grand_summary_row {
+#vpbteokhud .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -456,7 +515,7 @@ ul.task-list li input[type="checkbox"] {
   border-top-color: #D3D3D3;
 }
 
-#fydfwquagu .gt_last_grand_summary_row_top {
+#vpbteokhud .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -466,11 +525,11 @@ ul.task-list li input[type="checkbox"] {
   border-bottom-color: #D3D3D3;
 }
 
-#fydfwquagu .gt_striped {
+#vpbteokhud .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#fydfwquagu .gt_table_body {
+#vpbteokhud .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -479,7 +538,7 @@ ul.task-list li input[type="checkbox"] {
   border-bottom-color: #D3D3D3;
 }
 
-#fydfwquagu .gt_footnotes {
+#vpbteokhud .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -493,7 +552,7 @@ ul.task-list li input[type="checkbox"] {
   border-right-color: #D3D3D3;
 }
 
-#fydfwquagu .gt_footnote {
+#vpbteokhud .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -502,7 +561,7 @@ ul.task-list li input[type="checkbox"] {
   padding-right: 5px;
 }
 
-#fydfwquagu .gt_sourcenotes {
+#vpbteokhud .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -516,7 +575,7 @@ ul.task-list li input[type="checkbox"] {
   border-right-color: #D3D3D3;
 }
 
-#fydfwquagu .gt_sourcenote {
+#vpbteokhud .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -524,78 +583,78 @@ ul.task-list li input[type="checkbox"] {
   padding-right: 5px;
 }
 
-#fydfwquagu .gt_left {
+#vpbteokhud .gt_left {
   text-align: left;
 }
 
-#fydfwquagu .gt_center {
+#vpbteokhud .gt_center {
   text-align: center;
 }
 
-#fydfwquagu .gt_right {
+#vpbteokhud .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#fydfwquagu .gt_font_normal {
+#vpbteokhud .gt_font_normal {
   font-weight: normal;
 }
 
-#fydfwquagu .gt_font_bold {
+#vpbteokhud .gt_font_bold {
   font-weight: bold;
 }
 
-#fydfwquagu .gt_font_italic {
+#vpbteokhud .gt_font_italic {
   font-style: italic;
 }
 
-#fydfwquagu .gt_super {
+#vpbteokhud .gt_super {
   font-size: 65%;
 }
 
-#fydfwquagu .gt_footnote_marks {
+#vpbteokhud .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#fydfwquagu .gt_asterisk {
+#vpbteokhud .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#fydfwquagu .gt_indent_1 {
+#vpbteokhud .gt_indent_1 {
   text-indent: 5px;
 }
 
-#fydfwquagu .gt_indent_2 {
+#vpbteokhud .gt_indent_2 {
   text-indent: 10px;
 }
 
-#fydfwquagu .gt_indent_3 {
+#vpbteokhud .gt_indent_3 {
   text-indent: 15px;
 }
 
-#fydfwquagu .gt_indent_4 {
+#vpbteokhud .gt_indent_4 {
   text-indent: 20px;
 }
 
-#fydfwquagu .gt_indent_5 {
+#vpbteokhud .gt_indent_5 {
   text-indent: 25px;
 }
 
-#fydfwquagu .katex-display {
+#vpbteokhud .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#fydfwquagu div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#vpbteokhud div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
 
-<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
-<caption>Tableau 1 - Description démographique de la population</caption>
+<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<caption>Description démographique de la population</caption>
 <thead>
 <tr class="gt_col_headings header">
 <th id="label" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"><strong>Caractéristique</strong></th>
@@ -714,30 +773,78 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
-<!-- [script: file not found: scripts/tbl1_demo.R] -->
-<section id="analyse-bivariée" class="level4">
-<h4 class="anchored" data-anchor-id="analyse-bivariée">Analyse bivariée</h4>
-<!-- [script: file not found: scripts/tbl2_bv.R] -->
-<p>Nous réalisons une comparaison bi-variées, avec correction du risque d’inflation du risque alpha via la méthode de <em>false detection rate (FDR)</em>.</p>
-<div class="cell" data-tbl-cap="Tableau 2 - Analyse bivariée de la survenue d'une candidémie">
+</section>
+<section id="modélisation" class="level2">
+<h2>Modélisation</h2>
+<p>En analyse univariée, xxx facteurs étaient associés au risque de candidémie. Les facteurs xxx étaient au contraire associés négativement. Les variables sélectionnées étaient ensuite analysée en régression multivariée. Les facteurs xxx .</p>
+<p>L’AUC étaient de xxx ; Se Sp VPP VPN. Courbe de calibration.</p>
+</section>
+<section id="score-et-prédiction" class="level2">
+<h2>Score et prédiction</h2>
+<p>AJOUTER la suite xxxxxx</p>
+</section>
+</section>
+<section id="discussion" class="level1">
+<h1><u>Discussion</u></h1>
+<p>Dans cette étude monocentrique rétrospective, xxx étaient associés à un surrisque de candidémie acquise en réanimation. Un nouveau score prédictif était réalisé, avec des performances diagnostiques satisfaisantes, permettant de stratifier la population décrite en 3 catégories de risque : une population à très faible risque prédit, permettant d’éliminer presque formellement le risque de candidémie, une population à risque modéré, pour laquelle des examens spécifiques (PCR, marqueurs fongiques) peuvent être indiqués, et une population à haut risque, pour laquelle il faudrait probablement introduire un traitement antifongique empirique.</p>
+<p>La population étudiée est fortement représentative, avec une variété de patients hospitalisés dans différents secteurs de réanimation. En effet, notre modélisation intéresse à la fois les secteurs médicaux, chirurgicaux, les patients immunodéprimés ou non ; ces facteurs étant largement employés pour stratifier le risque de candidémie. Notre étude est également la plus grande de part sa taille (citer les autres études qui sont toutes plus petites). Ainsi, notre étude, malgré son caractère monocentrique, peut probablement être généralisée à une large population ; et probablement être appliquée à de multiples services de soins intensifs &amp; de réanimation. La validité externe de notre score prédictif reste à évaluer de façon prospective, à échelle multicentrique.</p>
+<p>Une autre force de notre étude est sa cohérence avec la littérature</p>
+<p>Notre étude est toutefois limitée par son caractère monocentrique, qui malgré un recrutement largerte d’informations entre les deux - Monocentrique - Complexité de l’équation &gt;&gt; implémenter dans logiciels au lit du malade ?</p>
+</section>
+<section id="bibliographie" class="level1">
+<h1><u>Bibliographie</u></h1>
+<p>1.      Arendrup MC, Sulim S, Holm A, Nielsen L, Nielsen SD, Knudsen JD, et al. Diagnostic Issues, Clinical Characteristics, and Outcomes for Patients with Fungemia. J Clin Microbiol. sept 2011;49(9):3300‑8. </p>
+<p>2.      Paiva JA, Pereira JM, Tabah A, Mikstacki A, De Carvalho FB, Koulenti D, et al. Characteristics and risk factors for 28-day mortality of hospital acquired fungemias in ICUs: data from the EUROBACT study. Crit Care. 9 mars 2016;20(1):53. </p>
+<p>3.      Arendrup MC. Epidemiology of invasive candidiasis: Current Opinion in Critical Care. oct 2010;16(5):445‑52. </p>
+<p>4.      Vincent JL. International Study of the Prevalence and Outcomes of Infection in Intensive Care Units. JAMA. 2 déc 2009;302(21):2323. </p>
+<p>5.      The French Mycosis Study Group, Lortholary O, Renaudat C, Sitbon K, Madec Y, Denoeud-Ndam L, et al. Worrisome trends in incidence and mortality of candidemia in intensive care units (Paris area, 2002–2010). Intensive Care Med. sept 2014;40(9):1303‑12 </p>
+<p>6.      Lamoth F, Lockhart SR, Berkow EL, Calandra T. Changes in the epidemiological landscape of invasive candidiasis. Journal of Antimicrobial Chemotherapy. 1 janv 2018;73(suppl_1):i4‑13. </p>
+<p>7.      Cleveland AA, Farley MM, Harrison LH, Stein B, Hollick R, Lockhart SR, et al. Changes in Incidence and Antifungal Drug Resistance in Candidemia: Results From Population-Based Laboratory Surveillance in Atlanta and Baltimore, 2008-2011. Clinical Infectious Diseases. 15 nov 2012;55(10):1352‑61. </p>
+<p>8.      Kollef M, Micek S, Hampton N, Doherty JA, Kumar A. Septic Shock Attributed to Candida Infection: Importance of Empiric Therapy and Source Control. Clinical Infectious Diseases. 15 juin 2012;54(12):1739‑46. </p>
+<p>9.      Guinea J. Global trends in the distribution of Candida species causing candidemia. Clinical Microbiology and Infection. juin 2014;20:510. </p>
+<p>10.  Garey KW, Rege M, Pai MP, Mingo DE, Suda KJ, Turpin RS, et al. Time to Initiation of Fluconazole Therapy Impacts Mortality in Patients with Candidemia: A Multi-Institutional Study. </p>
+<p>11.  Timsit JF, Azoulay E, Schwebel C, Charles PE, Cornet M, Souweine B, et al. Empirical Micafungin Treatment and Survival Without Invasive Fungal Infection in Adults With ICU-Acquired Sepsis, <em>Candida</em> Colonization, and Multiple Organ Failure: The EMPIRICUS Randomized Clinical Trial. JAMA. 18 oct 2016;316(15):1555.</p>
+<p><strong>________________________________________________________________________________________________</strong></p>
+</section>
+<section id="supplementary-data" class="level1">
+<h1><u>Supplementary Data</u></h1>
+<section id="données-manquantes" class="level2">
+<h2>Données manquantes</h2>
+<p>Le nombre de données manquantes à la phase à l’issue de l’extraction sont détaillées dans @fig_NA . Seules les variables pour lesquelles des données manquantes étaient présentes sont représentées.</p>
+<div class="cell">
 <div class="cell-output-display">
-<div id="wyooqjxdzn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#wyooqjxdzn table {
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="M2MSR_files/figure-html/fig_NA-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Données manquantes"><img src="M2MSR_files/figure-html/fig_NA-1.png" class="img-fluid" width="672" alt="Données manquantes" /></a></p>
+<figcaption>Données manquantes</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>________________________________________________________________________________________________</strong></p>
+</section>
+<section id="comparaisons-bivariées" class="level2">
+<h2>Comparaisons bivariées</h2>
+<p>Nous réalisons une comparaison bi-variées, avec correction du risque d’inflation du risque alpha via la méthode de <em>false detection rate (FDR)</em>.</p>
+<div class="cell" data-tbl-cap="Analyse bivariée de la survenue d&#39;une candidémie">
+<div class="cell-output-display">
+<div id="fqwixofliu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#fqwixofliu table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#wyooqjxdzn thead, #wyooqjxdzn tbody, #wyooqjxdzn tfoot, #wyooqjxdzn tr, #wyooqjxdzn td, #wyooqjxdzn th {
+#fqwixofliu thead, #fqwixofliu tbody, #fqwixofliu tfoot, #fqwixofliu tr, #fqwixofliu td, #fqwixofliu th {
   border-style: none;
 }
 
-#wyooqjxdzn p {
+#fqwixofliu p {
   margin: 0;
   padding: 0;
 }
 
-#wyooqjxdzn .gt_table {
+#fqwixofliu .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -763,12 +870,12 @@ ul.task-list li input[type="checkbox"] {
   border-left-color: #D3D3D3;
 }
 
-#wyooqjxdzn .gt_caption {
+#fqwixofliu .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#wyooqjxdzn .gt_title {
+#fqwixofliu .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -780,7 +887,7 @@ ul.task-list li input[type="checkbox"] {
   border-bottom-width: 0;
 }
 
-#wyooqjxdzn .gt_subtitle {
+#fqwixofliu .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -792,7 +899,7 @@ ul.task-list li input[type="checkbox"] {
   border-top-width: 0;
 }
 
-#wyooqjxdzn .gt_heading {
+#fqwixofliu .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -804,13 +911,13 @@ ul.task-list li input[type="checkbox"] {
   border-right-color: #D3D3D3;
 }
 
-#wyooqjxdzn .gt_bottom_border {
+#fqwixofliu .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#wyooqjxdzn .gt_col_headings {
+#fqwixofliu .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -825,7 +932,7 @@ ul.task-list li input[type="checkbox"] {
   border-right-color: #D3D3D3;
 }
 
-#wyooqjxdzn .gt_col_heading {
+#fqwixofliu .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -845,7 +952,7 @@ ul.task-list li input[type="checkbox"] {
   overflow-x: hidden;
 }
 
-#wyooqjxdzn .gt_column_spanner_outer {
+#fqwixofliu .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -857,15 +964,15 @@ ul.task-list li input[type="checkbox"] {
   padding-right: 4px;
 }
 
-#wyooqjxdzn .gt_column_spanner_outer:first-child {
+#fqwixofliu .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#wyooqjxdzn .gt_column_spanner_outer:last-child {
+#fqwixofliu .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#wyooqjxdzn .gt_column_spanner {
+#fqwixofliu .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -877,11 +984,11 @@ ul.task-list li input[type="checkbox"] {
   width: 100%;
 }
 
-#wyooqjxdzn .gt_spanner_row {
+#fqwixofliu .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#wyooqjxdzn .gt_group_heading {
+#fqwixofliu .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -907,7 +1014,7 @@ ul.task-list li input[type="checkbox"] {
   text-align: left;
 }
 
-#wyooqjxdzn .gt_empty_group_heading {
+#fqwixofliu .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -922,15 +1029,15 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 
-#wyooqjxdzn .gt_from_md > :first-child {
+#fqwixofliu .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#wyooqjxdzn .gt_from_md > :last-child {
+#fqwixofliu .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#wyooqjxdzn .gt_row {
+#fqwixofliu .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -949,7 +1056,7 @@ ul.task-list li input[type="checkbox"] {
   overflow-x: hidden;
 }
 
-#wyooqjxdzn .gt_stub {
+#fqwixofliu .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -962,7 +1069,7 @@ ul.task-list li input[type="checkbox"] {
   padding-right: 5px;
 }
 
-#wyooqjxdzn .gt_stub_row_group {
+#fqwixofliu .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -976,15 +1083,15 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: top;
 }
 
-#wyooqjxdzn .gt_row_group_first td {
+#fqwixofliu .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#wyooqjxdzn .gt_row_group_first th {
+#fqwixofliu .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#wyooqjxdzn .gt_summary_row {
+#fqwixofliu .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -994,16 +1101,16 @@ ul.task-list li input[type="checkbox"] {
   padding-right: 5px;
 }
 
-#wyooqjxdzn .gt_first_summary_row {
+#fqwixofliu .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#wyooqjxdzn .gt_first_summary_row.thick {
+#fqwixofliu .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#wyooqjxdzn .gt_last_summary_row {
+#fqwixofliu .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1013,7 +1120,7 @@ ul.task-list li input[type="checkbox"] {
   border-bottom-color: #D3D3D3;
 }
 
-#wyooqjxdzn .gt_grand_summary_row {
+#fqwixofliu .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1023,7 +1130,7 @@ ul.task-list li input[type="checkbox"] {
   padding-right: 5px;
 }
 
-#wyooqjxdzn .gt_first_grand_summary_row {
+#fqwixofliu .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1033,7 +1140,7 @@ ul.task-list li input[type="checkbox"] {
   border-top-color: #D3D3D3;
 }
 
-#wyooqjxdzn .gt_last_grand_summary_row_top {
+#fqwixofliu .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1043,11 +1150,11 @@ ul.task-list li input[type="checkbox"] {
   border-bottom-color: #D3D3D3;
 }
 
-#wyooqjxdzn .gt_striped {
+#fqwixofliu .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#wyooqjxdzn .gt_table_body {
+#fqwixofliu .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1056,7 +1163,7 @@ ul.task-list li input[type="checkbox"] {
   border-bottom-color: #D3D3D3;
 }
 
-#wyooqjxdzn .gt_footnotes {
+#fqwixofliu .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1070,7 +1177,7 @@ ul.task-list li input[type="checkbox"] {
   border-right-color: #D3D3D3;
 }
 
-#wyooqjxdzn .gt_footnote {
+#fqwixofliu .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1079,7 +1186,7 @@ ul.task-list li input[type="checkbox"] {
   padding-right: 5px;
 }
 
-#wyooqjxdzn .gt_sourcenotes {
+#fqwixofliu .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1093,7 +1200,7 @@ ul.task-list li input[type="checkbox"] {
   border-right-color: #D3D3D3;
 }
 
-#wyooqjxdzn .gt_sourcenote {
+#fqwixofliu .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1101,91 +1208,91 @@ ul.task-list li input[type="checkbox"] {
   padding-right: 5px;
 }
 
-#wyooqjxdzn .gt_left {
+#fqwixofliu .gt_left {
   text-align: left;
 }
 
-#wyooqjxdzn .gt_center {
+#fqwixofliu .gt_center {
   text-align: center;
 }
 
-#wyooqjxdzn .gt_right {
+#fqwixofliu .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#wyooqjxdzn .gt_font_normal {
+#fqwixofliu .gt_font_normal {
   font-weight: normal;
 }
 
-#wyooqjxdzn .gt_font_bold {
+#fqwixofliu .gt_font_bold {
   font-weight: bold;
 }
 
-#wyooqjxdzn .gt_font_italic {
+#fqwixofliu .gt_font_italic {
   font-style: italic;
 }
 
-#wyooqjxdzn .gt_super {
+#fqwixofliu .gt_super {
   font-size: 65%;
 }
 
-#wyooqjxdzn .gt_footnote_marks {
+#fqwixofliu .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#wyooqjxdzn .gt_asterisk {
+#fqwixofliu .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#wyooqjxdzn .gt_indent_1 {
+#fqwixofliu .gt_indent_1 {
   text-indent: 5px;
 }
 
-#wyooqjxdzn .gt_indent_2 {
+#fqwixofliu .gt_indent_2 {
   text-indent: 10px;
 }
 
-#wyooqjxdzn .gt_indent_3 {
+#fqwixofliu .gt_indent_3 {
   text-indent: 15px;
 }
 
-#wyooqjxdzn .gt_indent_4 {
+#fqwixofliu .gt_indent_4 {
   text-indent: 20px;
 }
 
-#wyooqjxdzn .gt_indent_5 {
+#fqwixofliu .gt_indent_5 {
   text-indent: 25px;
 }
 
-#wyooqjxdzn .katex-display {
+#fqwixofliu .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#wyooqjxdzn div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#fqwixofliu div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
 
-<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
-<caption>Tableau 2 - Analyse bivariée de la survenue d’une candidémie</caption>
+<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<caption>Analyse bivariée de la survenue d’une candidémie</caption>
 <colgroup>
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
 </colgroup>
 <thead>
 <tr class="gt_col_headings header">
 <th id="label" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"><strong>Caractéristique</strong></th>
-<th id="stat_1" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Négative</strong><br>
+<th id="stat_1" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Négative</strong><br />
 N = 29 577<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span></th>
-<th id="stat_2" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Positive</strong><br>
+<th id="stat_2" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Positive</strong><br />
 N = 376<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span></th>
 <th id="p.value" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>p-valeur</strong><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>2</sup></span></th>
 <th id="q.value" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>q-valeur</strong><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>3</sup></span></th>
@@ -1193,7 +1300,7 @@ N = 376<span class="gt_footnote_marks" style="white-space:nowrap;font-style:ital
 </thead>
 <tbody class="gt_table_body">
 <tr class="gt_group_heading_row odd">
-<th colspan="5" id="Données démographiques" class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Données démographiques</th>
+<td colspan="5" id="Données démographiques" class="gt_group_heading" data-quarto-table-cell-role="th" style="font-weight: bold" scope="colgroup">Données démographiques</td>
 </tr>
 <tr class="gt_row_group_first even">
 <td class="gt_row gt_left" headers="Données démographiques  label">Hospitalisation en réanimation médicale</td>
@@ -1252,543 +1359,489 @@ N = 376<span class="gt_footnote_marks" style="white-space:nowrap;font-style:ital
 <td class="gt_row gt_center" headers="Données démographiques  q.value">0,6</td>
 </tr>
 <tr class="gt_group_heading_row even">
-<th colspan="5" id="Données à l'admission" class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Données à l'admission</th>
+<td colspan="5" id="Données à l&#39;admission" class="gt_group_heading" data-quarto-table-cell-role="th" style="font-weight: bold" scope="colgroup">Données à l'admission</td>
 </tr>
 <tr class="gt_row_group_first odd">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Etat de choc</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">20 343 (86%)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">283 (90%)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">0,018</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">0,030</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Etat de choc</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">20 343 (86%)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">283 (90%)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">0,018</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">0,030</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données à l'admission  label">IGS 2</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">47 (0, 135)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">52 (8, 135)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">IGS 2</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">47 (0, 135)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">52 (8, 135)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Pancréatite aigue</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">295 (1,1%)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">2 (0,6%)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">0,6</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">0,6</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Pancréatite aigue</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">295 (1,1%)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">2 (0,6%)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">0,6</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">0,6</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Poids</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">80 (0, 482)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">80 (0, 250)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">0,5</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">0,5</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Poids</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">80 (0, 482)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">80 (0, 250)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">0,5</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">0,5</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Température minimale (en °C)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">36,10 (18,20, 39,40)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">36,10 (28,80, 39,00)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">0,2</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">0,3</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Température minimale (en °C)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">36,10 (18,20, 39,40)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">36,10 (28,80, 39,00)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">0,2</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">0,3</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Température maximale (en °C)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">37,90 (33,10, 42,60)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">37,85 (34,10, 40,70)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">0,2</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">0,3</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Température maximale (en °C)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">37,90 (33,10, 42,60)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">37,85 (34,10, 40,70)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">0,2</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">0,3</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Diurèse totale</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">900 (0, 12 600)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">700 (0, 5 005)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Diurèse totale</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">900 (0, 12 600)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">700 (0, 5 005)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">&lt;0,001</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Diurèse normalisée</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">11 (0, 269)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">9 (0, 62)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Diurèse normalisée</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">11 (0, 269)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">9 (0, 62)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Créatinémie maximale (en mg/L)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">12 (0, 251)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">16 (1, 178)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Créatinémie maximale (en mg/L)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">12 (0, 251)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">16 (1, 178)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">&lt;0,001</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Urée maximale (en g/L)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">0,56 (0,03, 7,91)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">0,70 (0,03, 4,20)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Urée maximale (en g/L)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">0,56 (0,03, 7,91)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">0,70 (0,03, 4,20)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données à l'admission  label">PaO2/FiO2 minimal</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">164 (14, 648)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">142 (26, 543)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">0,003</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">0,006</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">PaO2/FiO2 minimal</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">164 (14, 648)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">142 (26, 543)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">0,003</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">0,006</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Lactatémie maximale (en mmol/L)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">2,30 (0,30, 30,00)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">2,80 (0,50, 23,00)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Lactatémie maximale (en mmol/L)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">2,30 (0,30, 30,00)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">2,80 (0,50, 23,00)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Lactatémie moyenne (en mmol/L)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">1,75 (0,24, 22,00)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">2,15 (0,42, 16,60)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Lactatémie moyenne (en mmol/L)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">1,75 (0,24, 22,00)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">2,15 (0,42, 16,60)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">&lt;0,001</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Leucocytes (en G/L)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">11 (0, 692)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">11 (0, 389)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">0,5</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">0,6</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Leucocytes (en G/L)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">11 (0, 692)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">11 (0, 389)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">0,5</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">0,6</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Neutrophiles (en G/L)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">10 (0, 159)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">10 (0, 70)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">0,8</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">0,8</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Neutrophiles (en G/L)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">10 (0, 159)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">10 (0, 70)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">0,8</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">0,8</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Lymphocytes (en G/L)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">0,70 (0,00, 240,70)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">0,60 (0,00, 191,20)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">0,034</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">0,049</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Lymphocytes (en G/L)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">0,70 (0,00, 240,70)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">0,60 (0,00, 191,20)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">0,034</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">0,049</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Ventilation mécanique invasive</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">21 555 (73%)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">283 (75%)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">0,3</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">0,4</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Ventilation mécanique invasive</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">21 555 (73%)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">283 (75%)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">0,3</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">0,4</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Dialyse</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">2 903 (9,8%)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">50 (13%)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">0,024</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">0,037</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Dialyse</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">2 903 (9,8%)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">50 (13%)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">0,024</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">0,037</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Culot Globulaires</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">2 997 (10%)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">68 (18%)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Culot Globulaires</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">2 997 (10%)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">68 (18%)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">&lt;0,001</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Plasma frais congelé</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">732 (2,5%)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">22 (5,9%)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Plasma frais congelé</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">732 (2,5%)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">22 (5,9%)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Culot plaquettaire</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">1 371 (4,6%)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">42 (11%)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Culot plaquettaire</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">1 371 (4,6%)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">42 (11%)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">&lt;0,001</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Transfusion</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">3 816 (13%)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">94 (25%)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Transfusion</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">3 816 (13%)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">94 (25%)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données à l'admission  label">Amines</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_1">17 543 (59%)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  stat_2">249 (66%)</td>
-<td class="gt_row gt_center" headers="Données à l'admission  p.value">0,007</td>
-<td class="gt_row gt_center" headers="Données à l'admission  q.value">0,012</td>
+<td class="gt_row gt_left" headers="Données à l&#39;admission  label">Amines</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_1">17 543 (59%)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  stat_2">249 (66%)</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  p.value">0,007</td>
+<td class="gt_row gt_center" headers="Données à l&#39;admission  q.value">0,012</td>
 </tr>
 <tr class="gt_group_heading_row even">
-<th colspan="5" id="Données dans les 48 heures précédant la suspicion d'infection" class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Données dans les 48 heures précédant la suspicion d'infection</th>
+<td colspan="5" id="Données dans les 48 heures précédant la suspicion d&#39;infection" class="gt_group_heading" data-quarto-table-cell-role="th" style="font-weight: bold" scope="colgroup">Données dans les 48 heures précédant la suspicion d'infection</td>
 </tr>
 <tr class="gt_row_group_first odd">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Délai entre admission et prélèvements de l'hémoculture</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">9 days (2 days, 520 days)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">10 days (2 days, 293 days)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">0,5</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">0,6</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Délai entre admission et prélèvements de l'hémoculture</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">9 days (2 days, 520 days)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">10 days (2 days, 293 days)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">0,5</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">0,5</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Etat de choc</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">11 775 (60%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">218 (76%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Etat de choc</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">11 775 (60%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">218 (76%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Température minimale</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">36,70 (15,10, 40,00)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">36,60 (32,50, 39,00)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">0,016</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">0,020</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Température minimale</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">36,70 (15,10, 40,00)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">36,60 (32,50, 39,00)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">0,016</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">0,020</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Température maximale</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">38,30 (33,80, 42,20)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">38,20 (35,40, 40,30)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">0,4</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">0,4</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Température maximale</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">38,30 (33,80, 42,20)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">38,20 (35,40, 40,30)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">0,4</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">0,4</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Diurèse totale</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">1 100 (0, 19 300)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">650 (0, 7 200)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Diurèse totale</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">1 100 (0, 19 300)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">650 (0, 7 200)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Diurèse normalisée</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">14 (0, 243)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">9 (0, 67)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Diurèse normalisée</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">14 (0, 243)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">9 (0, 67)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">PaO2/FiO2</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">200 (16, 648)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">178 (31, 524)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">0,048</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">0,057</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">PaO2/FiO2</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">200 (16, 648)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">178 (31, 524)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">0,048</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">0,056</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Créatinémie</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">9 (1, 148)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">12 (1, 92)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Créatinémie</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">9 (1, 148)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">12 (1, 92)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Urémie</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">0,57 (0,02, 4,50)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">0,71 (0,06, 4,49)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Urémie</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">0,57 (0,02, 4,50)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">0,71 (0,06, 4,49)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Lactatémie maximale</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">1,40 (0,10, 27,00)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">1,80 (0,50, 20,00)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Lactatémie maximale</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">1,40 (0,10, 27,00)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">1,80 (0,50, 20,00)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Lactatémie moyenne</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">1,23 (0,10, 20,00)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">1,60 (0,47, 15,83)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Lactatémie moyenne</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">1,23 (0,10, 20,00)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">1,60 (0,47, 15,83)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Neutropénie min</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">10 (0, 81)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">12 (0, 50)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">0,010</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">0,013</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Neutropénie min</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">10 (0, 81)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">12 (0, 50)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">0,010</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">0,012</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Leucocytes (en G/L)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">12 (0, 580)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">12 (0, 125)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">0,7</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">0,7</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Leucocytes (en G/L)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">12 (0, 580)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">12 (0, 125)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">0,7</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">0,7</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Lymphopénie</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">0,90 (0,00, 465,30)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">0,70 (0,00, 3,80)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Lymphopénie</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">0,90 (0,00, 465,30)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">0,70 (0,00, 3,80)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Glucanes positifs</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">6 623 (39%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">143 (57%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Glucanes positifs</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">6 623 (39%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">143 (57%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Mannanes positifs</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">3 749 (23%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">104 (44%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Mannanes positifs</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">3 749 (23%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">104 (44%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Ventilation invasive</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">19 850 (67%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">295 (78%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Ventilation invasive</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">19 850 (67%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">295 (78%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Dialyse</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">4 274 (14%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">100 (27%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Dialyse</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">4 274 (14%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">100 (27%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">KTA</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">18 227 (62%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">266 (71%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">KTA</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">18 227 (62%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">266 (71%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">VVC</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">22 787 (77%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">326 (87%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">VVC</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">22 787 (77%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">326 (87%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Cathéter de dialyse</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">5 864 (20%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">119 (32%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Cathéter de dialyse</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">5 864 (20%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">119 (32%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">ECMO</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">1 563 (5,3%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">24 (6,4%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">0,3</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">0,4</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">ECMO</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">1 563 (5,3%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">24 (6,4%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">0,3</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">0,4</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">hc_catheter_majeur</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1"><br>
-</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2"><br>
-</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">CGR</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">2 237 (7,6%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">64 (17%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;0</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">6 429 (22%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">46 (12%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value"><br>
-</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value"><br>
-</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">PFC</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">147 (0,5%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">7 (1,9%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">0,003</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">0,005</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;1</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">23 148 (78%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">330 (88%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value"><br>
-</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value"><br>
-</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">CP</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">1 049 (3,5%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">47 (13%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">CGR</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">2 237 (7,6%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">64 (17%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Transfusion</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">2 855 (9,7%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">84 (22%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">PFC</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">147 (0,5%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">7 (1,9%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">0,003</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">0,005</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">CP</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">1 049 (3,5%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">47 (13%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Transfusion</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">2 855 (9,7%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">84 (22%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">NaCl à l'hémoculture</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1"><br>
-</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2"><br>
-</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&gt;0,9</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&gt;0,9</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">28 377 (96%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">361 (96%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value"><br>
-</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value"><br>
-</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">1 200 (4,1%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">15 (4,0%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value"><br>
-</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value"><br>
-</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d'infection  label">Amines</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_1">9 802 (33%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  stat_2">177 (47%)</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d'infection  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  label">Amines</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_1">9 802 (33%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  stat_2">177 (47%)</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données dans les 48 heures précédant la suspicion d&#39;infection  q.value">&lt;0,001</td>
 </tr>
 <tr class="gt_group_heading_row even">
-<th colspan="5" id="Données au cours de l'hospitalisation préalablement à l'hémoculture" class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Données au cours de l'hospitalisation préalablement à l'hémoculture</th>
+<td colspan="5" id="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture" class="gt_group_heading" data-quarto-table-cell-role="th" style="font-weight: bold" scope="colgroup">Données au cours de l'hospitalisation préalablement à l'hémoculture</td>
 </tr>
 <tr class="gt_row_group_first odd">
-<td class="gt_row gt_left" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  label">Durée de ventilation invasive</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_1">130 (0, 6 205)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_2">158 (0, 6 245)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  p.value">0,030</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  q.value">0,045</td>
+<td class="gt_row gt_left" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label">Durée de ventilation invasive</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_1">130 (0, 6 205)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_2">158 (0, 6 245)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  p.value">0,030</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  q.value">0,045</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  label">Durée de nutrition parentérale</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_1">0,0 (0,0, 161,0)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_2">1,5 (0,0, 77,0)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label">Durée de nutrition parentérale</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_1">0,0 (0,0, 161,0)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_2">1,5 (0,0, 77,0)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  label">Durée de VVC</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_1">9 (0, 235)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_2">10 (0, 218)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  p.value">0,030</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  q.value">0,045</td>
+<td class="gt_row gt_left" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label">Durée de VVC</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_1">9 (0, 235)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_2">10 (0, 218)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  p.value">0,030</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  q.value">0,045</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  label">Durée de KTA</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_1">8 (0, 178)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_2">9 (0, 93)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  p.value">0,026</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  q.value">0,045</td>
+<td class="gt_row gt_left" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label">Durée de KTA</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_1">8 (0, 178)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_2">9 (0, 93)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  p.value">0,026</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  q.value">0,045</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  label">Durée de KTD</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_1">0 (0, 227)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_2">0 (0, 144)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label">Durée de KTD</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_1">0 (0, 227)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_2">0 (0, 144)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  q.value">&lt;0,001</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  label">Durée ECMO</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_1">0,00 (0,00, 88,00)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_2">0,00 (0,00, 90,00)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  p.value">0,14</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  q.value">0,2</td>
+<td class="gt_row gt_left" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label">Durée ECMO</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_1">0,00 (0,00, 88,00)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_2">0,00 (0,00, 90,00)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  p.value">0,14</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  q.value">0,2</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  label">Durée ATBT</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_1">8 (0, 244)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_2">8 (0, 151)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  p.value">0,021</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  q.value">0,043</td>
+<td class="gt_row gt_left" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label">Durée ATBT</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_1">8 (0, 244)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_2">8 (0, 151)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  p.value">0,021</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  q.value">0,043</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  label">Durée CTC</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_1">0 (0, 267)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_2">2 (0, 270)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label">Durée CTC</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_1">0 (0, 267)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_2">2 (0, 270)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  label">Durée immunosuppression</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_1">0,00 (0,00, 163,00)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_2">0,00 (0,00, 35,00)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  p.value">0,5</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  q.value">0,5</td>
+<td class="gt_row gt_left" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label">Durée immunosuppression</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_1">0,00 (0,00, 163,00)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_2">0,00 (0,00, 35,00)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  p.value">0,5</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  q.value">0,5</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  label">Durée neutropénie</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_1">0,00 (0,00, 23,00)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_2">0,00 (0,00, 16,00)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  p.value">0,2</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  q.value">0,3</td>
+<td class="gt_row gt_left" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label">Durée neutropénie</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_1">0,00 (0,00, 23,00)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_2">0,00 (0,00, 16,00)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  p.value">0,2</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  q.value">0,3</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  label">Durée neutrophilie</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_1">3,0 (0,0, 69,0)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_2">4,0 (0,0, 69,0)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  p.value">0,003</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  q.value">0,007</td>
+<td class="gt_row gt_left" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label">Durée neutrophilie</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_1">3,0 (0,0, 69,0)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_2">4,0 (0,0, 69,0)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  p.value">0,003</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  q.value">0,007</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  label">Durée lymphopénie</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_1">0,00 (0,00, 59,00)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_2">0,00 (0,00, 14,00)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label">Durée lymphopénie</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_1">0,00 (0,00, 59,00)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_2">0,00 (0,00, 14,00)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  label">Nombres CGR avant l'hémoculture</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_1">1 (0, 132)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_2">3 (0, 85)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label">Nombres CGR avant l'hémoculture</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_1">1 (0, 132)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_2">3 (0, 85)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  q.value">&lt;0,001</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  label">Nombres PFC avant l'hémoculture</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_1">0,00 (0,00, 326,00)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_2">0,00 (0,00, 80,00)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label">Nombres PFC avant l'hémoculture</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_1">0,00 (0,00, 326,00)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_2">0,00 (0,00, 80,00)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  q.value">&lt;0,001</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  label">Nombres CP avant l'hémoculture</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_1">0,00 (0,00, 104,00)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_2">0,00 (0,00, 48,00)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  p.value">&lt;0,001</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  q.value">&lt;0,001</td>
+<td class="gt_row gt_left" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label">Nombres CP avant l'hémoculture</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_1">0,00 (0,00, 104,00)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_2">0,00 (0,00, 48,00)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  p.value">&lt;0,001</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  q.value">&lt;0,001</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  label">Fibroscopie pendant l'hospitalisation</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_1">5 291 (18%)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_2">78 (21%)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  p.value">0,2</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  q.value">0,2</td>
+<td class="gt_row gt_left" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label">Fibroscopie pendant l'hospitalisation</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_1">5 291 (18%)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_2">78 (21%)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  p.value">0,2</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  q.value">0,2</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  label">Chirurgie majeure pendant l'hospitalisation</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_1">8 599 (29%)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_2">120 (32%)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  p.value">0,2</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  q.value">0,3</td>
+<td class="gt_row gt_left" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label">Chirurgie majeure pendant l'hospitalisation</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_1">8 599 (29%)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_2">120 (32%)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  p.value">0,2</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  q.value">0,3</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  label">Chirurgie abdominale pendant l'hospitalisation</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_1">5 394 (18%)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  stat_2">68 (18%)</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  p.value">&gt;0,9</td>
-<td class="gt_row gt_center" headers="Données au cours de l'hospitalisation préalablement à l'hémoculture  q.value">&gt;0,9</td>
+<td class="gt_row gt_left" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label">Chirurgie abdominale pendant l'hospitalisation</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_1">5 394 (18%)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_2">68 (18%)</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  p.value">&gt;0,9</td>
+<td class="gt_row gt_center" headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  q.value">&gt;0,9</td>
 </tr>
 </tbody><tfoot>
 <tr class="gt_footnotes odd">
@@ -1808,1301 +1861,104 @@ N = 376<span class="gt_footnote_marks" style="white-space:nowrap;font-style:ital
 </div>
 </div>
 </section>
-<section id="modélisation" class="level4">
-<h4 class="anchored" data-anchor-id="modélisation">Modélisation</h4>
-<p>AJOUTER la suite xxxxxx</p>
-</section>
-</section>
-</section>
-<section id="bibliographie" class="level2">
-<h2 class="anchored" data-anchor-id="bibliographie">Bibliographie</h2>
-<p>1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Arendrup MC, Sulim S, Holm A, Nielsen L, Nielsen SD, Knudsen JD, et al.&nbsp;Diagnostic Issues, Clinical Characteristics, and Outcomes for Patients with Fungemia.&nbsp;J Clin Microbiol. sept&nbsp;2011;49(9):3300‑8.&nbsp;</p>
-<p>2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Paiva JA, Pereira JM,&nbsp;Tabah&nbsp;A, Mikstacki A, De Carvalho FB,&nbsp;Koulenti&nbsp;D, et al.&nbsp;Characteristics and risk factors for 28-day mortality of hospital&nbsp;acquired&nbsp;fungemias&nbsp;in ICUs: data from the EUROBACT study. Crit Care. 9 mars 2016;20(1):53.&nbsp;</p>
-<p>3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Arendrup MC. Epidemiology of invasive candidiasis: Current Opinion in Critical Care. oct 2010;16(5):445‑52.&nbsp;</p>
-<p>4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Vincent JL. International Study of the Prevalence and Outcomes of Infection in Intensive Care Units.&nbsp;JAMA. 2&nbsp;déc&nbsp;2009;302(21):2323.&nbsp;</p>
-<p>5.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The French Mycosis Study Group,&nbsp;Lortholary&nbsp;O,&nbsp;Renaudat&nbsp;C,&nbsp;Sitbon&nbsp;K, Madec Y,&nbsp;Denoeud-Ndam L, et al.&nbsp;Worrisome&nbsp;trends in incidence and mortality of candidemia in intensive care units (Paris area, 2002–2010).&nbsp;Intensive Care Med. sept 2014;40(9):1303‑12&nbsp;</p>
-<p>6.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lamoth&nbsp;F, Lockhart SR, Berkow EL, Calandra T. Changes in the epidemiological landscape of invasive candidiasis. Journal of Antimicrobial Chemotherapy. 1&nbsp;janv&nbsp;2018;73(suppl_1):i4‑13.&nbsp;</p>
-<p>7.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Cleveland AA, Farley MM, Harrison LH, Stein B, Hollick R, Lockhart SR, et al.&nbsp;Changes in Incidence and Antifungal Drug Resistance in Candidemia: Results&nbsp;From&nbsp;Population-Based Laboratory Surveillance in Atlanta and Baltimore, 2008-2011. Clinical Infectious Diseases. 15&nbsp;nov&nbsp;2012;55(10):1352‑61.&nbsp;</p>
-<p>8.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kollef&nbsp;M, Micek S, Hampton N, Doherty JA, Kumar A. Septic Shock Attributed to Candida Infection: Importance of Empiric Therapy and Source Control. Clinical Infectious Diseases. 15&nbsp;juin&nbsp;2012;54(12):1739‑46.&nbsp;</p>
-<p>9.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Guinea J. Global trends in the distribution of Candida species causing candidemia. Clinical Microbiology and Infection.&nbsp;juin&nbsp;2014;20:510.&nbsp;</p>
-<p>10.&nbsp; Garey KW, Rege M, Pai MP, Mingo DE, Suda KJ, Turpin RS, et al.&nbsp;Time to Initiation of Fluconazole Therapy Impacts Mortality in Patients with Candidemia: A Multi-Institutional Study.&nbsp;</p>
-<p>11.&nbsp; Timsit JF, Azoulay E, Schwebel C, Charles PE, Cornet M, Souweine B, et al.&nbsp;Empirical Micafungin Treatment and Survival Without Invasive Fungal Infection in Adults With ICU-Acquired Sepsis,&nbsp;<em>Candida</em>&nbsp;Colonization, and Multiple Organ Failure: The EMPIRICUS Randomized Clinical Trial. JAMA. 18 oct 2016;316(15):1555.</p>
-<p><strong>________________________________________________________________________________________________</strong></p>
-</section>
-<section id="supplementary" class="level2">
-<h2 class="anchored" data-anchor-id="supplementary">SUPPLEMENTARY</h2>
-<section id="données-manquantes-1" class="level3">
-<h3 class="anchored" data-anchor-id="données-manquantes-1">Données manquantes</h3>
-<p>Le nombre de données manquantes à la phase à l’issue de l’extraction sont détaillées dans le tableau ci-dessous.</p>
-<div class="cell" data-tbl-cap="Tableau des données manquantes">
-<div class="cell-output-display">
-<div id="uzyihxvrbr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#uzyihxvrbr table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#uzyihxvrbr thead, #uzyihxvrbr tbody, #uzyihxvrbr tfoot, #uzyihxvrbr tr, #uzyihxvrbr td, #uzyihxvrbr th {
-  border-style: none;
-}
-
-#uzyihxvrbr p {
-  margin: 0;
-  padding: 0;
-}
-
-#uzyihxvrbr .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#uzyihxvrbr .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#uzyihxvrbr .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#uzyihxvrbr .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#uzyihxvrbr .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#uzyihxvrbr .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#uzyihxvrbr .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#uzyihxvrbr .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#uzyihxvrbr .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#uzyihxvrbr .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#uzyihxvrbr .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#uzyihxvrbr .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#uzyihxvrbr .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#uzyihxvrbr .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#uzyihxvrbr .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#uzyihxvrbr .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#uzyihxvrbr .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#uzyihxvrbr .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#uzyihxvrbr .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#uzyihxvrbr .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#uzyihxvrbr .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#uzyihxvrbr .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#uzyihxvrbr .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#uzyihxvrbr .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#uzyihxvrbr .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#uzyihxvrbr .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#uzyihxvrbr .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#uzyihxvrbr .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#uzyihxvrbr .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#uzyihxvrbr .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#uzyihxvrbr .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#uzyihxvrbr .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#uzyihxvrbr .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#uzyihxvrbr .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#uzyihxvrbr .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#uzyihxvrbr .gt_left {
-  text-align: left;
-}
-
-#uzyihxvrbr .gt_center {
-  text-align: center;
-}
-
-#uzyihxvrbr .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#uzyihxvrbr .gt_font_normal {
-  font-weight: normal;
-}
-
-#uzyihxvrbr .gt_font_bold {
-  font-weight: bold;
-}
-
-#uzyihxvrbr .gt_font_italic {
-  font-style: italic;
-}
-
-#uzyihxvrbr .gt_super {
-  font-size: 65%;
-}
-
-#uzyihxvrbr .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#uzyihxvrbr .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#uzyihxvrbr .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#uzyihxvrbr .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#uzyihxvrbr .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#uzyihxvrbr .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#uzyihxvrbr .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#uzyihxvrbr .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#uzyihxvrbr div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-
-<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
-<caption>Tableau des données manquantes</caption>
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="gt_col_headings header">
-<th id="label" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"><strong>Caractéristique</strong></th>
-<th id="stat_0" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>N = 29 953</strong><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span></th>
-</tr>
-</thead>
-<tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">resultat_candida_def</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">groupehc</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">date_adm_hospit</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">date_adm_rea</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">date_hemoc</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">date_sortie_rea</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">duree_hospit</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">date_deces</td>
-<td class="gt_row gt_center" headers="stat_0">20 873 (70 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">deces_rea</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">demo_type_rea</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Age</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Sexe</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Antécédent de maladie hématologique maligne</td>
-<td class="gt_row gt_center" headers="stat_0">358 (1,2 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Antécédent de diabète</td>
-<td class="gt_row gt_center" headers="stat_0">345 (1,2 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Antécédent de pancréatite aigue</td>
-<td class="gt_row gt_center" headers="stat_0">358 (1,2 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Antécédent de tumeur solide</td>
-<td class="gt_row gt_center" headers="stat_0">357 (1,2 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">demo_atcd_transplantation</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">adm_choc</td>
-<td class="gt_row gt_center" headers="stat_0">5 909 (20 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">IGS 2 à l'admission</td>
-<td class="gt_row gt_center" headers="stat_0">1 689 (5,6 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">adm_sofa_tot</td>
-<td class="gt_row gt_center" headers="stat_0">18 174 (61 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">adm_sofa_renal</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;0</td>
-<td class="gt_row gt_center" headers="stat_0">253 (0,8 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;1</td>
-<td class="gt_row gt_center" headers="stat_0">253 (0,8 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;2</td>
-<td class="gt_row gt_center" headers="stat_0">253 (0,8 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;3</td>
-<td class="gt_row gt_center" headers="stat_0">253 (0,8 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;4</td>
-<td class="gt_row gt_center" headers="stat_0">253 (0,8 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Admission pour pancréatite aigue</td>
-<td class="gt_row gt_center" headers="stat_0">1 711 (5,7 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Poids à l'admission</td>
-<td class="gt_row gt_center" headers="stat_0">1 861 (6,2 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Température minimale (en °C) à l'admission</td>
-<td class="gt_row gt_center" headers="stat_0">31 (0,1 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Température maximale (en °C) à l'admission</td>
-<td class="gt_row gt_center" headers="stat_0">31 (0,1 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Diurèse totale à l'admission</td>
-<td class="gt_row gt_center" headers="stat_0">4 786 (16 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Diurèse normalisée</td>
-<td class="gt_row gt_center" headers="stat_0">5 113 (17 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Créatinémie maximale (en mg/L) à l'admission</td>
-<td class="gt_row gt_center" headers="stat_0">434 (1,4 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Urée maximale (en g/L) à l'admission</td>
-<td class="gt_row gt_center" headers="stat_0">388 (1,3 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">PaO2/FiO2 minimal à l'admission</td>
-<td class="gt_row gt_center" headers="stat_0">3 118 (10 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Lactatémie maximale (en mmol/L) à l'admission</td>
-<td class="gt_row gt_center" headers="stat_0">7 944 (27 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Lactatémie moyenne (en mmol/L) à l'admission</td>
-<td class="gt_row gt_center" headers="stat_0">7 944 (27 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">adm_leuco_min</td>
-<td class="gt_row gt_center" headers="stat_0">2 372 (7,9 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Neutrophiles (en G/L) à l'admission</td>
-<td class="gt_row gt_center" headers="stat_0">14 369 (48 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Lymphocytes (en G/L) à l'admission</td>
-<td class="gt_row gt_center" headers="stat_0">14 373 (48 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Ventilation invasive à l'admission</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Dialyse à l'admission</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Culot Globulaires à l'admission</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Plasma frais congelé à l'admission</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Culot plaquettaire à l'admission</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">adm_transfu</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">adm_albu_20</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">adm_albu_4</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">adm_bicar</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">adm_gelo</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">adm_nacl</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">adm_plasmalyte</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">adm_ringer</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">adm_amines</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">adm_adre</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">adm_dobu</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">adm_isoprenaline</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">adm_noradre</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">adm_terlipressine</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">hc_delai</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">hc_choc</td>
-<td class="gt_row gt_center" headers="stat_0">10 149 (34 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">SOFA rénal à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;0</td>
-<td class="gt_row gt_center" headers="stat_0">1 184 (4,0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;1</td>
-<td class="gt_row gt_center" headers="stat_0">1 184 (4,0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;2</td>
-<td class="gt_row gt_center" headers="stat_0">1 184 (4,0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;3</td>
-<td class="gt_row gt_center" headers="stat_0">1 184 (4,0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;4</td>
-<td class="gt_row gt_center" headers="stat_0">1 184 (4,0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">SOFA total à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">23 012 (77 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Température minimale à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">14 (&lt;0,1 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Température maximale à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">14 (&lt;0,1 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Diurèse totale à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">5 109 (17 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Diurèse normalisée à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">5 449 (18 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">PaO2/FiO2 à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">10 589 (35 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Créatinémie à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">3 410 (11 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Urémie à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">3 358 (11 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Lactatémie à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">13 248 (44 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Lactatémie moy à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">13 248 (44 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Neutropénie min à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">20 868 (70 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">hc_leuco_min</td>
-<td class="gt_row gt_center" headers="stat_0">7 951 (27 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Lymphopénie à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">20 879 (70 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Glucanes à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">12 616 (42 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Mannanes à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">13 628 (45 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Ventilation invasive à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Dialyse à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">KTA à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">VVC à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Cathéter de dialyse à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">ECMO à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">hc_catheter_majeur</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">CGR à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">PFC à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">CP à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">hc_transfu</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Albu 20% à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Albu 4% à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Bicarbonates à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Gélo à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">NaCl à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Plasmalyte à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">RL à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Voluven à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;0</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;500</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">hc_amines</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Adrénaline à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Dobutamine à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Isopréaline à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Noradrénaline à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Terlipressine à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0"><br>
-</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Oui</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Durée de ventilation invasive à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Durée de nutrition parentérale à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Durée de VVC à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Durée de KTA à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Durée de KTD à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Durée ECMO à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Durée ATBT à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Durée CTC à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Durée immunosuppression à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Durée neutropénie à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">2 086 (7,0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Durée neutrophilie à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">2 086 (7,0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Durée lymphopénie à l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">2 086 (7,0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Nombres CGR avant l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Nombres PFC avant l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Nombres CP avant l'hémoculture</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Fibroscopie pendant l'hospitalisation</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">Chirurgie majeure pendant l'hospitalisation</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">Chirurgie abdominale pendant l'hospitalisation</td>
-<td class="gt_row gt_center" headers="stat_0">0 (0 %)</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">date_candidemie</td>
-<td class="gt_row gt_center" headers="stat_0">29 577 (99 %)</td>
-</tr>
-</tbody><tfoot>
-<tr class="gt_footnotes odd">
-<td colspan="2" class="gt_footnote"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> Nombre de NA (% de NA)</td>
-</tr>
-</tfoot>
-
-</table>
-
-</div>
-</div>
-</div>
-</section>
-<section id="modélisation-stepwise-à-partir-dune-imputation-simple" class="level3">
-<h3 class="anchored" data-anchor-id="modélisation-stepwise-à-partir-dune-imputation-simple">Modélisation stepwise à partir d’une imputation simple</h3>
-<div class="cell quarto-layout-panel" data-layout-ncol="2">
+<section id="modélisation-stepwise-à-partir-dune-imputation-simple" class="level2">
+<h2>Modélisation stepwise à partir d’une imputation simple</h2>
+<p>A titre exploratoire, des modélisations stepwise forward et backward ont été réalisées à partir d’un unique jeu imputé.</p>
+<div class="cell quarto-layout-panel" data-layout-ncol="2" data-layout-align="center">
 <div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="M2MSR_files/figure-html/stepwise_imp_1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Forrest Plot de la régression forward"><img src="M2MSR_files/figure-html/stepwise_imp_1-1.png" class="img-fluid figure-img" width="672" alt="Forrest Plot de la régression forward"></a></p>
+<figure>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="figures/FP_fwd.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Forrest Plot de la régression forward"><img src="figures/FP_fwd.png" class="img-fluid quarto-figure quarto-figure-center" width="1000" alt="Forrest Plot de la régression forward" /></a></p>
+</figure>
+</div>
 <figcaption>Forrest Plot de la régression forward</figcaption>
 </figure>
 </div>
 </div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="M2MSR_files/figure-html/stepwise_imp_1-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="ROC curve de la régression forward"><img src="M2MSR_files/figure-html/stepwise_imp_1-2.png" class="img-fluid figure-img" width="672" alt="ROC curve de la régression forward"></a></p>
-<figcaption>ROC curve de la régression forward</figcaption>
+<figure>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="figures/FP_bwd.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Forrest Plot de la régression backward"><img src="figures/FP_bwd.png" class="img-fluid quarto-figure quarto-figure-center" width="1000" alt="Forrest Plot de la régression backward" /></a></p>
+</figure>
+</div>
+<figcaption>Forrest Plot de la régression backward</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="M2MSR_files/figure-html/stepwise_imp_1-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Forrest Plot de la régression backward"><img src="M2MSR_files/figure-html/stepwise_imp_1-3.png" class="img-fluid figure-img" width="672" alt="Forrest Plot de la régression backward"></a></p>
-<figcaption>Forrest Plot de la régression backward</figcaption>
+<figure>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="figures/ROC_fwd.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="ROC curve de la régression forward"><img src="figures/ROC_fwd.png" class="img-fluid quarto-figure quarto-figure-center" width="1000" alt="ROC curve de la régression forward" /></a></p>
+</figure>
+</div>
+<figcaption>ROC curve de la régression forward</figcaption>
 </figure>
 </div>
 </div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="M2MSR_files/figure-html/stepwise_imp_1-4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="ROC curve de la régression backward"><img src="M2MSR_files/figure-html/stepwise_imp_1-4.png" class="img-fluid figure-img" width="672" alt="ROC curve de la régression backward"></a></p>
+<figure>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="figures/ROC_bwd.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="ROC curve de la régression backward"><img src="figures/ROC_bwd.png" class="img-fluid quarto-figure quarto-figure-center" width="1000" alt="ROC curve de la régression backward" /></a></p>
+</figure>
+</div>
 <figcaption>ROC curve de la régression backward</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
-<p>Figure x - Forrest plots &amp; AUC des modélisations stepwise simple</p>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="figures/CC_fwd.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Courbe de calibration de la régression forward"><img src="figures/CC_fwd.png" class="img-fluid quarto-figure quarto-figure-center" width="480" alt="Courbe de calibration de la régression forward" /></a></p>
+</figure>
+</div>
+<figcaption>Courbe de calibration de la régression forward</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="figures/CC_bwd.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Courbe de calibration de la régression backward"><img src="figures/CC_bwd.png" class="img-fluid quarto-figure quarto-figure-center" width="480" alt="Courbe de calibration de la régression backward" /></a></p>
+</figure>
+</div>
+<figcaption>Courbe de calibration de la régression backward</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p>Forrest plots, AUC &amp; Courbes de calibration des modélisations stepwise forward &amp; backward après imputation simple</p>
 </div>
 </div>
 </div>
 </section>
+<section id="code" class="level2">
+<h2>Code</h2>
+<p><a href="https://github.com/djoubar/M2MSR_candida">Voir le code sur GitHub</a></p>
 </section>
 </section>
 
 </main>
 <!-- /main column -->
-<script id="quarto-html-after-body" type="application/javascript">
+<script id = "quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
     const anchorJS = new window.AnchorJS();
@@ -3536,7 +2392,6 @@ N = 376<span class="gt_footnote_marks" style="white-space:nowrap;font-style:ital
 })();
           </script>
 
+</body>
 
-
-
-</body></html>
+</html>
