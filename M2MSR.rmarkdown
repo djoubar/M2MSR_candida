@@ -34,6 +34,7 @@ format:
     toc: true
     toc-depth: 3
 execute:
+  cache: true
   freeze: auto
   message: false
   warning: false
@@ -77,11 +78,11 @@ La population éligible est la suivante :
 
 ## Critère de jugement principal
 
-L'objectif de notre modélisation est la stratitification du risque de candidémie inaugurale acquise en soins intensifs/réanimation. Afin d'être au plus proche de la réflexion du clinicien, nous procédons à un regroupement des hémocultures par épisode de suspicion d'infection. En effet, lors d'une suspicion d'infection, plusieurs hémocultures sont prélevées à des temporalités proches, afin d'identifier au mieux l'agent infectieux responsable & un site d'infection s'il en existe (exemple : infections de cathéters). Les hémocultures sont donc regroupées jusqu'à ce que la dernière hémoculture prélevée pour un même patient soit séparée d'un délai strictement supérieur à 24 heures de la prochaine hémoculture. Une fois les hémocultures regroupées, si l'une des hémocultures d'un groupe était positive à *Candida*, nous considérions toutes les hémocultures de ce groupe comme positives à *Candida*. Enfin, seules les données de la première hémoculture du groupe étaient gardées, afin de placer notre modélisation à la phase la plus initiale de l'épisode de suspicion d'infection.
+L'objectif de notre modélisation est la stratitification du risque de candidémie inaugurale acquise en soins intensifs/réanimation. Afin d'être au plus proche de la réflexion du clinicien, nous procédons à un regroupement des hémocultures par épisode de suspicion d'infection. En effet, lors d'une suspicion d'infection, plusieurs hémocultures sont prélevées à des temporalités proches, afin d'identifier au mieux l'agent infectieux responsable & un site d'infection s'il en existe ([exemple]{.underline} : infections de cathéters). Les hémocultures sont donc regroupées jusqu'à ce que la dernière hémoculture prélevée pour un même patient soit séparée d'un délai strictement supérieur à 24 heures de la prochaine hémoculture. Une fois les hémocultures regroupées, si l'une des hémocultures d'un groupe était positive à *Candida*, nous considérions toutes les hémocultures de ce groupe comme positives à *Candida*. Enfin, seules les données de la première hémoculture du groupe étaient gardées, afin de placer notre modélisation à la phase la plus initiale de l'épisode de suspicion d'infection.
 
 L'objectif étant d'identifier une candidémie inaugurale, toutes les hémocultures suivants une hémoculture positive à *Candida* sont supprimées.
 
-La méthode de regroupement est résumée dans la figure @fig-regroupement.
+La méthode de regroupement est résumée dans la @fig-regroupement.
 
 ```{r}
 #| label: fig-regroupement
@@ -95,17 +96,19 @@ knitr::include_graphics("figures/regroupement.png")
 
 Les variables candidates pour la modélisation étaient identifiées en fonction de facteurs de risques identifiés dans la littérature (18). Les données démographiques sont récoltées à l'admission et considérées comme inchangées au décours. Ces données portaient sur le lieu d'hospitalisation, l'âge à l'admission, les antécédents de maladie hématologique maligne, de transplantation d'organe solide, de diabète, de pancréatite aigue, et de tumeurs d'organes solides.
 
-Les données cliniques et biologiques reflétants l'état à l'admission du patient du patient sont extraites dans les 24 heures suivant l'horaire d'admission en soins intensifs, ainsi que dans les 24 heures précédant la réalisation de l'hémoculture : score IGS2, score SOFA, poids, températures minimale et maximale, diurèse totale et normalisée, exposition à des amines (adrénaline, noradrénaline, terlipressine, dobutamine), la présence d'une ventilation invasive, la présence d'une épuration extra-rénale, ainsi que la présence d'un remplissage vasculaire. Les valeurs maximales de créatinémie, lactatémie et urémie étaient récoltées ; les valeurs minimales de leucocytémie et de rapport PaO2/FiO2. La présence d'un état de choc était définie par la présence d'amines, d'une lactatémie \> 2 mmol/L ou d'un score SOFA cardiovasculaire \>{.underline} à 3.
+Les données cliniques et biologiques reflétants l'état à l'admission du patient du patient sont extraites dans les 24 heures suivant l'horaire d'admission en soins intensifs, ainsi que dans les 24 heures précédant la réalisation de l'hémoculture : score IGS2, score SOFA, poids, températures minimale et maximale, diurèse totale et normalisée, exposition à des amines (adrénaline, noradrénaline, terlipressine, dobutamine), la présence d'une ventilation invasive, la présence d'une épuration extra-rénale, ainsi que la présence d'un remplissage vasculaire. Les valeurs maximales de créatinémie, lactatémie et urémie étaient récoltées ; les valeurs minimales de leucocytémie et de rapport PaO2/FiO2. La présence d'un état de choc était définie par la présence d'amines, d'une lactatémie [\>]{.underline} 2 mmol/L ou d'un score SOFA cardiovasculaire [\>]{.underline} à 3.
 
 Afin de quantifier les expositions au cours de l'hospitalisation en réanimation, la présence de fibroscopie(s) digestive(s), de chirurgie(s) abdominale(s), de chirurgie(s) majeures, les durées de ventilation mécanique invasive, de nutrition parentérale, les durées de présence de cathéters (artériels, veineux centraux, de dialyse, ou d'ECMO), la durée d'exposition aux antibiotiques, aux immunosuppresseurs ou aux corticoïdes, et le nombre de culots globulaires, plaquettaires & poches de plasma étaient également récoltées. Les durées de neutrophilie (définie comme \> 7 G/L), neutropénie (définie comme \< 0,5 G/L) et de lymphopénie (définie comme lymphocytes \< 0.1 G/L) étaient identifiées.
 
+## Données manquantes
+
+A l'issue de l'extraction des données, les données manquantes (\< 30%) supposées *Missing-At-Random* ont été imputées par imputation multiple (équation en chaine avec 50 imputations) via régression linéaire pénalisée lasso. pour les variables continues & par régression logistique pour les variables catégorielles.
+
 ## Analyses statistiques
 
-Les variables catégorielles sont décrites en effectifs & pourcentage. Les variables continues sont présentées par médiane, minimale et maximale. Une description démographique & univariée est réalisée dans un premier temps. Sont réalisées dans un second temps des analyses bivariées afin de de décrire le lien entre la présence d'une candidémie & les variables extraites. Les variables pertinentes cliniquement, constantes avec la littérature, ou en faveur d'un sur-risque de candidémie lors de l'analyse bivariée ont été incluses dans une analyse multivariée. L'analyse multivariée est réalisée via régression logistique mixte avec effet aléatoire via le patient. La modélisation finale était évaluée par évaluation de l'aire sous la courbe ROC (Receiving Operation Characteristic) & par courbe de calibration.
+Les variables catégorielles sont décrites en effectifs & pourcentage. Les variables continues sont présentées par médiane, minimale et maximale. Les données démographiques sont identifiées et décrites en premier lieu. Une première analyse bivariée était réalisée via régression logistique simple. Les Odds Ratios (OR) sont rapportés avec intervalle de confiance à 95% près pooling selon les règles de Rubin. Les variables pertinentes cliniquement, constantes avec la littérature, ou en faveur d'un sur-risque de candidémie lors de l'analyse bivariée ont été incluses dans une analyse multivariée. L'analyse multivariée est réalisée via régression logistique mixte avec effet aléatoire via le patient. La modélisation finale était évaluée par évaluation de l'aire sous la courbe ROC (Receiving Operation Characteristic) & par courbe de calibration.
 
-Tous les tests statistiques étaient bilatéraux avec un niveau de significativité fixé à p \< 0.05. Les variables catégorielles sont décrites en effectifs & pourcentage. Les variables continues sont présentées par médiane, minimale et maximale. \### Données manquantes
-
-Après extraction, certaines données n'ont pu être retrouvées, faute d'analyse ou de réalisation de l'examen. Un tableau récapitulatif des données manquantes est présenté ci-dessous. Des imputations multiples sont réalisées pour les données manquantes considérées *Missing at Random.*
+Tous les tests statistiques étaient bilatéraux avec un niveau de significativité fixé à p \< 0.05. Les variables catégorielles sont décrites en effectifs & pourcentage. Les variables continues sont présentées par médiane, minimale et maximale.
 
 ## Cadre réglementaire
 
@@ -115,7 +118,9 @@ La conformité au Règlement Général sur la Protection des Données (RGPD) du 
 
 ## Caractéristiques de la population
 
-Après extraction des hémocultures de l'entrepôt de données de santé, nous procédons à une analyse exploratoire des données. Nous identifions donc **104 620** hémocultures, avec **9813 séjours**, chez **9714** individus (@fig_flowchart). A noter qu'en moyenne, chaque individu se voyait prélever [2 hémocultures par séjour]{.underline}.
+Après extraction des hémocultures de l'entrepôt de données de santé, nous procédons à une analyse exploratoire des données. Nous identifions donc **104 620** hémocultures, **31 671 épisodes de sepsis** sur **9813 séjours**, chez **9714** individus (@fig_flowchart). Parmis ces épisodes, 376 (1,2%) étaient attribuables à une candidémie inaugurale ; contre 29 577 liés à une autre cause ou sans cause identifiée.
+
+A noter qu'en moyenne, chaque individu se voyait prélever [2 hémocultures par séjour]{.underline}.
 
 ```{r}
 #| label: fig-flowchart
@@ -127,14 +132,16 @@ knitr::include_graphics("figures/flow_chart.png")
 
 ## Description de la population
 
-Dans notre population d'étude, les patients étaient majoritairement de sexe masculin (66%), et d'âge médian de 61 ans. 4.7% présentaient des antécédents de maladie hématologique maligne, 26% de diabète, et 18% de tumeurs solides. A l'admission, 84% présentaient un état de choc et 67 % étaient ventilés de manière invasive. L'ensemble de la description est représentée dans le \@tbl_demographique.
+Dans notre population d'étude, les patients étaient majoritairement de **sexe masculin (66%)**, et **d'âge médian de** **61 ans**. 4.7% présentaient des antécédents de maladie hématologique maligne, 26% de diabète, et 18% de tumeurs solides & 3.1% de transplantation d'organe solide. Au cours de leur hospitalisation, xx % de nos patients ont eu une chirurgie abdominale & xx % ont eu une fibroscopie digestive.
+
+A l'admission, 84% présentaient un état de choc et 67 % étaient ventilés de manière invasive. L'ensemble de la description est représentée dans le @tbl-demographique .
 
 ```{r}
-#| label: tbl_demographique
+#| label: tbl-demographique
 #| message: false
 #| warning: false
 #| code-fold: true
-#| tbl-cap: "Description démographique de la population"
+#| tbl-cap: "Description démographique de la population, données clinico-biologiques à l'admission en soins intensifs/réanimation"
 #| lightbox: true
 source("scripts/brutes/_setup.R")
 source("scripts/brutes/tbl1_demo.R")
@@ -146,13 +153,44 @@ tbl1_gt
 
 ## Modélisation
 
-En analyse univariée, xxx facteurs étaient associés au risque de candidémie. Les facteurs xxx étaient au contraire associés négativement. Les variables sélectionnées étaient ensuite analysée en régression multivariée. Les facteurs xxx .
+En analyse univariée, les facteurs associés étaient au risque de candidémie. Les facteurs xxx étaient au contraire associés négativement. Les variables sélectionnées étaient ensuite analysée en régression multivariée. Les facteurs xxx .
+
+```{r}
+
+
+```
 
 L'AUC étaient de xxx ; Se Sp VPP VPN. Courbe de calibration.
 
 ## Score et prédiction
 
 AJOUTER la suite xxxxxx
+
+## Analyse de survie
+
+### Courbe Kaplan Meier
+
+```{r}
+#| label: kaplan-meier
+#| fig-cap: "Courbe Kaplan Meier de la mortalité en réanimation selon la présence ou non d'une candidémie"
+#| lightbox: true
+#| fig-align: center
+source("scripts/survie/mod_cox.R")
+
+fig_km
+```
+
+### Modèle Fine & Gray
+
+```{r}
+#| label: fine-gray
+#| fig-cap: "Modèle FG"
+#| lightbox: true
+#| layout-ncol: 2
+source("scripts/survie/mod_fine_gray.R")
+
+fig_fp_fg
+```
 
 # [Discussion]{.underline}
 
@@ -164,62 +202,23 @@ Une autre force de notre étude est sa cohérence avec la littérature
 
 Notre étude est toutefois limitée par son caractère monocentrique, qui malgré un recrutement largerte d'informations entre les deux - Monocentrique - Complexité de l'équation \>\> implémenter dans logiciels au lit du malade ?
 
-# [Bibliographie]{.underline}
-
-1.      Arendrup MC, Sulim S, Holm A, Nielsen L, Nielsen SD, Knudsen JD, et al. Diagnostic Issues, Clinical Characteristics, and Outcomes for Patients with Fungemia. J Clin Microbiol. sept 2011;49(9):3300‑8. 
-
-2.      Paiva JA, Pereira JM, Tabah A, Mikstacki A, De Carvalho FB, Koulenti D, et al. Characteristics and risk factors for 28-day mortality of hospital acquired fungemias in ICUs: data from the EUROBACT study. Crit Care. 9 mars 2016;20(1):53. 
-
-3.      Arendrup MC. Epidemiology of invasive candidiasis: Current Opinion in Critical Care. oct 2010;16(5):445‑52. 
-
-4.      Vincent JL. International Study of the Prevalence and Outcomes of Infection in Intensive Care Units. JAMA. 2 déc 2009;302(21):2323. 
-
-5.      The French Mycosis Study Group, Lortholary O, Renaudat C, Sitbon K, Madec Y, Denoeud-Ndam L, et al. Worrisome trends in incidence and mortality of candidemia in intensive care units (Paris area, 2002–2010). Intensive Care Med. sept 2014;40(9):1303‑12 
-
-6.      Lamoth F, Lockhart SR, Berkow EL, Calandra T. Changes in the epidemiological landscape of invasive candidiasis. Journal of Antimicrobial Chemotherapy. 1 janv 2018;73(suppl_1):i4‑13. 
-
-7.      Cleveland AA, Farley MM, Harrison LH, Stein B, Hollick R, Lockhart SR, et al. Changes in Incidence and Antifungal Drug Resistance in Candidemia: Results From Population-Based Laboratory Surveillance in Atlanta and Baltimore, 2008-2011. Clinical Infectious Diseases. 15 nov 2012;55(10):1352‑61. 
-
-8.      Kollef M, Micek S, Hampton N, Doherty JA, Kumar A. Septic Shock Attributed to Candida Infection: Importance of Empiric Therapy and Source Control. Clinical Infectious Diseases. 15 juin 2012;54(12):1739‑46. 
-
-9.      Guinea J. Global trends in the distribution of Candida species causing candidemia. Clinical Microbiology and Infection. juin 2014;20:510. 
-
-10.  Garey KW, Rege M, Pai MP, Mingo DE, Suda KJ, Turpin RS, et al. Time to Initiation of Fluconazole Therapy Impacts Mortality in Patients with Candidemia: A Multi-Institutional Study. 
-
-11.  Timsit JF, Azoulay E, Schwebel C, Charles PE, Cornet M, Souweine B, et al. Empirical Micafungin Treatment and Survival Without Invasive Fungal Infection in Adults With ICU-Acquired Sepsis, *Candida* Colonization, and Multiple Organ Failure: The EMPIRICUS Randomized Clinical Trial. JAMA. 18 oct 2016;316(15):1555.
-
-**\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_**
+**\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_**
 
 # [Supplementary Data]{.underline}
 
 ## Données manquantes
 
-Le nombre de données manquantes à la phase à l'issue de l'extraction sont détaillées dans \@fig_NA . Seules les variables pour lesquelles des données manquantes étaient présentes sont représentées.
+Le nombre de données manquantes à la phase à l'issue de l'extraction sont détaillées dans @fig-NA. Seules les variables pour lesquelles des données manquantes étaient présentes sont représentées.
 
 ```{r}
-#| label: fig_NA
+#| label: fig-NA
 #| fig-cap: "Données manquantes"
 #| lightbox: true
 source("scripts/supplementary/fig_NA.R")
 figNA
 ```
 
-**\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_**
-
-## Comparaisons bivariées
-
-Nous réalisons une comparaison bi-variées, avec correction du risque d'inflation du risque alpha via la méthode de *false detection rate (FDR)*.
-
-```{r}
-#| label: tbl_bv
-#| tbl-cap: "Analyse bivariée de la survenue d'une candidémie"
-#| lightbox: true
-source("scripts/brutes/tbl2_bv.R")
-
-tbl2
-```
-
-## Modélisation stepwise à partir d'une imputation simple
+## Régression logistique simple, via stepwise forward, à partir d'une imputation simple
 
 A titre exploratoire, des modélisations stepwise forward et backward ont été réalisées à partir d'un unique jeu imputé.
 
@@ -244,6 +243,58 @@ knitr::include_graphics("figures/CC_fwd.png")
 knitr::include_graphics("figures/CC_bwd.png")
 ```
 
+## Comparaisons bivariées
+
+Nous réalisons une comparaison bi-variées, avec correction du risque d'inflation du risque alpha via la méthode de *false detection rate (FDR)* @tbl-bv .
+
+```{r}
+#| label: tbl-bv
+#| tbl-cap: "Analyse bivariée de la survenue d'une candidémie"
+#| lightbox: true
+source("scripts/brutes/tbl2_bv.R")
+
+tbl2
+```
+
 ## Code
 
 [Voir le code sur GitHub](https://github.com/djoubar/M2MSR_candida)
+
+# [Bibliographie]{.underline}
+
+1.  Arendrup MC, Sulim S, Holm A, Nielsen L, Nielsen SD, Knudsen JD, et al. Diagnostic Issues, Clinical Characteristics, and Outcomes for Patients with Fungemia. J Clin Microbiol. sept 2011;49(9):3300‑8. 
+
+2.  Paiva JA, Pereira JM, Tabah A, Mikstacki A, De Carvalho FB, Koulenti D, et al. Characteristics and risk factors for 28-day mortality of hospital acquired fungemias in ICUs: data from the EUROBACT study. Crit Care. 9 mars 2016;20(1):53. 
+
+3.  Arendrup MC. Epidemiology of invasive candidiasis: Current Opinion in Critical Care. oct 2010;16(5):445‑52. 
+
+4.  Vincent JL. International Study of the Prevalence and Outcomes of Infection in Intensive Care Units. JAMA. 2 déc 2009;302(21):2323. 
+
+5.  The French Mycosis Study Group, Lortholary O, Renaudat C, Sitbon K, Madec Y, Denoeud-Ndam L, et al. Worrisome trends in incidence and mortality of candidemia in intensive care units (Paris area, 2002–2010). Intensive Care Med. sept 2014;40(9):1303‑12 
+
+6.  Lamoth F, Lockhart SR, Berkow EL, Calandra T. Changes in the epidemiological landscape of invasive candidiasis. Journal of Antimicrobial Chemotherapy. 1 janv 2018;73(suppl_1):i4‑13. 
+
+7.  Cleveland AA, Farley MM, Harrison LH, Stein B, Hollick R, Lockhart SR, et al. Changes in Incidence and Antifungal Drug Resistance in Candidemia: Results From Population-Based Laboratory Surveillance in Atlanta and Baltimore, 2008-2011. Clinical Infectious Diseases. 15 nov 2012;55(10):1352‑61. 
+
+8.  Kollef M, Micek S, Hampton N, Doherty JA, Kumar A. Septic Shock Attributed to Candida Infection: Importance of Empiric Therapy and Source Control. Clinical Infectious Diseases. 15 juin 2012;54(12):1739‑46. 
+
+9.  Guinea J. Global trends in the distribution of Candida species causing candidemia. Clinical Microbiology and Infection. juin 2014;20:510. 
+
+10. Garey KW, Rege M, Pai MP, Mingo DE, Suda KJ, Turpin RS, et al. Time to Initiation of Fluconazole Therapy Impacts Mortality in Patients with Candidemia: A Multi-Institutional Study. 
+
+11. Timsit JF, Azoulay E, Schwebel C, Charles PE, Cornet M, Souweine B, et al. Empirical Micafungin Treatment and Survival Without Invasive Fungal Infection in Adults With ICU-Acquired Sepsis, *Candida* Colonization, and Multiple Organ Failure: The EMPIRICUS Randomized Clinical Trial. JAMA. 18 oct 2016;316(15):1555.
+
+12. Guillamet CV, Vazquez R, Micek ST, Ursu O, Kollef M. Development and validation of a clinical prediction rule for candidemia in hospitalized patients with severe sepsis and septic shock. Journal of Critical Care. août 2015;30(4):715‑20. doi:\[10.1016/j.jcrc.2015.03.010\]
+
+13. Leroy G, Lambiotte F, Thévenin D, Lemaire C, Parmentier E, Devos P, et al. Evaluation of « Candida score » in critically ill patients: a prospective, multicenter, observational, cohort study. Annals of Intensive Care. 2011;1(1):50. doi:\[10.1186/2110-5820-1-50\]
+
+14. Playford EG, Lipman J, Jones M, Lau AF, Kabir M, Chen SCA, et al. Problematic Dichotomization of Risk for Intensive Care Unit (ICU)–Acquired Invasive Candidiasis: Results Using a Risk-Predictive Model to Categorize 3 Levels of Risk From a Multicenter Prospective Cohort of Australian ICU Patients. Clin Infect Dis. 1 déc 2016;63(11):1463‑9. doi:\[10.1093/cid/ciw610\]
+
+15. Martin-Loeches I, Antonelli M, Cuenca-Estrella M, Dimopoulos G, Einav S, De Waele JJ, et al. ESICM/ESCMID task force on practical management of invasive candidiasis in critically ill patients. Intensive Care Med. juin 2019;45(6):789‑805. doi:\[10.1007/s00134-019-05599-w\]
+
+16. Cornely OA, Sprute R, Bassetti M, Chen SCA, Groll AH, Kurzai O, et al. Global guideline for the diagnosis and management of candidiasis: an initiative of the ECMM in cooperation with ISHAM and ASM. The Lancet Infectious Diseases. mai 2025;25(5):e280‑93. doi:\[10.1016/S1473-3099(24)00749-7\]
+
+17. Changement épidémiologie
+
+18. Méta analyse
+

@@ -8,6 +8,8 @@ M2MSR_files/
 figures/
 .Rproj.user
 .positai
-M2MSR.qmd
-M2MSR.docx
-M2MSR.pdf
+*.qmd
+*.docx
+*.pdf
+*.rmarkdown
+*.tex

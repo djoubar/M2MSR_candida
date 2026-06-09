@@ -1,44 +1,40 @@
 imp <- read_rds("donnees/df_impute.rds")
 
+
 fit <- with(
   imp,
   glmer(
-    resultat_candida_def ~ demo_type_rea +
-      demo_atcd_hemato +
-      demo_atcd_diabete +
-      adm_igs2 +
-      adm_diurese_norm +
+    resultat_candida_def ~ demo_age +
+      demo_type_rea +
       adm_lactates_max +
-      hc_delai +
-      hc_diurese_norm +
-      hc_pfio2_min +
-      hc_lactates_max +
-      hc_dialyse +
-      hc_vvc +
-      hc_ktd +
+      hc_vi_cat +
       hc_transfu +
-      hospit_vi_duree +
-      hospit_parenterale_duree +
-      hospit_vvc_duree +
-      hospit_kta_duree +
-      hospit_ktd_duree +
-      hospit_atb_duree +
-      hospit_cgr +
-      hospit_pfc +
-      hospit_cp +
-      hospit_fibro +
-      hospit_chirurgie_majeure +
-      hospit_chirurgie_abdominale +
+      hc_uree_max +
+      hc_dialyse +
+      hc_amines +
+      hc_choc +
+      hc_diurese_norm +
+      hc_vvc +
+      hc_cp +
+      hc_delai +
       hospit_ctc_duree +
+      hospit_immunosup_duree +
+      hospit_cgr +
+      hospit_parenterale_duree +
+      hospit_chirurgie_majeure +
+      hospit_vvc_duree +
       (1 | iep),
     family = "binomial"
   )
 )
-# tidy_fit <- broom.mixed::tidy(fit, conf.int = TRUE)
-# pooled_results <- pool(tidy_fit)
+# saveRDS(fit, file = "fit.rds")
+tidy_fit <- broom.mixed::tidy(fit, conf.int = TRUE)
+pooled_results <- pool(tidy_fit)
 pooled_results <- pool(fit)
 saveRDS(pooled_results, file = "mod_imp_meta.rds")
 summary(pooled_results)
+# saveRDS(fit, file = "fit.rds")
+
 # tbl_fit <- tbl_regression(
 #   imp,
 #   resultat_candida_def ~ . + (1 | iep),
@@ -50,17 +46,52 @@ summary(pooled_results)
 # )
 
 # # Afficher le tableau
-# tbl_fit |>
+# tbl_fit <-
+#   tbl_regression(fit, exponentiate = TRUE) |>
 #   as_gt() |>
 #   gtsave("tbl_rlog_imput.docx")
 
 #===============================================================================
 #                            FORREST PLOT
 #===============================================================================
+# pooled_results <- readRDS("models/mod_imp_meta.rds")
+
 summary_results <- summary(pooled_results)
 tidy_pooled <- pooled_results$pooled %>%
   mutate(
-    term = factor(term, levels = c("(Intercept)", "hospit_ctc_duree")),
+    term = factor(
+      term,
+      levels = c(
+        "(Intercept)",
+        "demo_type_reaMedicale",
+        "demo_atcd_hematoOui",
+        "demo_atcd_diabeteOui",
+        "adm_igs2",
+        "adm_diurese_norm",
+        "adm_lactates_max",
+        "hc_delai",
+        "hc_diurese_norm",
+        "hc_pfio2_min",
+        "hc_lactates_max",
+        "hc_dialyseOui",
+        "hc_vvcOui",
+        "hc_ktdOui",
+        "hc_transfu1",
+        "hospit_vi_duree",
+        "hospit_parenterale_duree",
+        "hospit_vvc_duree",
+        "hospit_kta_duree",
+        "hospit_ktd_duree",
+        "hospit_atb_duree",
+        "hospit_cgr",
+        "hospit_pfc",
+        "hospit_cp",
+        "hospit_fibroOui",
+        "hospit_chirurgie_majeureOui",
+        "hospit_chirurgie_abdominaleOui",
+        "hospit_ctc_duree"
+      )
+    ),
     std.error = summary_results$std.error,
     conf.low = estimate - 1.96 * std.error,
     conf.high = estimate + 1.96 * std.error,
@@ -69,8 +100,9 @@ tidy_pooled <- pooled_results$pooled %>%
     OR_high = exp(conf.high)
   ) %>%
   filter(term != "(Intercept)")
+saveRDS(tidy_pooled, file = "models/tidy_pooled.rds")
 
-
+tidy_pooled <- readRDS("models/tidy_pooled.rds")
 # Forest Plot avec IC
 ggplot(tidy_pooled, aes(x = OR, y = term)) +
   geom_point(size = 3, color = "blue") +
@@ -84,6 +116,113 @@ ggplot(tidy_pooled, aes(x = OR, y = term)) +
   scale_x_log10() +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 10, hjust = 0))
+
+#===============================================================================
+#                                 TESTS CL0DE
+#===============================================================================
+model_formula <- resultat_candida_def ~ demo_age +
+  demo_type_rea +
+  adm_lactates_max +
+  hc_vi_cat +
+  hc_transfu +
+  hc_uree_max +
+  hc_dialyse +
+  hc_amines +
+  hc_choc +
+  hc_diurese_norm +
+  hc_vvc +
+  hc_cp +
+  hc_delai +
+  hospit_ctc_duree +
+  hospit_immunosup_duree +
+  hospit_cgr +
+  hospit_parenterale_duree +
+  hospit_chirurgie_majeure +
+  hospit_vvc_duree +
+  (1 | iep)
+
+# ── Boucle unique sur les imputations ──────────────────────────────────────
+n_imp <- imp$m
+auc_list <- numeric(n_imp)
+roc_list <- vector("list", n_imp)
+cal_list <- vector("list", n_imp)
+
+for (i in seq_len(n_imp)) {
+  imp_data <- complete(imp, i)
+
+  fit_i <- glmer(model_formula, data = imp_data, family = "binomial")
+  probs <- predict(fit_i, type = "response")
+  outcome <- imp_data$resultat_candida_def
+
+  # AUC
+  roc_i <- roc(outcome, probs, quiet = TRUE)
+  auc_list[i] <- as.numeric(auc(roc_i))
+
+  # ROC
+  roc_list[[i]] <- data.frame(
+    fpr = 1 - roc_i$specificities,
+    tpr = roc_i$sensitivities
+  )
+
+  # Calibration (par déciles)
+  deciles <- ntile(probs, 10)
+  cal_list[[i]] <- data.frame(
+    decile = 1:10,
+    pred = tapply(probs, deciles, mean),
+    observed = tapply(as.numeric(outcome), deciles, mean)
+  )
+}
+
+# ── AUC poolée ────────────────────────────────────────────────────────────
+auc_pooled <- c(
+  mean = mean(auc_list),
+  lower = quantile(auc_list, 0.025),
+  upper = quantile(auc_list, 0.975)
+)
+cat(sprintf(
+  "AUC poolée : %.3f [%.3f – %.3f]\n",
+  auc_pooled["mean"],
+  auc_pooled["lower"],
+  auc_pooled["upper"]
+))
+
+# ── Courbe ROC poolée ─────────────────────────────────────────────────────
+roc_pooled <- bind_rows(roc_list) %>%
+  mutate(fpr = round(fpr, 3)) %>%
+  group_by(fpr) %>%
+  summarise(tpr = mean(tpr), .groups = "drop") %>%
+  arrange(fpr)
+
+ggplot(roc_pooled, aes(x = fpr, y = tpr)) +
+  geom_line(color = "blue", linewidth = 1) +
+  geom_abline(linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    x = 0.75,
+    y = 0.1,
+    label = sprintf("AUC = %.3f", auc_pooled["mean"]),
+    color = "blue",
+    size = 4
+  ) +
+  labs(x = "1 - Spécificité", y = "Sensibilité", title = "Courbe ROC poolée") +
+  theme_minimal() +
+  theme(aspect.ratio = 1)
+
+# ── Courbe de calibration poolée ──────────────────────────────────────────
+cal_pooled <- bind_rows(cal_list) %>%
+  group_by(decile) %>%
+  summarise(pred = mean(pred), observed = mean(observed), .groups = "drop")
+
+ggplot(cal_pooled, aes(x = pred, y = observed)) +
+  geom_point(size = 2) +
+  geom_line(color = "blue") +
+  geom_abline(linetype = "dashed", color = "red") +
+  labs(
+    x = "Probabilité prédite",
+    y = "Probabilité observée",
+    title = "Courbe de calibration poolée"
+  ) +
+  theme_minimal()
 
 #===============================================================================
 #                                  AUC/ROC

@@ -1,4 +1,4 @@
-# RhpcBLASctl::blas_set_num_threads(20)
+RhpcBLASctl::blas_set_num_threads(30)
 conflicted::conflicts_prefer(
   dplyr::filter,
   dplyr::rename,
@@ -42,8 +42,8 @@ library(survival)
 library(survminer)
 library(randomForest)
 library(rms)
-library(officer)
-
+library(riskRegression) # AUC des modèles FG
+library(pec) # AUC des modèles FG
 
 theme_gtsummary_language(language = "fr", decimal.mark = ",", big.mark = " ")
 set_flextable_defaults(

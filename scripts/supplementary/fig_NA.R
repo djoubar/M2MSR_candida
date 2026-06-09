@@ -49,6 +49,7 @@ figNA <-
     linewidth = 0.3 # Épaisseur de la ligne
   ) +
   geom_text(aes(label = round(pct_na, 1)), hjust = -0.3, colour = "black") +
+  theme(plot.label = element_text(size = 15)) +
   labs(
     x = "Pourcentage de valeurs manquantes (%)",
     y = "Variable",

@@ -100,32 +100,30 @@ df_stepwise <- complete(imp, 1) %>%
     nb_hemocultures = n(),
     resultat_candida_def = last(resultat_candida_def)
   ) %>%
-  ungroup()
+  ungroup() |>
+  select(-c(demo_uf, demo_centre, hc_glucanes_max, hc_mannanes_max))
 
-df_stepwise <- df_stepwise |>
-  select(-c(demo_uf, demo_centre))
+mod_intercept <- glm(
+  resultat_candida_def ~ 1,
+  data = df_stepwise,
+  family = "binomial"
+)
 
-# mod_intercept <- glm(
-#   resultat_candida_def ~ 1,
-#   data = df_stepwise,
-#   family = "binomial"
-# )
+mod_tot <- glm(
+  resultat_candida_def ~ .,
+  data = df_stepwise,
+  family = "binomial"
+)
 
-# mod_tot <- glm(
-#   resultat_candida_def ~ .,
-#   data = df_stepwise,
-#   family = "binomial"
-# )
-
-# forward <- step(mod_intercept, direction = 'forward', scope = formula(mod_tot))
+forward <- step(mod_intercept, direction = 'forward', scope = formula(mod_tot))
 # tbl_regression(forward, exponentiate = TRUE)
-# saveRDS(forward, "models/mod_imp1_fwd.RDS")
-# backward <- step(mod_tot, direction = 'backward', scope = formula(mod_tot))
+saveRDS(forward, "models/mod_imp1_fwd.RDS")
+backward <- step(mod_tot, direction = 'backward', scope = formula(mod_tot))
 # tbl_regression(backward, exponentiate = TRUE)
-# saveRDS(backward,"models/mod_imp1_bwd.RDS")
-# both <- step(mod_intercept, direction = 'both', scope = formula(mod_tot))
-# tbl_regression(both, exponentiate = TRUE)
-
+saveRDS(backward, "models/mod_imp1_bwd.RDS")
+both <- step(mod_intercept, direction = 'both', scope = formula(mod_tot))
+tbl_regression(both, exponentiate = TRUE)
+saveRDS(both, "models/mod_imp1_both.RDS")
 #===============================================================================
 #                               FORREST PLOTS
 #===============================================================================

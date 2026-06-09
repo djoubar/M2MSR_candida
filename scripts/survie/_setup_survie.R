@@ -106,113 +106,13 @@ df_fg <- complete(imp, 1) %>%
     hospit_fibro = last(hospit_fibro),
     hospit_chirurgie_majeure = last(hospit_chirurgie_majeure),
     hospit_chirurgie_abdominale = last(hospit_chirurgie_abdominale),
-    nb_hemocultures = n()
+    nb_hemocultures = n(),
+    resultat_candida_def = last(resultat_candida_def)
   ) %>%
-  ungroup() %>%
-  # Convertir outcome en facteur
+  ungroup() |>
   mutate(
-    outcome = factor(outcome, levels = c(0, 1, 2), labels = c("Sortie", "Candidémie", "Décès"))
+    outcome_cat = factor(outcome, levels = c(0, 1, 2), labels = c("Sortie", "Candidémie", "Décès")),
+    outcome_cox = ifelse(outcome_cat == "Décès", 1, 0),
+    hc_deficit_neutro = ifelse(hospit_neutropen_duree > 0 | hospit_ctc_duree > 0, "1", "0"),
+    hc_deficit_lympho = ifelse(hospit_lymphopenie_duree > 0 | hospit_immunosup_duree > 0, "1", "0")
   )
-
-################################################################################
-#                                MODELE_UV                                     #
-################################################################################
-
-# Sélection des covariables (toutes sauf temps et outcome)
-# covariates <- setdiff(names(df_fg), c("iep", "temps", "outcome"))
-
-# models_uni <- lapply(covariates, function(x) {
-#   tryCatch(
-#     tidycmprsk::crr(
-#       data = df_fg,
-#       Surv(temps, outcome),
-#       covariates = x
-#     ),
-#     error = function(e) NULL
-#   )
-# }) %>%
-#   compact() # Supprime les NULL
-
-# # Tableau univarié
-# tbl_uni <- tbl_uvregression(
-#   y = Surv(temps, outcome),
-#   data = df_fg,
-#   method = "crr", # Méthode pour Fine-Gray
-#   exponentiate = TRUE
-# ) %>%
-#   add_n(location = "level") %>%
-#   bold_labels()
-# tbl_uni |>
-#   as_gt() |>
-#   gtsave("tbl_fg_uv.docx")
-
-#==============================================================================#
-#                                 MODELE_MV                                    #
-#==============================================================================#
-
-model_fg <- crr(
-  Surv(temps, outcome) ~ demo_centre +
-    demo_age +
-    demo_atcd_hemato +
-    adm_igs2 +
-    adm_creat_max +
-    adm_pfio2_min +
-    adm_lactates_max +
-    adm_transfu +
-    hc_amines +
-    hc_creat_max +
-    hc_lactates_max +
-    hc_vi_cat +
-    hc_catheter_majeur +
-    hc_transfu +
-    hospit_parenterale_duree +
-    hospit_atb_duree +
-    hospit_ctc_duree +
-    hospit_neutropen_duree +
-    hospit_chirurgie_majeure,
-  data = df_fg
-)
-
-# Tableau des résultats (exponentié = HR)
-# tbl <- model_fg %>%
-#   gtsummary::tbl_regression(
-#     exponentiate = TRUE,
-#     label = list(
-#       outcome = "Candidémie vs Décès",
-#       demo_age = "Âge",
-#       demo_sexe = "Sexe",
-#       nb_hemocultures = "Nombre d'hémocultures"
-#       # Ajoute les labels pour les autres variables si besoin
-#     )
-#   ) %>%
-#   add_n(location = "level")
-
-# Extrais les résultats sous forme de tibble
-tidy_model <- tidy(model_fg, conf.int = TRUE)
-
-# Forest plot (identique à l'exemple précédent)
-ggplot(tidy_model, aes(x = estimate, y = term)) +
-  geom_point() +
-  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high)) +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  theme_minimal()
-
-################################################################################
-#                                     CIF                                      #
-################################################################################
-# CIF globales (sans stratification)
-fit_cif <- cuminc(Surv(temps, outcome) ~ 1, data = df_fg)
-ggcuminc(fit_cif, outcome = c("Sortie", "Décès", "Candidémie")) +
-  add_confidence_interval() +
-  scale_x_continuous(breaks = seq(0, 24, by = 6)) +
-  labs(
-    title = "Incidence cumulée : Candidémie (rouge) vs Décès (bleu)",
-    x = "Temps (jours)",
-    y = "Probabilité cumulée"
-  ) +
-  theme_minimal()
-
-################################################################################
-#                             VERIF_COLINEARITE                                #
-################################################################################
-vif(lm(temps ~ ., data = df_fg)) # Attention : VIF > 5-10 = problème
