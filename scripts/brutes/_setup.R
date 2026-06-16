@@ -6,7 +6,7 @@
 df_base <- read_xlsx("~/M2MSR/donnees/20260521_extraction_fusionnee.xlsx") |>
   set_names(tolower) |>
   mutate(demo_sexe = as.factor(sexe_y)) |>
-  select(
+  dplyr::select(
     -age,
     -sexe_x,
     -atcd,
@@ -154,7 +154,7 @@ df_base <- df_base |>
 
 
 ############################ 3 - TYPE DONNEE ##################################
-df_base$hc_glucanes_max <- recode(
+df_base$hc_glucanes_max <- fct_recode(
   df_base$hc_glucanes_max,
   "<11" = "0",
   "<31" = "0",
@@ -860,6 +860,7 @@ df_base$hc_mannanes_max <- df_base$hc_mannanes_max |>
     "0" = "<20",
     "1" = ">2500",
     "1" = ">500",
+    "1" = "98",
     "1" = "100",
     "1" = "101",
     "1" = "102",
@@ -900,6 +901,7 @@ df_base$hc_mannanes_max <- df_base$hc_mannanes_max |>
     "1" = "138",
     "1" = "139",
     "1" = "141",
+    "1" = "142",
     "1" = "143",
     "1" = "144",
     "1" = "145",
@@ -1125,6 +1127,7 @@ df_base$hc_mannanes_max <- df_base$hc_mannanes_max |>
 df_base <- df_base |>
   mutate(
     # demographiques
+    demo_sexe = as.factor(demo_sexe),
     demo_centre = as.factor(demo_centre),
     demo_sexe = factor(demo_sexe, levels = c("F", "M"), labels = c("Féminin", "Masculin")),
     demo_atcd_tumeur = factor(demo_atcd_tumeur, levels = c("0", "1"), labels = c("Non", "Oui")),
@@ -1559,7 +1562,7 @@ var_label(df_base) <- list(
 )
 
 df_base <- df_base %>%
-  select(
+  dplyr::select(
     # dates et informations de base
     id_hemoc,
     iep,

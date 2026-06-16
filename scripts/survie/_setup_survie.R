@@ -1,4 +1,4 @@
-imp <- read_rds("donnees/df_impute.rds")
+imp <- readRDS("donnees/df_impute.rds")
 source("scripts/brutes/_setup.R")
 
 ################################################################################
@@ -7,7 +7,7 @@ source("scripts/brutes/_setup.R")
 df_fg <- complete(imp, 1) %>%
   left_join(
     df_base %>%
-      select(
+      dplyr::select(
         id_hemoc,
         date_adm_hospit,
         date_adm_rea,

@@ -151,9 +151,35 @@ tbl1_gt <- tbl1 |>
 tbl1_gt
 ```
 
-## Modélisation
+## Analyse de survie
 
-En analyse univariée, les facteurs associés étaient au risque de candidémie. Les facteurs xxx étaient au contraire associés négativement. Les variables sélectionnées étaient ensuite analysée en régression multivariée. Les facteurs xxx .
+Une analyse en modélisation de survie est réalisée. La délai de survie médiane étaient inférieur dans le groupe Candidémie que dans le groupe Absence de candidémie ; @fig-kaplan-meier.
+
+```{r}
+#| label: fig-kaplan-meier
+#| fig-cap: "Courbe Kaplan Meier de la mortalité en réanimation selon la présence ou non d'une candidémie"
+#| lightbox: true
+#| fig-align: center
+source("scripts/survie/mod_km.R")
+
+fig_km
+```
+
+Une modélisation en risque compétitifs (modèle de Fine & Gray) était réalisée, identifiant la dialyse, la ventilation invasive, etc comme facteurs de risque de candidémie. A l'inverse, l'age et l'exposition à des immunosuppresseurs était protectrices @fig-fine-gray.
+
+```{r}
+#| label: fig-fine-gray
+#| fig-cap: "Modèle FG"
+#| lightbox: true
+#| layout-ncol: 2
+source("scripts/survie/mod_fine_gray.R")
+
+fig_fp_fg
+```
+
+## Modélisation en régression logistique sur données imputées
+
+En analyse univariée, les facteurs étaient associésau risque de candidémie. Les facteurs xxx étaient au contraire associés négativement. Les variables sélectionnées étaient ensuite analysée en régression multivariée. Les facteurs xxx .
 
 ```{r}
 
@@ -163,34 +189,6 @@ En analyse univariée, les facteurs associés étaient au risque de candidémie.
 L'AUC étaient de xxx ; Se Sp VPP VPN. Courbe de calibration.
 
 ## Score et prédiction
-
-AJOUTER la suite xxxxxx
-
-## Analyse de survie
-
-### Courbe Kaplan Meier
-
-```{r}
-#| label: kaplan-meier
-#| fig-cap: "Courbe Kaplan Meier de la mortalité en réanimation selon la présence ou non d'une candidémie"
-#| lightbox: true
-#| fig-align: center
-source("scripts/survie/mod_cox.R")
-
-fig_km
-```
-
-### Modèle Fine & Gray
-
-```{r}
-#| label: fine-gray
-#| fig-cap: "Modèle FG"
-#| lightbox: true
-#| layout-ncol: 2
-source("scripts/survie/mod_fine_gray.R")
-
-fig_fp_fg
-```
 
 # [Discussion]{.underline}
 
@@ -241,6 +239,17 @@ knitr::include_graphics("figures/ROC_fwd.png")
 knitr::include_graphics("figures/ROC_bwd.png")
 knitr::include_graphics("figures/CC_fwd.png")
 knitr::include_graphics("figures/CC_bwd.png")
+```
+
+## Random Forrest
+
+A titre d'expérience, des modélisations ont été réalisées via random forrest. Chacun des 50 jeux imputés était bootstrappé à 300 reprises de façon proportionnelle (même pourcentage de positifs que dans l'échantillon d'origine, sur 30% de l'échantillon). Sur chacun des 50 x 200 jeux identifiés, une modélisation par random forrest contenant 500 arbres était réalisée pour discriminer les candidémies. Les facteurs disriminants principaux (ceux au MeanDecreaseGini plus important) étaient identifiés et représentés ci dessous.
+
+```{r}
+#| label: fig-rf
+#| fig-cap: "Poids de chaque variable dans la modélisation par Random Forrest"
+
+
 ```
 
 ## Comparaisons bivariées

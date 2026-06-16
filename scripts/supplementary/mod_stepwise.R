@@ -101,7 +101,7 @@ df_stepwise <- complete(imp, 1) %>%
     resultat_candida_def = last(resultat_candida_def)
   ) %>%
   ungroup() |>
-  select(-c(demo_uf, demo_centre, hc_glucanes_max, hc_mannanes_max))
+  select(-c(demo_uf, demo_centre, hc_glucanes_max, hc_mannanes_max, iep))
 
 mod_intercept <- glm(
   resultat_candida_def ~ 1,
@@ -116,10 +116,10 @@ mod_tot <- glm(
 )
 
 forward <- step(mod_intercept, direction = 'forward', scope = formula(mod_tot))
-# tbl_regression(forward, exponentiate = TRUE)
+tbl_regression(forward, exponentiate = TRUE)
 saveRDS(forward, "models/mod_imp1_fwd.RDS")
 backward <- step(mod_tot, direction = 'backward', scope = formula(mod_tot))
-# tbl_regression(backward, exponentiate = TRUE)
+tbl_regression(backward, exponentiate = TRUE)
 saveRDS(backward, "models/mod_imp1_bwd.RDS")
 both <- step(mod_intercept, direction = 'both', scope = formula(mod_tot))
 tbl_regression(both, exponentiate = TRUE)
@@ -127,8 +127,8 @@ saveRDS(both, "models/mod_imp1_both.RDS")
 #===============================================================================
 #                               FORREST PLOTS
 #===============================================================================
-forward <- readRDS("models/mod_imp1_fwd.RDS")
-backward <- readRDS("models/mod_imp1_bwd.RDS")
+# forward <- readRDS("models/mod_imp1_fwd.RDS")
+# backward <- readRDS("models/mod_imp1_bwd.RDS")
 
 tidy_model_fwd <- tidy(forward, conf.int = TRUE) |>
   filter(term != "(Intercept)") |>
@@ -137,34 +137,19 @@ tidy_model_fwd <- tidy(forward, conf.int = TRUE) |>
       term,
       levels = c(
         "hc_vi_catOui",
-        "hc_glucanes_maxPositif",
-        "hc_mannanes_maxPositif",
         "hc_transfu1",
         "hc_chocOui",
         "hospit_cgr",
-        "temps",
-        "hc_delai",
-        "hospit_immunosup_duree",
-        "hospit_vvc_duree",
-        "hospit_ctc_duree",
-        "demo_type_reaMedicale",
+        "hc_choc",
         "hc_diurese_norm",
+        "hc_vvcOui",
+        "hospit_ctc_duree",
+        "hospit_immunosup_duree",
+        "adm_transfu",
         "demo_age",
-        "adm_temp_min",
-        "hospit_neutrophi_duree",
-        "hospit_chirurgie_majeureOui",
-        "hc_aminesOui",
-        "hc_catheter_majeur1",
-        "hospit_parenterale_duree",
-        "hospit_vi_duree",
-        "adm_vi_catOui",
-        "hc_temp_min",
-        "adm_uree_max",
-        "adm_creat_max",
-        "adm_pfio2_min",
-        "hc_pfio2_min",
-        "nb_hemocultures",
-        "hc_dialyseOui"
+        "hc_uree_max",
+        "hc_dialyseOui",
+        "adm_lactates_max",
       ),
       # labels = list(hc_vi_catOui ~ "Ventilation invasive à l'hémoculture")
     ),
