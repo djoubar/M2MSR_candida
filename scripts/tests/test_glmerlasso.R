@@ -156,7 +156,7 @@ print(fix_formula)
 # ---- 5. Sélection du lambda optimal par grille + AIC ----
 # Grille plus large que pour un modèle restreint, car davantage de variables
 # à pénaliser : à ajuster si le minimum de AIC est atteint en bord de grille.
-lambda_grid <- seq(0, 100, by = 100)
+lambda_grid <- seq(0, 300, by = 10)
 aic_values <- rep(NA_real_, length(lambda_grid))
 
 set.seed(123)
@@ -226,7 +226,7 @@ print(names(coefs_tous[coefs_tous == 0]))
 # =====================================================================
 
 clusters <- unique(data_modele[[variable_cluster]])
-n_boot <- 5 # à réduire si le temps de calcul est trop long (modèle saturé)
+n_boot <- 200 # à réduire si le temps de calcul est trop long (modèle saturé)
 boot_coefs <- matrix(NA_real_, nrow = n_boot, ncol = length(coefs_tous))
 colnames(boot_coefs) <- names(coefs_tous)
 

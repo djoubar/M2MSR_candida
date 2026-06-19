@@ -617,7 +617,7 @@ var_label(df_base) <- list(
   hospit_cgr = "Nombres CGR avant l'hémoculture",
   hospit_pfc = "Nombres PFC avant l'hémoculture",
   hospit_cp = "Nombres CP avant l'hémoculture",
-  hospit_fibro = "Fibroscopie pendant l'hospitalisation"
+  hospit_fibro = "Fibroscopie pendant l'hospitalisation",
   hospit_chirurgie_abdominale = "Chirurgie abdominale pendant l'hospitalisation",
   hospit_chirurgie_majeure = "Chirurgie majeure pendant l'hospitalisation"
 )
@@ -755,7 +755,7 @@ df_base <- df_base %>%
     # hc_isoprenaline,
     # hc_noradre,
     # hc_terlipressine,
-hc_antifongique,
+    hc_antifongique,
     # variables expo hospit
     hospit_vi_duree,
     hospit_parenterale_duree,
