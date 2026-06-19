@@ -136,7 +136,10 @@ print(resume_importance, n = 20)
 # 6a. Barplot des 20 variables les plus importantes (avec intervalle de confiance)
 top_vars <- resume_importance %>% slice_head(n = 20)
 
-ggplot(top_vars, aes(x = reorder(variable, importance_moyenne), y = importance_moyenne)) +
+plot_rf <- ggplot(
+  top_vars,
+  aes(x = reorder(variable, importance_moyenne), y = importance_moyenne)
+) +
   geom_bar(stat = "identity", fill = "#2C7BB6", alpha = 0.85) +
   geom_errorbar(
     aes(ymin = importance_moyenne - importance_sd, ymax = importance_moyenne + importance_sd),

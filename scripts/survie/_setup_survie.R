@@ -112,7 +112,7 @@ df_fg <- complete(imp, 1) %>%
   ungroup() |>
   mutate(
     outcome_cat = factor(outcome, levels = c(0, 1, 2), labels = c("Sortie", "Candidémie", "Décès")),
-    outcome_cox = ifelse(outcome_cat == "Décès", 1, 0),
+    outcome_cox = ifelse(outcome_cat == "Candidémie", 1, 0),
     hc_deficit_neutro = ifelse(hospit_neutropen_duree > 0 | hospit_ctc_duree > 0, "1", "0"),
     hc_deficit_lympho = ifelse(hospit_lymphopenie_duree > 0 | hospit_immunosup_duree > 0, "1", "0")
   )

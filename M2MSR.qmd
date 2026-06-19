@@ -25,10 +25,6 @@ format:
       </style>
     include-after-body: |
       <a href="https://github.com/djoubar/M2MSR_candida" class="github-link" target="_blank">🔗 Code</a>
-  pdf:
-    toc: true
-    toc-depth: 3
-    classoption: justified
 
   docx:
     toc: true
@@ -174,6 +170,8 @@ Une modélisation en risque compétitifs (modèle de Fine & Gray) était réalis
 #| layout-ncol: 2
 source("scripts/survie/mod_fine_gray.R")
 
+table(df_fg$outcome_cat)
+
 fig_fp_fg
 ```
 
@@ -182,8 +180,16 @@ fig_fp_fg
 En analyse univariée, les facteurs étaient associésau risque de candidémie. Les facteurs xxx étaient au contraire associés négativement. Les variables sélectionnées étaient ensuite analysée en régression multivariée. Les facteurs xxx .
 
 ```{r}
+#| label: tbl-meta
+#| fig-cap: "Modèle de régression logistique mixte sur données imputées"
+#| lightbox: true
+source("scripts/mod_meta.R")
 
+tbl_mmrm_imputes
+```
 
+```{r}
+fp_mmrm_imputes
 ```
 
 L'AUC étaient de xxx ; Se Sp VPP VPN. Courbe de calibration.
@@ -206,15 +212,39 @@ Notre étude est toutefois limitée par son caractère monocentrique, qui malgr�
 
 ## Données manquantes
 
-Le nombre de données manquantes à la phase à l'issue de l'extraction sont détaillées dans @fig-NA. Seules les variables pour lesquelles des données manquantes étaient présentes sont représentées.
+Le nombre de données manquantes à la phase à l'issue de l'extraction sont détaillées dans @tbl-NA. Seules les variables pour lesquelles des données manquantes étaient présentes sont représentées.
 
 ```{r}
-#| label: fig-NA
+#| label: tbl-NA
 #| fig-cap: "Données manquantes"
 #| lightbox: true
 source("scripts/supplementary/fig_NA.R")
-figNA
+tbl_NA
 ```
+
+## Actes chirurgicaux
+
+Comme précisé dans les méthodes, les chirurgies étaient extraites dans un premier temps par relecture de l'ensemble des libellés remplis par les cliniciens, avec tri selon les catégories d'intérêt (chirurgie abdominale / sus mésocolique / hépatobiliaire / majeure). Pour les libellés retenus, les actes CCAM correspondant pour le patient étaient extraits ; avec un tri secondaire pour évaluation de faux libellés retenus. La liste des actes CCAM correspondant pour chaque catégorie sont listés ci-dessous :
+
+### Chirurgie majeure
+
+A ajouter
+
+### Chirurgie abdominale
+
+A ajouter
+
+### Chirurgie hépato-biliaire
+
+A ajouter
+
+### Chirurgie sus-mésocolique
+
+A ajouter
+
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+
+# Explorations supplémentaires
 
 ## Régression logistique simple, via stepwise forward, à partir d'une imputation simple
 
@@ -243,13 +273,14 @@ knitr::include_graphics("figures/CC_bwd.png")
 
 ## Random Forrest
 
-A titre d'expérience, des modélisations ont été réalisées via random forrest. Chacun des 50 jeux imputés était bootstrappé à 300 reprises de façon proportionnelle (même pourcentage de positifs que dans l'échantillon d'origine, sur 30% de l'échantillon). Sur chacun des 50 x 200 jeux identifiés, une modélisation par random forrest contenant 500 arbres était réalisée pour discriminer les candidémies. Les facteurs disriminants principaux (ceux au MeanDecreaseGini plus important) étaient identifiés et représentés ci dessous.
+A titre d'expérience, des modélisations ont été réalisées via random forrest. Chacun des 50 jeux imputés était bootstrappé à 300 reprises de façon proportionnelle (même pourcentage de positifs que dans l'échantillon d'origine, sur 30% de l'échantillon). Sur chacun des 50 x 200 jeux identifiés, une modélisation par random forrest contenant 500 arbres était réalisée pour discriminer les candidémies. Les facteurs disriminants principaux (ceux au Mean Decrease Gini plus important) étaient identifiés et représentés ci dessous.
 
 ```{r}
 #| label: fig-rf
 #| fig-cap: "Poids de chaque variable dans la modélisation par Random Forrest"
+source("scripts/tests/mod_random_forrest_boot.R")
 
-
+plot_20_rf
 ```
 
 ## Comparaisons bivariées

@@ -177,10 +177,10 @@ tbl2_hc <-
       hc_kta = "KTA ",
       hc_vvc = "VVC ",
       hc_ktd = "Cathéter de dialyse ",
-      hc_ecmo = "ECMO ",
-      hc_cgr = "CGR ",
-      hc_pfc = "PFC ",
-      hc_cp = "CP "
+      hc_ecmo = "ECMO",
+      hc_cgr = "CGR",
+      hc_pfc = "PFC",
+      hc_cp = "CP"
     ),
     type = list(
       c(

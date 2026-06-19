@@ -10,7 +10,7 @@ df_cox <- df_base |>
   distinct(iep, .keep_all = TRUE) |>
   group_by(iep) |>
   mutate(
-    outcome_cox = ifelse(deces_rea == "Oui", 1, 0),
+    outcome_km = ifelse(deces_rea == "Oui", 1, 0),
     temps = min(
       as.numeric(coalesce(date_deces, date_sortie_rea) - date_adm_rea),
       na.rm = TRUE
@@ -21,7 +21,7 @@ df_cox <- df_base |>
 #===================================================================================================
 #                                  COURBE KAPLAN MEIER + LOG RANK
 #================================================================s===================================
-fit <- survfit(Surv(temps, outcome_cox) ~ resultat_candida_def, data = df_cox)
+fit <- survfit(Surv(temps, outcome_km) ~ resultat_candida_def, data = df_cox)
 
 fig_km <-
   ggsurvplot(

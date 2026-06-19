@@ -1,7 +1,3 @@
-library(lme4)
-
-imp <- readRDS("donnees/df_impute.rds")
-
 # =============================================================================
 # AJUSTEMENT GLMER SUR OBJET MIDS + POOLING (RÈGLE DE RUBIN)
 # VERSION PARALLÉLISÉE
