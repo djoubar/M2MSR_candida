@@ -1,4 +1,14 @@
-source("scripts/brutes/_setup.R")
+# ==============================================================================
+#
+#                            TABLEAU VALEUR MANQUANTES
+#
+# ==============================================================================
+library(gtsummary)
+library(patchwork)
+
+if (!exists("df_base")) {
+  source("scripts/brutes/_setup.R")
+}
 
 tbl_NA <- tbl_custom_summary(
   df_base,
@@ -171,17 +181,7 @@ tbl_na_adm <-
       all_of(starts_with("adm")),
       -all_of(
         starts_with("adm_sofa")
-      ),
-      -adm_albu_20,
-      -adm_albu_4,
-      -adm_bicar,
-      -adm_gelo,
-      -adm_nacl,
-      -adm_plasmalyte,
-      -adm_ringer,
-      -adm_isoprenaline,
-      -adm_noradre,
-      -adm_terlipressine
+      )
     ),
     label = list(
       adm_igs2 = "IGS 2",
@@ -246,27 +246,12 @@ tbl_na_hc <-
     data = df_base,
     missing = "no",
     stat_fns = ~missing,
-    statistic = everything() ~ "{p_miss}%",
+    statistic = everything() ~ "{N_miss} ({p_miss} %)",
     include = c(
       all_of(starts_with("hc")),
-      -hc_catheter_majeur,
-      -hc_nacl,
       -all_of(
         starts_with("hc_sofa")
-      ),
-      -hc_albu_20,
-      -hc_albu_4,
-      -hc_bicar,
-      -hc_gelo,
-      -hc_nacl,
-      -hc_plasmalyte,
-      -hc_ringer,
-      -hc_voluven,
-      -hc_adrenaline,
-      -hc_dobutamine,
-      -hc_isoprenaline,
-      -hc_noradre,
-      -hc_terlipressine
+      )
     ),
     label = list(
       hc_delai = "Délai entre admission et prélèvements de l'hémoculture",

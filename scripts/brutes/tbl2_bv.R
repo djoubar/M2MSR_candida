@@ -3,37 +3,19 @@
 #                            M2MSR_TBL2_DEMOGRAPHIQUE                          #
 #                                                                              #
 ################################################################################
+library(tidyverse)
+library(gtsummary)
+
+if (!exists("df_base")) {
+  source("scripts/brutes/_setup.R")
+}
+
 .df_tbl2 <- df_base |>
   select(
     -demo_uf,
     -demo_centre,
     -starts_with("adm_sofa"),
-    -adm_plasmalyte,
-    -adm_ringer,
-    -adm_gelo,
-    -adm_adre,
-    -adm_albu_20,
-    -adm_albu_4,
-    -adm_bicar,
-    -adm_nacl,
-    -adm_dobu,
-    -adm_isoprenaline,
-    -adm_terlipressine,
-    -adm_noradre,
-    -starts_with("hc_sofa"),
-    -hc_plasmalyte,
-    -hc_ringer,
-    -hc_gelo,
-    -hc_adre,
-    -hc_albu_20,
-    -hc_albu_4,
-    -hc_bicar,
-    -hc_dobu,
-    -hc_isoprenaline,
-    hc_nacl,
-    -hc_voluven,
-    -hc_noradre,
-    -hc_terlipressine
+    -starts_with("hc_sofa")
   )
 
 tbl2_demo <-
@@ -95,8 +77,8 @@ tbl2_adm <-
       adm_creat_max = "Créatinémie maximale (en mg/L)",
       adm_uree_max = "Urée maximale (en g/L)",
       adm_dialyse = "Dialyse",
-      adm_temp_min = "Température minimale (en °C)",
-      adm_temp_max = "Température maximale (en °C)",
+      adm_temp_min = "Hypothermie",
+      adm_temp_max = "Fièvre",
       adm_diurese_tot = "Diurèse totale",
       adm_diurese_norm = "Diurèse normalisée",
       adm_lactates_max = "Lactatémie maximale (en mmol/L)",
@@ -121,7 +103,9 @@ tbl2_adm <-
         adm_cgr,
         adm_pfc,
         adm_cp,
-        adm_transfu
+        adm_transfu,
+        adm_hypothermie,
+        adm_fievre
       ) ~ "dichotomous"
     ),
     value = list(
@@ -136,6 +120,8 @@ tbl2_adm <-
         adm_pfc,
         adm_cp,
         adm_transfu,
+        adm_hypothermie,
+        adm_fievre
       ) ~ "Oui"
     )
   ) |>
@@ -152,14 +138,14 @@ tbl2_hc <-
       all_continuous() ~ "{median} ({min}, {max})",
       all_dichotomous() ~ "{n} ({p}%)"
     ),
-    include = c(all_of(starts_with("hc")), -hc_catheter_majeur, -hc_nacl),
+    include = c(all_of(starts_with("hc"))),
     label = list(
       hc_delai = "Délai entre admission et prélèvements de l'hémoculture",
       hc_choc = "Etat de choc",
-      hc_transfu = "Transfusion ", # Utilisée ici
+      hc_transfu = "Transfusion",
       hc_amines = "Amines ",
-      hc_temp_min = "Température minimale ",
-      hc_temp_max = "Température maximale ",
+      hc_temp_min = "Hypothermie ",
+      hc_temp_max = "Fièvre",
       hc_diurese_tot = "Diurèse totale ",
       hc_diurese_norm = "Diurèse normalisée ",
       hc_pfio2_min = "PaO2/FiO2 ",
@@ -197,7 +183,9 @@ tbl2_hc <-
         hc_transfu,
         hc_amines,
         hc_glucanes_max,
-        hc_mannanes_max
+        hc_mannanes_max,
+        hc_hypothermie,
+        hc_fievre
       ) ~ "dichotomous"
     ),
     value = list(
@@ -213,7 +201,9 @@ tbl2_hc <-
         hc_pfc,
         hc_cp,
         hc_transfu,
-        hc_amines
+        hc_amines,
+        hc_hypothermie,
+        hc_fievre
       ) ~ "Oui",
       c(hc_glucanes_max, hc_mannanes_max) ~ "Positif"
     )

@@ -2,7 +2,7 @@
 #
 #                            MODELE DE COX
 #
-# ===============================================================================
+# ==============================================================================
 library(tidyverse)
 library(survival)
 library(broom)
@@ -10,13 +10,18 @@ library(gtsummary)
 library(timeROC) # Pour l'AUC time-dependent
 library(rms) # Pour la calibration (calibrate())
 library(ggplot2)
+library(gt)
 
 set.seed(142)
-source("scripts/survie/_setup_survie.R")
 
-# ------------------------------------------------------------------------------
+if (!exists("df_base")) {
+  source("scripts/brutes/_setup.R")
+}
+
+
+# ==============================================================================
 # 1. MODELISATION UNIVARIEE
-# ------------------------------------------------------------------------------
+# ==============================================================================
 covariables <- setdiff(names(df_fg), c("iep", "temps", "outcome", "outcome_cat"))
 
 # Modèles univariés (1 variable à la fois)
@@ -45,9 +50,9 @@ tbl_uni_cox %>%
   as_gt() %>%
   gtsave("tbl_cox_uv.docx")
 
-# ------------------------------------------------------------------------------
+# ==============================================================================
 # 2. SELECTION STEPWISE (Forward/Backward basée sur l'AIC)
-# ------------------------------------------------------------------------------
+# ==============================================================================
 # Variables candidates (exclure les variables non pertinentes)
 variables_candidates <- setdiff(
   names(df_fg),
@@ -84,9 +89,9 @@ model_final_cox <- step(
 
 summary(model_final_cox)
 
-# ------------------------------------------------------------------------------
+# ==============================================================================
 # 3. MODELE MULTIVARIE FINAL (à adapter selon la sélection)
-# ------------------------------------------------------------------------------
+# ==============================================================================
 model_cox <- coxph(
   Surv(temps, outcome_cox) ~
     demo_atcd_diabete +
@@ -110,11 +115,23 @@ model_cox <- coxph(
 tbl_cox <- model_cox %>%
   tbl_regression(
     exponentiate = TRUE,
-    label = list(
-      outcome_cox = "Événement (ex: Décès)",
-      demo_age = "Âge",
-      demo_sexe = "Sexe"
-    )
+    # label = list(
+    #   outcome_cox = "Événement (ex: Décès)",
+    #   demo_atcd_diabete = "Antécédent de diabète",
+    #   demo_atcd_hemato = "Antécédent de mhm",
+    #   demo_type_rea = "Type de réanimation",
+    #   adm_igs2 = "IGS2",
+    #   hc_temp_max = "Temp max",
+    #   hc_leuco_min = "Leuco min",
+    #   hc_choc = "Choc à l'hc",
+    #   hc_dialyse = "Dialyse à l'hc",
+    #   hc_vi_cat = "VI à l'hc",
+    #   hc_catheter_majeur = "KT",
+    #   hc_transfu = "Transfusion à l'hc",
+    #   hospit_parenterale_duree = "Durée parentérale",
+    #   hospit_ctc_duree = "Durée CTC",
+    #   hospit_cgr = "Nombre de CGR",
+    # )
   ) %>%
   add_n(location = "level")
 
@@ -169,7 +186,6 @@ get_auc_timeROC <- function(model, data, time) {
     X = risk_scores, # Scores prédits
     timepoint = time # Temps d'intérêt
   )
-
   auc(roc_obj) # Retourne l'AUC à ce temps
 }
 

@@ -5,12 +5,18 @@
 #===============================================================================
 library(tidyverse)
 library(riskRegression)
-# library(prodlim)
+library(gtsummary)
 library(survival)
 library(tidycmprsk)
 library(broom)
+library(gt)
+library(ggsurvfit)
+
 set.seed(142)
-source("scripts/survie/_setup_survie.R")
+
+if (!exists("df_base")) {
+  source("scripts/brutes/_setup.R")
+}
 
 # ------------------------------------------------------------------------------
 #                           MODELISATION UNIVARIEE

@@ -3,7 +3,14 @@
 #                                        SURVIE_KM
 #
 #===================================================================================================
-source("scripts/brutes/_setup.R")
+library(tidyverse)
+library(survival)
+library(ggsurvfit)
+library(survminer)
+
+if (!exists("df_base")) {
+  source("scripts/brutes/_setup.R")
+}
 
 df_cox <- df_base |>
   arrange(iep, date_hemoc) |>

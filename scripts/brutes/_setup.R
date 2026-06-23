@@ -3,7 +3,13 @@
 #                             SETUP / DATA MANAGEMENT
 #
 # ==============================================================================
-df_base <- read_xlsx("~/M2MSR/donnees/20260618_extraction_fusionnee.xlsx") |>
+library(tidyverse)
+library(labelled)
+library(gtsummary)
+library(patchwork)
+library(readxl)
+
+df_base <- read_xlsx("~/M2MSR/donnees/20260619_extraction_fusionnee.xlsx") |>
   set_names(tolower) |>
   mutate(demo_sexe = as.factor(sexe_y)) |>
   dplyr::select(
@@ -52,8 +58,8 @@ df_base <- df_base |>
     adm_sofa_tot = sofa_total_ap_adm,
     ## cliniques
     adm_poids = poids_admission,
-    adm_temp_min = min_temperature_24h_apres_adm,
-    adm_temp_max = max_temperature_24h_apres_adm,
+    adm_hypothermie = min_temperature_24h_apres_adm,
+    adm_fievre = max_temperature_24h_apres_adm,
     adm_diurese_tot = total_vol_urines_24h_apres_adm,
     adm_diurese_norm = total_vol_urines_norm_24h_apres_adm,
     ## biologiques
@@ -93,8 +99,8 @@ df_base <- df_base |>
     hc_sofa_renal = sofa_renal_av_hemoc,
     hc_sofa_tot = sofa_total_av_hemoc,
     ## cliniques
-    hc_temp_min = min_temperature_24h_avant_hemoc,
-    hc_temp_max = max_temperature_24h_avant_hemoc,
+    hc_hypothermie = min_temperature_24h_avant_hemoc,
+    hc_fievre = max_temperature_24h_avant_hemoc,
     hc_diurese_tot = total_vol_urines_24h_avant_hemoc,
     hc_diurese_norm = total_vol_urines_norm_24h_avant_hemoc,
     ## biologiques
@@ -161,16 +167,24 @@ df_base <- df_base |>
 # ==============================================================================
 df_base <- df_base |>
   mutate(
-    hc_glucanes_max = factor(
-      as.numeric(gsub("[<>]", "", hc_glucanes_max)) >= 80,
-      levels = c("0", "1"),
-      labels = c("Négatifs", "Positifs")
-    ),
-    hc_mannanes_max = factor(
-      as.numeric(gsub("[<>]", "", hc_mannanes_max)) >= 20,
-      levels = c("0", "1"),
-      labels = c("Négatifs", "Positifs")
-    ),
+    hc_glucanes_max_num = as.numeric(gsub("[<>]", "", hc_glucanes_max)),
+    hc_glucanes_max = case_when(
+      hc_glucanes_max_num < 80 ~ "0",
+      hc_glucanes_max_num >= 80 ~ "1",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  dplyr::select(-hc_glucanes_max_num) |>
+  mutate(
+    hc_mannanes_max_num = as.numeric(gsub("[<>]", "", hc_mannanes_max)),
+    hc_mannanes_max = case_when(
+      hc_mannanes_max_num <= 20 ~ "0",
+      hc_mannanes_max_num > 20 ~ "1",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  dplyr::select(-hc_mannanes_max_num) |>
+  mutate(
     # demographiques
     demo_sexe = as.factor(demo_sexe),
     demo_centre = as.factor(demo_centre),
@@ -207,6 +221,23 @@ df_base <- df_base |>
       adm_adre > 0 | adm_noradre > 0 | adm_dobu > 0 | adm_isoprenaline > 0 | adm_terlipressine > 0,
       "Oui",
       "Non"
+    )),
+    adm_hypothermie = as.factor(ifelse(
+      adm_hypothermie < 36,
+      "Oui",
+      "Non"
+    )),
+    adm_fievre = as.factor(ifelse(
+      adm_fievre > 38.3,
+      "Oui",
+      "Non"
+    )),
+    adm_pfio2_min = (case_when(
+      adm_pfio2_min < 100 ~ "< 100",
+      adm_pfio2_min >= 100 & adm_pfio2_min < 200 ~ "100-200",
+      adm_pfio2_min >= 200 & adm_pfio2_min <= 300 ~ "200-300",
+      adm_pfio2_min > 300 ~ "> 300",
+      TRUE ~ NA_character_
     )),
     adm_sofa_respi = as.factor(adm_sofa_respi),
     adm_sofa_coag = as.factor(adm_sofa_coag),
@@ -283,12 +314,29 @@ df_base <- df_base |>
       "Non"
     )),
     # hemoculture
+    hc_hypothermie = as.factor(ifelse(
+      hc_hypothermie < 36,
+      "Oui",
+      "Non"
+    )),
+    hc_fievre = as.factor(ifelse(
+      hc_fievre > 38.3,
+      "Oui",
+      "Non"
+    )),
     hc_sofa_respi = as.factor(hc_sofa_respi),
     hc_sofa_coag = as.factor(hc_sofa_coag),
     hc_sofa_hepatique = as.factor(hc_sofa_hepatique),
     hc_sofa_neuro = as.factor(hc_sofa_neuro),
     hc_sofa_cardio = as.factor(hc_sofa_cardio),
     hc_sofa_renal = as.factor(hc_sofa_renal),
+    hc_pfio2_min = (case_when(
+      hc_pfio2_min < 100 ~ "< 100",
+      hc_pfio2_min >= 100 & adm_pfio2_min < 200 ~ "100-200",
+      hc_pfio2_min >= 200 & adm_pfio2_min <= 300 ~ "200-300",
+      hc_pfio2_min > 300 ~ "> 300",
+      TRUE ~ NA_character_
+    )),
     hc_cgr = factor(hc_cgr, levels = c("0", "1"), labels = c("Non", "Oui")),
     hc_pfc = factor(hc_pfc, levels = c("0", "1"), labels = c("Non", "Oui")),
     hc_cp = factor(hc_cp, levels = c("0", "1"), labels = c("Non", "Oui")),
@@ -547,8 +595,8 @@ var_label(df_base) <- list(
   adm_creat_max = "Créatinémie maximale (en mg/L) à l'admission",
   adm_uree_max = "Urée maximale (en g/L) à l'admission",
   adm_dialyse = "Dialyse à l'admission",
-  adm_temp_min = "Température minimale (en °C) à l'admission",
-  adm_temp_max = "Température maximale (en °C) à l'admission",
+  adm_hypothermie = "Hypothermie à l'admission",
+  adm_fievre = "Fièvre à l'admission",
   adm_diurese_tot = "Diurèse totale à l'admission",
   adm_diurese_norm = "Diurèse normalisée",
   adm_lactates_max = "Lactatémie maximale (en mmol/L) à l'admission",
@@ -566,8 +614,8 @@ var_label(df_base) <- list(
   hc_sofa_cardio = "SOFA cardiologique à l'hémoculture",
   hc_sofa_renal = "SOFA rénal à l'hémoculture",
   hc_sofa_tot = "SOFA total à l'hémoculture",
-  hc_temp_min = "Température minimale à l'hémoculture",
-  hc_temp_max = "Température maximale à l'hémoculture",
+  hc_hypothermie = "Hypothermie Hc",
+  hc_fievre = "Fièvre Hc",
   hc_diurese_tot = "Diurèse totale à l'hémoculture",
   hc_diurese_norm = "Diurèse normalisée à l'hémoculture",
   hc_pfio2_min = "PaO2/FiO2 à l'hémoculture",
@@ -635,7 +683,7 @@ df_base <- df_base %>%
     # resultat_candida,
     groupehc,
     # n_prvl,
-    tt_antifongique_48h_av_hemoc,
+    # tt_antifongique_48h_av_hemoc,
     date_adm_hospit,
     date_adm_rea,
     date_hemoc,
@@ -668,8 +716,8 @@ df_base <- df_base %>%
     adm_pancreatite_aigue,
     ## cliniques
     adm_poids,
-    adm_temp_min,
-    adm_temp_max,
+    adm_hypothermie,
+    adm_fievre,
     adm_diurese_tot,
     adm_diurese_norm,
     ## biologiques
@@ -714,8 +762,8 @@ df_base <- df_base %>%
     hc_sofa_renal,
     hc_sofa_tot,
     ## cliniques
-    hc_temp_min,
-    hc_temp_max,
+    hc_hypothermie,
+    hc_fievre,
     hc_diurese_tot,
     hc_diurese_norm,
     ## biologiques
@@ -723,7 +771,7 @@ df_base <- df_base %>%
     hc_creat_max,
     hc_uree_max,
     hc_lactates_max,
-    hc_lactates_moy,
+    # hc_lactates_moy,
     hc_neutro_min,
     hc_leuco_min,
     hc_lympho_min,
@@ -755,7 +803,7 @@ df_base <- df_base %>%
     # hc_isoprenaline,
     # hc_noradre,
     # hc_terlipressine,
-    hc_antifongique,
+    # hc_antifongique,
     # variables expo hospit
     hospit_vi_duree,
     hospit_parenterale_duree,
@@ -791,4 +839,25 @@ df_base <- df_base %>%
       date_hemoc,
       NA
     ))
+  )
+
+df_base <- df_base |>
+  mutate(
+    demo_sexe = factor(
+      demo_sexe,
+      levels = c("Féminin", "Masculin"),
+      labels = c("Féminin", "Masculin")
+    ),
+    adm_pfio2_min = factor(
+      adm_pfio2_min,
+      levels = c("<100", "100-200", "200-300", ">300"),
+      labels = c("<100", "100-200", "200-300", ">300")
+    ),
+    hc_pfio2_min = factor(
+      hc_pfio2_min,
+      levels = c("<100", "100-200", "200-300", ">300"),
+      labels = c("<100", "100-200", "200-300", ">300")
+    ),
+    hc_deficit_neutro = ifelse(hospit_neutropen_duree > 0 | hospit_ctc_duree > 0, "1", "0"),
+    hc_deficit_lympho = ifelse(hospit_lymphopenie_duree > 0 | hospit_immunosup_duree > 0, "1", "0")
   )

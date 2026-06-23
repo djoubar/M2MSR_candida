@@ -1,15 +1,18 @@
-################################################################################
-#                                                                              #
-#                            M2MSR_TBL1_DEMOGRAPHIQUE                          #
-#                                                                              #
-################################################################################
-df_tbl1 <- df_base
+# ==============================================================================
+#
+#                            M2MSR_TBL1_DEMOGRAPHIQUE
+#
+# ==============================================================================
+library(tidyverse)
+library(gtsummary)
 
-# Selection des donnees patients (1 par iep)
-df_tbl1 <- df_tbl1 |>
+if (!exists("df_base")) {
+  source("scripts/brutes/_setup.R")
+}
+
+df_tbl1 <- df_base |>
   arrange(iep, date_hemoc) |>
   distinct(iep, .keep_all = TRUE)
-
 
 tbl1 <-
   tbl_summary(

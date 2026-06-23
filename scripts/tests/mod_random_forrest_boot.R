@@ -10,6 +10,9 @@ library(randomForest)
 library(dplyr)
 library(ggplot2)
 
+if (!exists("df_fg")) {
+  source("scripts/survie/_setup_survie.R")
+}
 
 # --- 1. PARAMÈTRES À ADAPTER --------------------------------------------------
 

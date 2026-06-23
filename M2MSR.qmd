@@ -60,7 +60,7 @@ Des scores prédictifs ont été développés à partir de critères cliniques e
 
 ## Source des données
 
-Il s'agit d'une étude observationnelle monocentrique rétrospective, utilisant les données des patients hospitalisés en soins intensifs et réanimation au CHU de Lille depuis 2013, contenues dans l’entrepôt de données de santé *Include* du CHU de Lille. Celui-ci intègre différentes sources informatisées de données recueillies dans le cadre d’une prise en charge au CHU de Lille, notamment le système de gestion des données de réanimation ICCA (Philips), le système d’information de laboratoire MOLIS (CompuGroupMedical) et le logiciel CORA PMSI pour le codage des diagnostics et des actes CCAM.
+Il s'agit d'une étude observationnelle monocentrique rétrospective, utilisant les données des patients hospitalisés en soins intensifs et réanimation au CHU de Lille du 1er Janvier 2013 au 31 Décembre 2023, contenues dans l’entrepôt de données de santé *Include* du CHU de Lille. Celui-ci intègre différentes sources informatisées de données recueillies dans le cadre d’une prise en charge au CHU de Lille, notamment le système de gestion des données de réanimation ICCA (Philips), le système d’information de laboratoire MOLIS (CompuGroupMedical) et le logiciel CORA PMSI pour le codage des diagnostics et des actes CCAM.
 
 L'extraction des données a été réalisée par les ingénieures data d'*Include* (Mme Charlotte GEAY, Mme Léa GRUMIAUX et Mme Marie Amélie RISPAL). La structuration des données, la comparaison des données, les analyses statistiques ont été réalisées sur le logiciel R, version 4.6.0.
 
@@ -161,6 +161,7 @@ source("scripts/survie/mod_km.R")
 fig_km
 ```
 
+
 Une modélisation en risque compétitifs (modèle de Fine & Gray) était réalisée, identifiant la dialyse, la ventilation invasive, etc comme facteurs de risque de candidémie. A l'inverse, l'age et l'exposition à des immunosuppresseurs était protectrices @fig-fine-gray.
 
 ```{r}
@@ -176,23 +177,6 @@ fig_fp_fg
 ```
 
 ## Modélisation en régression logistique sur données imputées
-
-En analyse univariée, les facteurs étaient associésau risque de candidémie. Les facteurs xxx étaient au contraire associés négativement. Les variables sélectionnées étaient ensuite analysée en régression multivariée. Les facteurs xxx .
-
-```{r}
-#| label: tbl-meta
-#| fig-cap: "Modèle de régression logistique mixte sur données imputées"
-#| lightbox: true
-source("scripts/mod_meta.R")
-
-tbl_mmrm_imputes
-```
-
-```{r}
-fp_mmrm_imputes
-```
-
-L'AUC étaient de xxx ; Se Sp VPP VPN. Courbe de calibration.
 
 ## Score et prédiction
 
@@ -283,6 +267,20 @@ source("scripts/tests/mod_random_forrest_boot.R")
 plot_20_rf
 ```
 
+## Régression lasso
+
+```{r}
+#| label: fig-lasso
+#| fig-cap: "Lasso"
+mod_glmerlasso <- readRDS("mod_glmerLasso.rds")
+rf_glmerlasso <- readRDS("rf_glmerLasso.rds")
+roc_glmerlasso <- readRDS("roc_glmerLasso.rds")
+
+tbl_regression(mod_glmerlasso)
+print(rf_glmerlasso)
+print(roc_glmerlasso)
+```
+
 ## Comparaisons bivariées
 
 Nous réalisons une comparaison bi-variées, avec correction du risque d'inflation du risque alpha via la méthode de *false detection rate (FDR)* @tbl-bv .
@@ -337,3 +335,5 @@ tbl2
 17. Changement épidémiologie
 
 18. Méta analyse
+
+19.

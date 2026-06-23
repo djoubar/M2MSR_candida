@@ -1,9 +1,19 @@
-################################################################################
-#                                                                              #
-#                             M2MSR_FIG1_UNIVARIEES                            #
-#                                                                              #
-################################################################################
+# ==============================================================================
+#
+#                              FIGURES UNIVARIEES
+#
+# ==============================================================================
+library(tidyverse)
+library(patchwork)
+
+if (!exists("df_base")) {
+  source("scripts/brutes/_setup.R")
+}
 .df_fig1 <- df_base
+
+# ==============================================================================
+# Fonction
+# ==============================================================================
 
 uv_cat <- function(.df_fig1, save_plots = TRUE, output_dir = "figures/uv") {
   categories <- list(
@@ -100,74 +110,16 @@ uv_cat <- function(.df_fig1, save_plots = TRUE, output_dir = "figures/uv") {
   return(figures)
 }
 
-# Générer les graphiques et les sauvegarder
+
 figures <- uv_cat(.df_fig1, save_plots = TRUE, output_dir = "figures/uv")
 
+# .df_description <- df_base |>
+#   select(-all_of(starts_with("date")), -id_hemoc, -adm_plasmalyte) |>
+#   mutate(hc_delai = as.numeric(hc_delai, units = "days"))
 
-.df_description <- df_base |>
-  select(-all_of(starts_with("date")), -id_hemoc, -adm_plasmalyte) |>
-  mutate(hc_delai = as.numeric(hc_delai, units = "days"))
-
-tbl_descriptif <- tbl_summary(
-  .df_description,
-  statistic = list(all_continuous() ~ "{min} / {median} / {max} ({mean})"),
-  digits = all_continuous() ~ 2,
-  missing = "ifany" # Optionnel : pour arrondir les valeurs
-)
-
-# tbl3m_uv_demo <-
-#   tbl_uvregression(
-#     data = df_base,
-#     include = c(all_of(starts_with("demo"))),
-#     method = glmer,
-#     y = resultat_candida_def,
-#     formula = "{y} ~ {x} + (1|iep)",
-#     method.args = list(family = binomial),
-#     exponentiate = TRUE
-#   )
-
-# tbl3m_uv_adm <-
-#   tbl_uvregression(
-#     data = df_base,
-#     include = c(all_of(starts_with("adm"))),
-#     method = glmer,
-#     y = resultat_candida_def,
-#     formula = "{y} ~ {x} + (1|iep)",
-#     method.args = list(family = binomial),
-#     exponentiate = TRUE
-#   )
-
-# tbl3m_uv_hc <-
-#   tbl_uvregression(
-#     data = df_base,
-#     include = c(
-#       all_of(starts_with("hc")),
-#       -hc_lympho_min,
-#       -hc_neutro_min,
-#       -all_of(starts_with("hc_sofa")),
-#       -hc_voluven
-#     ),
-#     method = glmer,
-#     y = resultat_candida_def,
-#     formula = "{y} ~ {x} + (1|iep)",
-#     method.args = list(family = binomial),
-#     exponentiate = TRUE
-#   )
-
-# tbl3m_uv_hospit <-
-#   tbl_uvregression(
-#     data = df_base,
-#     include = c(all_of(starts_with("hospit"))),
-#     method = glmer,
-#     y = resultat_candida_def,
-#     formula = "{y} ~ {x} + (1|iep)",
-#     method.args = list(family = binomial),
-#     exponentiate = TRUE
-#   )
-
-# mod1 <- glmer(
-#   data = df_base,
-#   resultat_candida_def ~ hospit_cp + (1 | iep),
-#   family = "binomial"
+# tbl_descriptif <- tbl_summary(
+#   .df_description,
+#   statistic = list(all_continuous() ~ "{min} / {median} / {max} ({mean})"),
+#   digits = all_continuous() ~ 2,
+#   missing = "ifany" # Optionnel : pour arrondir les valeurs
 # )
-# tbl_regression(mod1, exponentiate = TRUE)

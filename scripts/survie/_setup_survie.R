@@ -1,5 +1,11 @@
+library(mice)
+
 imp <- readRDS("donnees/df_impute.rds")
-source("scripts/brutes/_setup.R")
+
+if (!exists("df_base")) {
+  source("scripts/brutes/_setup.R")
+}
+
 
 ################################################################################
 #                                    SETUP                                     #
