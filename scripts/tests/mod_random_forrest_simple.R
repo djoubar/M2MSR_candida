@@ -3,6 +3,9 @@
 #                                       RANDOM FORREST
 #
 #===================================================================================================
+library(randomForest)
+library(rsample)
+
 source("scripts/survie/_setup_survie.R")
 set.seed(123)
 df_rf <- df_base |>
@@ -21,10 +24,10 @@ df_80 <- testing(split)
 
 model.rf <- randomForest(resultat_candida_def ~ ., data = df_80, ntree = 1000, importance = TRUE)
 plotRF <- varImpPlot(model.rf)
-candida_pred = predict(model.rf, df_80)
-df_80$candida_pred = candida_pred
-matrix = table(df_80$resultat_candida_def, candida_pred)
-precision = sum(diag(matrix) / sum(matrix))
+candida_pred <- predict(model.rf, df_80)
+df_80$candida_pred <- candida_pred
+matrix <- table(df_80$resultat_candida_def, candida_pred)
+precision <- sum(diag(matrix) / sum(matrix))
 #
 # rf.candida <- table(data$resultat_candida_def,
 #                     predict(model.rf, newdata = data))

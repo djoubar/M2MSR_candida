@@ -1,28 +1,32 @@
-imp <- read_rds("donnees/df_impute.rds")
-source("scripts/brutes/_setup.R")
+library(tidyverse)
+library(gtsummary)
+library(pROC)
+library(lme4)
+library(rms)
+library(mice)
+library(broom)
+library(boot)
+library(car)
+library(CalibrationCurves)
+
+imp <- read_rds("donnees/df_impute_2.rds")
+if (!exists("df_base")) {
+  source("scripts/brutes/_setup.R")
+}
 
 #===============================================================================
 #                              CREATION DES MODELES
 #===============================================================================
-
-df_stepwise <- complete(imp, 1) %>%
+df_stepwise <- complete(imp, 2) %>%
   left_join(
     df_base %>%
-      select(
-        id_hemoc,
-        date_adm_hospit,
-        date_adm_rea,
-        date_hemoc,
-        date_sortie_rea,
-        date_deces
-      ),
+      select(id_hemoc, date_adm_hospit, date_adm_rea, date_hemoc, date_sortie_rea, date_deces),
     by = "id_hemoc"
   ) %>%
   group_by(iep) %>%
   summarise(
     demo_centre = first(demo_centre),
     demo_type_rea = first(demo_type_rea),
-    demo_uf = first(demo_uf),
     demo_age = first(demo_age),
     demo_sexe = first(demo_sexe),
     demo_atcd_hemato = first(demo_atcd_hemato),
@@ -34,14 +38,12 @@ df_stepwise <- complete(imp, 1) %>%
     adm_igs2 = first(adm_igs2),
     adm_pancreatite_aigue = first(adm_pancreatite_aigue),
     adm_poids = first(adm_poids),
-    adm_temp_min = first(adm_temp_min),
-    adm_temp_max = first(adm_temp_max),
+    adm_hypothermie = first(adm_hypothermie),
+    adm_fievre = first(adm_fievre),
     adm_diurese_norm = first(adm_diurese_norm),
     adm_creat_max = first(adm_creat_max),
     adm_uree_max = first(adm_uree_max),
-    adm_pfio2_min = first(adm_pfio2_min),
     adm_lactates_max = first(adm_lactates_max),
-    adm_leuco_min = first(adm_leuco_min),
     adm_vi_cat = first(adm_vi_cat),
     adm_dialyse = first(adm_dialyse),
     adm_cgr = first(adm_cgr),
@@ -49,9 +51,6 @@ df_stepwise <- complete(imp, 1) %>%
     adm_cp = first(adm_cp),
     adm_transfu = first(adm_transfu),
     adm_amines = first(adm_amines),
-
-    # --- Covariables DYNAMIQUES (hc_*) : agrégation ---
-    hc_choc = last(hc_choc),
     hc_dialyse = last(hc_dialyse),
     hc_kta = last(hc_kta),
     hc_vvc = last(hc_vvc),
@@ -63,22 +62,12 @@ df_stepwise <- complete(imp, 1) %>%
     hc_cp = last(hc_cp),
     hc_transfu = last(hc_transfu),
     hc_amines = last(hc_amines),
-
-    # Continues : pire valeur (max/min) ou moyenne
-    hc_delai = as.numeric(last(hc_delai)), # Délai jusqu'à la 1ère hémoculture
-    hc_temp_min = last(hc_temp_min),
-    hc_temp_max = last(hc_temp_max),
-    hc_diurese_norm = last(hc_diurese_norm),
-    hc_pfio2_min = last(hc_pfio2_min),
+    hc_hypothermie = last(hc_hypothermie),
+    hc_fievre = last(hc_fievre),
+    hc_antifongique = last(hc_antifongique),
     hc_creat_max = last(hc_creat_max),
     hc_uree_max = last(hc_uree_max),
-    hc_lactates_max = last(hc_lactates_max),
-    hc_leuco_min = last(hc_leuco_min),
-    hc_glucanes_max = last(hc_glucanes_max),
-    hc_mannanes_max = last(hc_mannanes_max),
     hc_vi_cat = last(hc_vi_cat),
-
-    # --- Covariables HOSPIT (durées) : première valeur ---
     hospit_vi_duree = last(hospit_vi_duree),
     hospit_parenterale_duree = last(hospit_parenterale_duree),
     hospit_vvc_duree = last(hospit_vvc_duree),
@@ -90,45 +79,37 @@ df_stepwise <- complete(imp, 1) %>%
     hospit_immunosup_duree = last(hospit_immunosup_duree),
     hospit_neutropen_duree = last(hospit_neutropen_duree),
     hospit_neutrophi_duree = last(hospit_neutrophi_duree),
-    hospit_lymphopenie_duree = last(hospit_lymphopenie_duree),
     hospit_cgr = last(hospit_cgr),
     hospit_pfc = last(hospit_pfc),
     hospit_cp = last(hospit_cp),
     hospit_fibro = last(hospit_fibro),
     hospit_chirurgie_majeure = last(hospit_chirurgie_majeure),
     hospit_chirurgie_abdominale = last(hospit_chirurgie_abdominale),
+    hospit_chirurgie_hepatobiliaire = last(hospit_chirurgie_hepatobiliaire),
+    hospit_chirurgie_susmesocolique = last(hospit_chirurgie_susmesocolique),
     nb_hemocultures = n(),
     resultat_candida_def = last(resultat_candida_def)
   ) %>%
-  ungroup() |>
-  select(-c(demo_uf, demo_centre, hc_glucanes_max, hc_mannanes_max, iep))
+  ungroup()
 
-mod_intercept <- glm(
-  resultat_candida_def ~ 1,
-  data = df_stepwise,
-  family = "binomial"
-)
+mod_intercept <- glm(resultat_candida_def ~ 1, data = df_stepwise, family = "binomial")
+mod_tot <- glm(resultat_candida_def ~ ., data = df_stepwise, family = "binomial")
 
-mod_tot <- glm(
-  resultat_candida_def ~ .,
-  data = df_stepwise,
-  family = "binomial"
-)
+forward <- step(mod_intercept, direction = "forward", scope = formula(mod_tot))
+backward <- step(mod_tot, direction = "backward", scope = formula(mod_tot))
+both <- step(mod_intercept, direction = "both", scope = formula(mod_tot))
 
-forward <- step(mod_intercept, direction = 'forward', scope = formula(mod_tot))
 tbl_regression(forward, exponentiate = TRUE)
-saveRDS(forward, "models/mod_imp1_fwd.RDS")
-backward <- step(mod_tot, direction = 'backward', scope = formula(mod_tot))
 tbl_regression(backward, exponentiate = TRUE)
-saveRDS(backward, "models/mod_imp1_bwd.RDS")
-both <- step(mod_intercept, direction = 'both', scope = formula(mod_tot))
 tbl_regression(both, exponentiate = TRUE)
-saveRDS(both, "models/mod_imp1_both.RDS")
-#===============================================================================
-#                               FORREST PLOTS
-#===============================================================================
-# forward <- readRDS("models/mod_imp1_fwd.RDS")
-# backward <- readRDS("models/mod_imp1_bwd.RDS")
+
+saveRDS(forward, "models/mod_imp2_fwd.RDS")
+saveRDS(backward, "models/mod_imp2_bwd.RDS")
+saveRDS(both, "models/mod_imp2_both.RDS")
+
+# ==============================================================================
+# Tidy models
+# ==============================================================================
 
 tidy_model_fwd <- tidy(forward, conf.int = TRUE) |>
   filter(term != "(Intercept)") |>
@@ -137,19 +118,24 @@ tidy_model_fwd <- tidy(forward, conf.int = TRUE) |>
       term,
       levels = c(
         "hc_vi_catOui",
-        "hc_transfu1",
-        "hc_chocOui",
+        "hc_transfuOui",
         "hospit_cgr",
-        "hc_choc",
-        "hc_diurese_norm",
+        "hc_dialyseOui",
         "hc_vvcOui",
+        "hospit_chirurgie_majeureOui",
         "hospit_ctc_duree",
         "hospit_immunosup_duree",
-        "adm_transfu",
-        "demo_age",
-        "hc_uree_max",
-        "hc_dialyseOui",
+        "demo_centreSLG",
         "adm_lactates_max",
+        "hc_cpOui",
+        "iep",
+        "hc_uree_max",
+        "demo_age",
+        "adm_hypothermieOui",
+        "hc_aminesOui",
+        "adm_diurese_norm",
+        "hospit_chirurgie_abdominaleOui",
+        "hospit_chirurgie_susmesocoliqueOui"
       ),
       # labels = list(hc_vi_catOui ~ "Ventilation invasive à l'hémoculture")
     ),
@@ -158,18 +144,6 @@ tidy_model_fwd <- tidy(forward, conf.int = TRUE) |>
     OR_low = exp(conf.low),
     OR_high = exp(conf.high)
   )
-
-fp_fwd <- ggplot(tidy_model_fwd, aes(x = OR, y = term)) +
-  geom_point(size = 3, color = "blue") +
-  geom_errorbarh(aes(xmin = OR_low, xmax = OR_high), height = 0.2) +
-  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
-  labs(
-    x = "Odds Ratio",
-    y = "Variable",
-    title = "Forest Plot - Régression Logistique"
-  ) +
-  theme_minimal() +
-  theme(axis.text.y = element_text(size = 8, hjust = 0))
 
 tidy_model_bwd <- tidy(backward, conf.int = TRUE) |>
   filter(term != "(Intercept)") |>
@@ -177,36 +151,30 @@ tidy_model_bwd <- tidy(backward, conf.int = TRUE) |>
     term = factor(
       term,
       levels = c(
-        "temps",
-        "demo_type_rea",
+        "iep",
+        "demo_centreSLG",
         "demo_age",
-        "adm_temp_min",
+        "adm_hypothermieOui",
+        "adm_diurese_norm",
         "adm_creat_max",
         "adm_uree_max",
-        "adm_pfio2_min",
-        "adm_vi_cat",
-        "hc_choc",
-        "hc_catheter_majeur",
-        "hc_cgr",
-        "hc_cp",
-        "hc_amines",
-        "hc_delai",
-        "hc_temp_min",
-        "hc_diurese_norm",
-        "hc_pfio2_min",
-        "hc_leuco_min",
-        "hc_glucanes_max",
-        "hc_mannanes_max",
-        "hc_vi_cat",
-        "hospit_vi_duree",
+        "adm_lactates_max",
+        "hc_dialyseOui",
+        "hc_vvcOui",
+        "hc_cgrOui",
+        "hc_cpOui",
+        "hc_aminesOui",
+        "hc_hypothermieOui",
+        "hc_fievreOui",
+        "hc_uree_max",
+        "hc_vi_catOui",
         "hospit_parenterale_duree",
-        "hospit_vvc_duree",
         "hospit_ctc_duree",
         "hospit_immunosup_duree",
-        "hospit_neutrophi_duree",
         "hospit_cgr",
-        "hospit_chirurgie_majeure",
-        "nb_hemocultures"
+        "hospit_chirurgie_majeureOui",
+        "hospit_chirurgie_abdominaleOui",
+        "hospit_chirurgie_susmesocoliqueOui"
       ),
       # labels = list(hc_vi_catOui ~ "Ventilation invasive à l'hémoculture")
     ),
@@ -216,7 +184,26 @@ tidy_model_bwd <- tidy(backward, conf.int = TRUE) |>
     OR_high = exp(conf.high)
   )
 
-fp_bwd <- ggplot(tidy_model_bwd, aes(x = OR, y = term)) +
+# ==============================================================================
+# Forrest plots
+# ==============================================================================
+
+fp_fwd <-
+  ggplot(tidy_model_fwd, aes(x = OR, y = term)) +
+  geom_point(size = 3, color = "blue") +
+  geom_errorbarh(aes(xmin = OR_low, xmax = OR_high), height = 0.2) +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
+  labs(
+    x = "Odds Ratio",
+    y = "Variable",
+    title = "Forest Plot - Régression Logistique"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 8, hjust = 0))
+
+
+fp_bwd <-
+  ggplot(tidy_model_bwd, aes(x = OR, y = term)) +
   geom_point(size = 3, color = "blue") +
   geom_errorbarh(aes(xmin = OR_low, xmax = OR_high), height = 0.2) +
   geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
@@ -229,20 +216,33 @@ fp_bwd <- ggplot(tidy_model_bwd, aes(x = OR, y = term)) +
   theme(axis.text.y = element_text(size = 8, hjust = 0))
 
 #==============================================================================
-#                          PREDICTIONS / ROC / CC
+# Predictions, ROC, Courbe calibration FORWARD
 #==============================================================================
-# FWD
-
 df_stepwise$score <- predict(forward, type = "response")
-# ajouter re.form = NA pour mm
 df_stepwise$risque <- ifelse(
   df_stepwise$score < 0.01,
   "Faible",
-  ifelse(df_stepwise$score <= 0.15, "Modéré", "Élevé")
+  ifelse(df_stepwise$score <= 0.2, "Modéré", "Élevé")
+)
+table(df_stepwise$risque)
+B <- 1000
+boot_auc_fun <- function(data, indices) {
+  boot_data <- data[indices, ]
+  roc_boot <- roc(response = boot_data$resultat_candida_def, predictor = boot_data$score)
+  return(auc(roc_boot))
+}
+
+# Exécute le bootstrap
+boot_results_fwd <- boot(
+  data = df_stepwise,
+  statistic = boot_auc_fun,
+  R = B,
+  strata = df_stepwise$resultat_candida_def # Stratifie sur resultat_candida_def pour équilibrer les classes
 )
 
-# table(df_stepwise$risque)
-# tapply(df_stepwise$score, df_stepwise$risque, mean) # Moyennes par groupe
+# AUC moyenne et IC 95% (méthode BCa)
+auc_fwd_mean <- mean(boot_results_fwd$t)
+auc_fwd_ci <- boot.ci(boot_results_fwd, type = "bca")$bca[4:5] # [1] = inf, [2] = sup
 
 roc_obj_fwd <- roc(response = df_stepwise$resultat_candida_def, predictor = df_stepwise$score)
 
@@ -250,39 +250,47 @@ roc_fwd <- ggroc(roc_obj_fwd, colour = "black", size = 0.5) +
   ggtitle(paste("Modèle Forward - AUC =", round(auc(roc_obj_fwd), 3))) +
   theme_minimal()
 
+# Courbe ROC originale + annotation de l'IC bootstrap
+roc_fwd <- ggroc(roc_obj_fwd, colour = "black", size = 0.5) +
+  geom_abline(intercept = 1, slope = -1, linetype = "dashed", color = "red") +
+  ggtitle(paste(
+    "Modèle Forward - AUC moyen =",
+    round(auc_fwd_mean, 3),
+    "\nIC 95% (bootstrap) : [",
+    round(auc_fwd_ci[1], 3),
+    "; ",
+    round(auc_fwd_ci[2], 3),
+    "]"
+  )) +
+  theme_minimal()
+# Fin essai boot
+
 pred_probs <- predict(forward, type = "response")
 
 dd <- datadist(df_stepwise)
 options(datadist = "dd")
 
-fit_lrm <- lrm(
-  resultat_candida_def ~ hc_vi_cat +
-    hc_glucanes_max +
-    hc_mannanes_max +
+fit_lrm <- rms::lrm(
+  resultat_candida_def ~
+    hc_vi_cat +
     hc_transfu +
-    hc_choc +
     hospit_cgr +
-    hospit_immunosup_duree +
-    hospit_vvc_duree +
-    hospit_ctc_duree +
-    demo_type_rea +
-    hc_diurese_norm +
-    demo_age +
-    adm_temp_min +
-    hospit_neutrophi_duree +
+    hc_dialyse +
+    hc_vvc +
     hospit_chirurgie_majeure +
+    hospit_ctc_duree +
+    hospit_immunosup_duree +
+    demo_centre +
+    adm_lactates_max +
+    hc_cp +
+    # iep +
+    hc_uree_max +
+    demo_age +
+    adm_hypothermie +
     hc_amines +
-    hc_catheter_majeur +
-    hospit_parenterale_duree +
-    hospit_vi_duree +
-    adm_vi_cat +
-    hc_temp_min +
-    adm_uree_max +
-    adm_creat_max +
-    adm_pfio2_min +
-    hc_pfio2_min +
-    nb_hemocultures +
-    hc_dialyse,
+    adm_diurese_norm +
+    hospit_chirurgie_abdominale +
+    hospit_chirurgie_susmesocolique,
   data = df_stepwise,
   x = TRUE,
   y = TRUE
@@ -290,20 +298,37 @@ fit_lrm <- lrm(
 
 # 3. Calcule la calibration
 cal_fwd <- calibrate(fit_lrm, method = "boot", b = 200)
-cc_fwd <- plot(cal)
+cc_fwd <- val.prob.ci.2(
+  p = pred_fwd,
+  y = obs_fwd,
+  g = 10, # nombre de groupes (deciles)
+  pl = TRUE,
+  smooth = "loess",
+  CL.smooth = TRUE, # IC autour du lissage
+  logistic.cal = TRUE # droite de calibration logistique
+)
+
+# 4. Sauvegarde
+ggsave(filename = "figures/FP_fwd2.png", plot = fp_fwd)
+ggsave(filename = "figures/ROC_fwd2.png", plot = roc_fwd)
+ggsave(
+  filename = "figures/CC_fwd2.png",
+  plot = cc_fwd$ggPlot
+)
 
 
-# BWD
+#==============================================================================
+# Predictions, ROC, Courbe calibration BACKWARD
+#==============================================================================
+
 df_stepwise$score <- predict(backward, type = "response")
-# ajouter re.form = NA pour mm
 df_stepwise$risque <- ifelse(
   df_stepwise$score < 0.01,
   "Faible",
-  ifelse(df_stepwise$score <= 0.15, "Modéré", "Élevé")
+  ifelse(df_stepwise$score <= 0.2, "Modéré", "Élevé")
 )
 
-# table(df_stepwise$risque)
-# tapply(df_stepwise$score, df_stepwise$risque, mean) # Moyennes par groupe
+table(df_stepwise$risque)
 
 roc_obj_bwd <- roc(response = df_stepwise$resultat_candida_def, predictor = df_stepwise$score)
 
@@ -316,38 +341,32 @@ pred_probs <- predict(backward, type = "response")
 dd <- datadist(df_stepwise)
 options(datadist = "dd")
 
-fit_lrm <- lrm(
+fit_lrm <- rms::lrm(
   resultat_candida_def ~
-    # temps +
-    demo_type_rea +
+    # iep +
+    demo_centre +
     demo_age +
-    adm_temp_min +
+    adm_hypothermie +
+    adm_diurese_norm +
     adm_creat_max +
     adm_uree_max +
-    adm_pfio2_min +
-    adm_vi_cat +
-    hc_choc +
-    hc_catheter_majeur +
+    adm_lactates_max +
+    hc_dialyse +
+    hc_vvc +
     hc_cgr +
     hc_cp +
     hc_amines +
-    hc_delai +
-    hc_temp_min +
-    hc_diurese_norm +
-    hc_pfio2_min +
-    hc_leuco_min +
-    hc_glucanes_max +
-    hc_mannanes_max +
+    hc_hypothermie +
+    hc_fievre +
+    hc_uree_max +
     hc_vi_cat +
-    hospit_vi_duree +
     hospit_parenterale_duree +
-    hospit_vvc_duree +
     hospit_ctc_duree +
     hospit_immunosup_duree +
-    hospit_neutrophi_duree +
     hospit_cgr +
     hospit_chirurgie_majeure +
-    nb_hemocultures,
+    hospit_chirurgie_abdominale +
+    hospit_chirurgie_susmesocolique,
   data = df_stepwise,
   x = TRUE,
   y = TRUE
@@ -355,11 +374,24 @@ fit_lrm <- lrm(
 
 # 3. Calcule la calibration
 cal_bwd <- calibrate(fit_lrm, method = "boot", B = 100)
-cc_bwd <- plot(cal)
+cc_bwd <- val.prob.ci.2(
+  p = pred_bwd,
+  y = obs_bwd,
+  g = 10,
+  pl = TRUE,
+  smooth = "loess",
+  CL.smooth = TRUE,
+  logistic.cal = TRUE
+)
 
-ggsave(filename = "figures/FP_fwd.png", plot = fp_fwd)
-ggsave(filename = "figures/FP_bwd.png", plot = fp_bwd)
-ggsave(filename = "figures/ROC_fwd.png", plot = roc_fwd)
-ggsave(filename = "figures/ROC_bwd.png", plot = roc_bwd)
-save(path = "figures/CC_fwd.png", plot = cc_fwd)
-save(filename = "figures/CC_bwd.png", plot = cc_bwd)
+ggsave(
+  filename = "figures/CC_bwd0.png",
+  plot = cc_bwd$ggPlot,
+  width = 7,
+  height = 6,
+  dpi = 300
+)
+
+ggsave(filename = "figures/FP_bwd0.png", plot = fp_bwd)
+ggsave(filename = "figures/ROC_bwd0.png", plot = roc_bwd)
+ggsave(filename = "figures/CC_bwd0.png", plot = cc_bwd)

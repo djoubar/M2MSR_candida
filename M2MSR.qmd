@@ -7,25 +7,15 @@ author:
   affiliation: CHU de Lille
 date: last-modified
 format:
-  html:
+  hebstr-doc-html:
+    code-tools:
+      source: "https://github.com/djoubar/M2MSR_candida"
     toc: true
     toc-depth: 3
     css: |
       p {
         text-align: justify;
       }
-    include-in-header: |
-      <style>
-        .github-link {
-          position: fixed;
-          top: 10px;
-          right: 20px;
-          z-index: 1000;
-        }
-      </style>
-    include-after-body: |
-      <a href="https://github.com/djoubar/M2MSR_candida" class="github-link" target="_blank">🔗 Code</a>
-
   docx:
     toc: true
     toc-depth: 3
@@ -35,14 +25,17 @@ execute:
   message: false
   warning: false
   echo: false
-  editor: visual
+  editor: source
 lang: fr
 comments: false
 ---
 
 ------------------------------------------------------------------------
 
+{{< script scripts/brutes/_setup.R >}}
+
 # [Introduction]{.underline}
+
 
 *Candida* est une levure saprophyte du revêtement cutané et de la muqueuse oro-digestive chez l’être humain. Ces champignons peuvent provoquer des infections sanguines (candidémies) et des atteintes de tissus profonds (candidoses invasives), représentant la pathologie fongique nosocomiale la plus fréquente dans les pays occidentaux (1). Les candidémies sont particulièrement fréquentes chez les patients hospitalisés en réanimation, représentant 8% des hémocultures positives et 15% des infections nosocomiales dans ces services (2). Les patients de réanimation en présentent en effet de nombreux facteurs de risque : certains dispositifs invasifs tels que les cathéters veineux centraux, les cathéters de dialyse, ou la ventilation mécanique, qui sont des outils thérapeutiques employés quasi-exclusivement en réanimation ; la nutrition parentérale, administrée uniquement par ces cathéters profonds ; les chirurgies abdominales lourdes ou les pancréatites aigues nécrosantes. Par ailleurs, une hospitalisation prolongée, associée à une exposition répétée aux antibiotiques, favorisent la colonisation à *Candida*, première étape vers l’infection invasive (4,5).
 
@@ -96,13 +89,17 @@ Les données cliniques et biologiques reflétants l'état à l'admission du pati
 
 Afin de quantifier les expositions au cours de l'hospitalisation en réanimation, la présence de fibroscopie(s) digestive(s), de chirurgie(s) abdominale(s), de chirurgie(s) majeures, les durées de ventilation mécanique invasive, de nutrition parentérale, les durées de présence de cathéters (artériels, veineux centraux, de dialyse, ou d'ECMO), la durée d'exposition aux antibiotiques, aux immunosuppresseurs ou aux corticoïdes, et le nombre de culots globulaires, plaquettaires & poches de plasma étaient également récoltées. Les durées de neutrophilie (définie comme \> 7 G/L), neutropénie (définie comme \< 0,5 G/L) et de lymphopénie (définie comme lymphocytes \< 0.1 G/L) étaient identifiées.
 
+## Sélection des variables
+
+Afin de sélectionner les variables à inclure dans la modélisation finale, nous réalisons la stratégie proposée par Heymans et al. (19) : 200 réplications bootstrapps sont réalisées sur chacun des 20 jeux imputés. Pour chaque réplication, une régression logistique multivariée avec sélection stepwise forward est estimée. Les variables candidates retenues et significatives (à 0.05 de significativité) dans plus de 60% des 200 x 20 modèles étaient retenues.
+
 ## Données manquantes
 
-A l'issue de l'extraction des données, les données manquantes (\< 30%) supposées *Missing-At-Random* ont été imputées par imputation multiple (équation en chaine avec 50 imputations) via régression linéaire pénalisée lasso. pour les variables continues & par régression logistique pour les variables catégorielles.
+A l'issue de l'extraction des données, les données manquantes (\< 30%) supposées *Missing-At-Random* ont été imputées par imputation multiple (équation en chaine avec 20 imputations) via "two-level normal model" pour les variables continues & par "two-level normal model using lmer" pour les variables catégorielles.
 
 ## Analyses statistiques
 
-Les variables catégorielles sont décrites en effectifs & pourcentage. Les variables continues sont présentées par médiane, minimale et maximale. Les données démographiques sont identifiées et décrites en premier lieu. Une première analyse bivariée était réalisée via régression logistique simple. Les Odds Ratios (OR) sont rapportés avec intervalle de confiance à 95% près pooling selon les règles de Rubin. Les variables pertinentes cliniquement, constantes avec la littérature, ou en faveur d'un sur-risque de candidémie lors de l'analyse bivariée ont été incluses dans une analyse multivariée. L'analyse multivariée est réalisée via régression logistique mixte avec effet aléatoire via le patient. La modélisation finale était évaluée par évaluation de l'aire sous la courbe ROC (Receiving Operation Characteristic) & par courbe de calibration.
+Les variables catégorielles sont décrites en effectifs & pourcentage. Les variables continues sont présentées par médiane et intervalle interquartile. Les données démographiques sont identifiées et décrites en premier lieu. Une première analyse bivariée était réalisée via régression logistique simple. Les Odds Ratios (OR) sont rapportés avec intervalle de confiance à 95% près pooling selon les règles de Rubin. Les variables pertinentes cliniquement, constantes avec la littérature, ou en faveur d'un sur-risque de candidémie lors de l'analyse bivariée ont été incluses dans une analyse multivariée. L'analyse multivariée est réalisée via régression logistique mixte avec effet aléatoire via le patient. La modélisation finale était évaluée par évaluation de l'aire sous la courbe ROC (Receiving Operation Characteristic) & par courbe de calibration.
 
 Tous les tests statistiques étaient bilatéraux avec un niveau de significativité fixé à p \< 0.05. Les variables catégorielles sont décrites en effectifs & pourcentage. Les variables continues sont présentées par médiane, minimale et maximale.
 
@@ -110,11 +107,15 @@ Tous les tests statistiques étaient bilatéraux avec un niveau de significativi
 
 La conformité au Règlement Général sur la Protection des Données (RGPD) du traitement de ces données par le CHU de Lille sur le fondement de l’intérêt public à des fins de recherche a été validée par la Commission Nationale de l’Informatique et des Libertés (CNIL) (Délibération n°2019-103). Les responsables d’Include ont pris toutes les mesures pour mener les futurs projets de recherche conformément à la loi française et européenne.
 
+## Utilisation de large language models (LLMs)
+
+Nous déclarons avoir employé un modèle LLM (Vibe - Mistral AI) à des fins de débuggage ou d'optimisation de fonctions complexes (parralélisation pour optimisation du temps de calcul). L'ensemble de la bibliographie, de la réflexion méthodologique, du code (hors débuggage), et de la rédaction de ce manuscript ont été réalisées sans utilisation de modèles LLMs.
+
 # [Résultats]{.underline}
 
 ## Caractéristiques de la population
 
-Après extraction des hémocultures de l'entrepôt de données de santé, nous procédons à une analyse exploratoire des données. Nous identifions donc **104 620** hémocultures, **31 671 épisodes de sepsis** sur **9813 séjours**, chez **9714** individus (@fig_flowchart). Parmis ces épisodes, 376 (1,2%) étaient attribuables à une candidémie inaugurale ; contre 29 577 liés à une autre cause ou sans cause identifiée.
+Après extraction des hémocultures de l'entrepôt de données de santé, nous procédons à une analyse exploratoire des données. Nous identifions donc **104 620** hémocultures, **31 671 épisodes de sepsis** sur **9813 séjours**, chez **9714** individus (@fig_flowchart). Parmis ces épisodes, 376 (1,2%) étaient attribuables à une candidémie inaugurale ; contre 29 577 (98.8%) liées à une autre cause ou sans cause identifiée.
 
 A noter qu'en moyenne, chaque individu se voyait prélever [2 hémocultures par séjour]{.underline}.
 
@@ -124,11 +125,12 @@ A noter qu'en moyenne, chaque individu se voyait prélever [2 hémocultures par 
 #| lightbox: true
 #| fig-align: center
 knitr::include_graphics("figures/flow_chart.png")
+knitr::include_text("L'ensemble des hemocultures sont extraites dans un premier temps")
 ```
 
 ## Description de la population
 
-Dans notre population d'étude, les patients étaient majoritairement de **sexe masculin (66%)**, et **d'âge médian de** **61 ans**. 4.7% présentaient des antécédents de maladie hématologique maligne, 26% de diabète, et 18% de tumeurs solides & 3.1% de transplantation d'organe solide. Au cours de leur hospitalisation, xx % de nos patients ont eu une chirurgie abdominale & xx % ont eu une fibroscopie digestive.
+Dans notre population d'étude, les patients étaient majoritairement de **sexe masculin (66%)**, et **d'âge médian de 61 ans**. 4.7% présentaient des antécédents de maladie hématologique maligne, 26% de diabète, et 18% de tumeurs solides & 3.1% de transplantation d'organe solide. Au cours de leur hospitalisation, xx % de nos patients ont eu une chirurgie abdominale & xx % ont eu une fibroscopie digestive.
 
 A l'admission, 84% présentaient un état de choc et 67 % étaient ventilés de manière invasive. L'ensemble de la description est représentée dans le @tbl-demographique .
 
@@ -147,36 +149,17 @@ tbl1_gt <- tbl1 |>
 tbl1_gt
 ```
 
-## Analyse de survie
-
-Une analyse en modélisation de survie est réalisée. La délai de survie médiane étaient inférieur dans le groupe Candidémie que dans le groupe Absence de candidémie ; @fig-kaplan-meier.
-
-```{r}
-#| label: fig-kaplan-meier
-#| fig-cap: "Courbe Kaplan Meier de la mortalité en réanimation selon la présence ou non d'une candidémie"
-#| lightbox: true
-#| fig-align: center
-source("scripts/survie/mod_km.R")
-
-fig_km
-```
-
-
-Une modélisation en risque compétitifs (modèle de Fine & Gray) était réalisée, identifiant la dialyse, la ventilation invasive, etc comme facteurs de risque de candidémie. A l'inverse, l'age et l'exposition à des immunosuppresseurs était protectrices @fig-fine-gray.
-
-```{r}
-#| label: fig-fine-gray
-#| fig-cap: "Modèle FG"
-#| lightbox: true
-#| layout-ncol: 2
-source("scripts/survie/mod_fine_gray.R")
-
-table(df_fg$outcome_cat)
-
-fig_fp_fg
-```
-
 ## Modélisation en régression logistique sur données imputées
+
+```{r}
+#| label: tbl-meta
+#| fig-cap: "Modèle de régression logistique mixte sur données imputées"
+#| lightbox: true
+
+forest_plot <- readRDS("models/fp_imp.rds")
+
+print(forest_plot)
+```
 
 ## Score et prédiction
 
@@ -202,7 +185,8 @@ Le nombre de données manquantes à la phase à l'issue de l'extraction sont dé
 #| label: tbl-NA
 #| fig-cap: "Données manquantes"
 #| lightbox: true
-source("scripts/supplementary/fig_NA.R")
+source("scripts/supplementary/NA_tbl.R")
+
 tbl_NA
 ```
 
@@ -230,6 +214,31 @@ A ajouter
 
 # Explorations supplémentaires
 
+## Comparaisons bivariées
+
+Nous réalisons une comparaison bi-variées, avec correction du risque d'inflation du risque alpha via la méthode de *false detection rate (FDR)* @tbl-bv .
+
+```{r}
+#| label: tbl-bv
+#| tbl-cap: "Analyse bivariée de la survenue d'une candidémie"
+#| lightbox: true
+if (!exists("imp")) {
+  imp <- readRDS("donnees/df_impute.RDS")
+}
+
+imp_long <- complete(imp, action = "long", include = TRUE)
+imp_long |>
+  filter(.imp > 0) |>
+  select(-.imp, -.id, -id_hemoc) |>
+  tbl_summary(
+    by = "resultat_candida_def",
+    missing = "no"
+  ) |>
+  add_n() |>
+  add_p() |>
+  add_q()
+```
+
 ## Régression logistique simple, via stepwise forward, à partir d'une imputation simple
 
 A titre exploratoire, des modélisations stepwise forward et backward ont été réalisées à partir d'un unique jeu imputé.
@@ -247,12 +256,14 @@ A titre exploratoire, des modélisations stepwise forward et backward ont été 
 #| - "Courbe de calibration de la régression backward"
 #| layout-ncol: 2
 #| fig-align: center
-knitr::include_graphics("figures/FP_fwd.png")
-knitr::include_graphics("figures/FP_bwd.png")
-knitr::include_graphics("figures/ROC_fwd.png")
-knitr::include_graphics("figures/ROC_bwd.png")
-knitr::include_graphics("figures/CC_fwd.png")
-knitr::include_graphics("figures/CC_bwd.png")
+
+# source("scripts/supplementary/mod_stepwise.R")
+# knitr::include_graphics("figures/FP_fwd1.png")
+# knitr::include_graphics("figures/FP_bwd1.png")
+# knitr::include_graphics("figures/ROC_fwd1.png")
+# knitr::include_graphics("figures/ROC_bwd1.png")
+# knitr::include_graphics("figures/CC_fwd1.png")
+# knitr::include_graphics("figures/CC_bwd1.png")
 ```
 
 ## Random Forrest
@@ -262,9 +273,9 @@ A titre d'expérience, des modélisations ont été réalisées via random forre
 ```{r}
 #| label: fig-rf
 #| fig-cap: "Poids de chaque variable dans la modélisation par Random Forrest"
-source("scripts/tests/mod_random_forrest_boot.R")
+# source("scripts/tests/mod_random_forrest_boot.R")
 
-plot_20_rf
+# plot_20_rf
 ```
 
 ## Régression lasso
@@ -272,27 +283,61 @@ plot_20_rf
 ```{r}
 #| label: fig-lasso
 #| fig-cap: "Lasso"
-mod_glmerlasso <- readRDS("mod_glmerLasso.rds")
-rf_glmerlasso <- readRDS("rf_glmerLasso.rds")
-roc_glmerlasso <- readRDS("roc_glmerLasso.rds")
 
-tbl_regression(mod_glmerlasso)
-print(rf_glmerlasso)
-print(roc_glmerlasso)
+# mod_glmerlasso <- readRDS("mod_glmerLasso.rds")
+# rf_glmerlasso <- readRDS("rf_glmerLasso.rds")
+# roc_glmerlasso <- readRDS("roc_glmerLasso.rds")
+#
+# tbl_regression(mod_glmerlasso, exponentiate = TRUE)
+# print(rf_glmerlasso)
+# print(roc_glmerlasso)
 ```
 
-## Comparaisons bivariées
+## Analyse de survie
 
-Nous réalisons une comparaison bi-variées, avec correction du risque d'inflation du risque alpha via la méthode de *false detection rate (FDR)* @tbl-bv .
+Une analyse en modélisation de survie est réalisée. La délai de survie médiane étaient inférieur dans le groupe "candidémie" que dans le groupe "absence de candidémie" ; @fig-kaplan-meier, test log-rank p \< 0,05. Cause specific hazard ratios.
 
 ```{r}
-#| label: tbl-bv
-#| tbl-cap: "Analyse bivariée de la survenue d'une candidémie"
+#| label: fig-kaplan-meier
+#| fig-cap: "Courbe Kaplan Meier de la mortalité en réanimation selon la présence ou non d'une candidémie"
 #| lightbox: true
-source("scripts/brutes/tbl2_bv.R")
+#| fig-align: center
+source("scripts/survie/mod_km.R")
 
-tbl2
+fig_km
 ```
+
+```{r}
+#| label: fig-cox
+#| fig-cap: "Modèle de Cox - Identification des Cause Specific Hazard Ratios"
+#| lightbox: true
+#| fig-align: center
+source("scripts/survie/mod_cox.R")
+
+fig_fp_cox
+```
+
+Une modélisation en risque compétitifs (modèle de Fine & Gray) était réalisée, pour identifier les sHR ; identifiant la dialyse, la ventilation invasive, etc comme facteurs de risque de candidémie. A l'inverse, l'age et l'exposition à des immunosuppresseurs était protectrices @fig-fine-gray.
+
+```{r}
+#| label: fig-fine-gray
+#| fig-cap: "Modèle FG"
+#| lightbox: true
+#| layout-ncol: 2
+source("scripts/survie/mod_fine_gray.R")
+
+table(df_fg$outcome_cat)
+
+fig_fp_fg
+
+summary(auc_results)
+
+calibration_plot(model_fg_rr, df_fg, time_point = 28, cause = cause_interet)
+
+calibration_plot(model_fg_rr, df_fg, time_point = 60, cause = cause_interet)
+```
+
+
 
 ## Code
 

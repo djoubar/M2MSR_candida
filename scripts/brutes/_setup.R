@@ -683,7 +683,6 @@ df_base <- df_base %>%
     # resultat_candida,
     groupehc,
     # n_prvl,
-    # tt_antifongique_48h_av_hemoc,
     date_adm_hospit,
     date_adm_rea,
     date_hemoc,
@@ -803,7 +802,7 @@ df_base <- df_base %>%
     # hc_isoprenaline,
     # hc_noradre,
     # hc_terlipressine,
-    # hc_antifongique,
+    hc_antifongique,
     # variables expo hospit
     hospit_vi_duree,
     hospit_parenterale_duree,
@@ -822,7 +821,9 @@ df_base <- df_base %>%
     hospit_cp,
     hospit_fibro,
     hospit_chirurgie_majeure,
-    hospit_chirurgie_abdominale
+    hospit_chirurgie_abdominale,
+    hospit_chirurgie_susmesocolique,
+    hospit_chirurgie_hepatobiliaire
   ) |>
   arrange(iep, groupehc) |>
   group_by(iep, groupehc) |>
@@ -850,13 +851,13 @@ df_base <- df_base |>
     ),
     adm_pfio2_min = factor(
       adm_pfio2_min,
-      levels = c("<100", "100-200", "200-300", ">300"),
-      labels = c("<100", "100-200", "200-300", ">300")
+      levels = c("< 100", "100-200", "200-300", "> 300"),
+      labels = c("< 100", "100-200", "200-300", "> 300")
     ),
     hc_pfio2_min = factor(
       hc_pfio2_min,
-      levels = c("<100", "100-200", "200-300", ">300"),
-      labels = c("<100", "100-200", "200-300", ">300")
+      levels = c("< 100", "100-200", "200-300", "> 300"),
+      labels = c("< 100", "100-200", "200-300", "> 300")
     ),
     hc_deficit_neutro = ifelse(hospit_neutropen_duree > 0 | hospit_ctc_duree > 0, "1", "0"),
     hc_deficit_lympho = ifelse(hospit_lymphopenie_duree > 0 | hospit_immunosup_duree > 0, "1", "0")

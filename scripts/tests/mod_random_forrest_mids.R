@@ -21,7 +21,7 @@ library(ggplot2)
 
 # --- 1. PARAMÈTRES À ADAPTER --------------------------------------------------
 
-mids_obj <- readRDS("donnees/df_impute.rds")
+mids_obj <- readRDS("donnees/df_impute_2.rds")
 cible <- "resultat_candida_def" # variable à prédire
 n_bootstrap <- 2 # nombre d'itérations bootstrap
 prop_train <- 0.3 # proportion pour l'entraînement

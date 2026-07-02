@@ -17,7 +17,7 @@ if (!exists("df_fg")) {
 # --- 1. PARAMÈTRES À ADAPTER --------------------------------------------------
 
 df <- df_fg |>
-  select(-iep) # <-- ton dataframe ici
+  select(-c(temps, iep, outcome, outcome_cox, outcome_cat)) # <-- ton dataframe ici
 cible <- "resultat_candida_def" # variable à prédire (doit être un factor 0/1)
 n_bootstrap <- 100 # nombre d'itérations bootstrap
 prop_train <- 0.8 # proportion de l'échantillon pour l'entraînement

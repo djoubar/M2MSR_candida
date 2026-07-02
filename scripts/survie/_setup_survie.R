@@ -1,6 +1,7 @@
+library(tidyverse)
 library(mice)
 
-imp <- readRDS("donnees/df_impute.rds")
+imp <- readRDS("donnees/df_impute_2.rds")
 
 if (!exists("df_base")) {
   source("scripts/brutes/_setup.R")
@@ -49,14 +50,14 @@ df_fg <- complete(imp, 1) %>%
     adm_igs2 = first(adm_igs2),
     adm_pancreatite_aigue = first(adm_pancreatite_aigue),
     adm_poids = first(adm_poids),
-    adm_temp_min = first(adm_temp_min),
-    adm_temp_max = first(adm_temp_max),
+    adm_hypothermie = first(adm_hypothermie),
+    adm_fievre = first(adm_fievre),
     adm_diurese_norm = first(adm_diurese_norm),
     adm_creat_max = first(adm_creat_max),
     adm_uree_max = first(adm_uree_max),
-    adm_pfio2_min = first(adm_pfio2_min),
+    # adm_pfio2_min = first(adm_pfio2_min),
     adm_lactates_max = first(adm_lactates_max),
-    adm_leuco_min = first(adm_leuco_min),
+    # adm_leuco_min = first(adm_leuco_min),
     adm_vi_cat = first(adm_vi_cat),
     adm_dialyse = first(adm_dialyse),
     adm_cgr = first(adm_cgr),
@@ -66,7 +67,7 @@ df_fg <- complete(imp, 1) %>%
     adm_amines = first(adm_amines),
 
     # --- Covariables DYNAMIQUES (hc_*) : agrégation ---
-    hc_choc = last(hc_choc),
+    # hc_choc = last(hc_choc),
     hc_dialyse = last(hc_dialyse),
     hc_kta = last(hc_kta),
     hc_vvc = last(hc_vvc),
@@ -81,17 +82,18 @@ df_fg <- complete(imp, 1) %>%
 
     # Continues : pire valeur (max/min) ou moyenne
     hc_delai = last(hc_delai), # Délai jusqu'à la 1ère hémoculture
-    hc_temp_min = last(hc_temp_min),
-    hc_temp_max = last(hc_temp_max),
+    hc_hypothermie = last(hc_hypothermie),
+    hc_fievre = last(hc_fievre),
     hc_diurese_norm = last(hc_diurese_norm),
-    hc_pfio2_min = last(hc_pfio2_min),
+    # hc_pfio2_min = last(hc_pfio2_min),
     hc_creat_max = last(hc_creat_max),
     hc_uree_max = last(hc_uree_max),
-    hc_lactates_max = last(hc_lactates_max),
-    hc_leuco_min = last(hc_leuco_min),
-    hc_glucanes_max = last(hc_glucanes_max),
-    hc_mannanes_max = last(hc_mannanes_max),
+    # hc_lactates_max = last(hc_lactates_max),
+    # hc_leuco_min = last(hc_leuco_min),
+    # hc_glucanes_max = last(hc_glucanes_max),
+    # hc_mannanes_max = last(hc_mannanes_max),
     hc_vi_cat = last(hc_vi_cat),
+    hc_antifongique = last(hc_antifongique),
 
     # --- Covariables HOSPIT (durées) : première valeur ---
     hospit_vi_duree = last(hospit_vi_duree),
@@ -105,13 +107,15 @@ df_fg <- complete(imp, 1) %>%
     hospit_immunosup_duree = last(hospit_immunosup_duree),
     hospit_neutropen_duree = last(hospit_neutropen_duree),
     hospit_neutrophi_duree = last(hospit_neutrophi_duree),
-    hospit_lymphopenie_duree = last(hospit_lymphopenie_duree),
+    # hospit_lymphopenie_duree = last(hospit_lymphopenie_duree),
     hospit_cgr = last(hospit_cgr),
     hospit_pfc = last(hospit_pfc),
     hospit_cp = last(hospit_cp),
     hospit_fibro = last(hospit_fibro),
     hospit_chirurgie_majeure = last(hospit_chirurgie_majeure),
     hospit_chirurgie_abdominale = last(hospit_chirurgie_abdominale),
+    hospit_chirurgie_susmesocolique = last(hospit_chirurgie_susmesocolique),
+    hospit_chirurgie_hepatobiliaire = last(hospit_chirurgie_hepatobiliaire),
     nb_hemocultures = n(),
     resultat_candida_def = last(resultat_candida_def)
   ) %>%
@@ -120,5 +124,5 @@ df_fg <- complete(imp, 1) %>%
     outcome_cat = factor(outcome, levels = c(0, 1, 2), labels = c("Sortie", "Candidémie", "Décès")),
     outcome_cox = ifelse(outcome_cat == "Candidémie", 1, 0),
     hc_deficit_neutro = ifelse(hospit_neutropen_duree > 0 | hospit_ctc_duree > 0, "1", "0"),
-    hc_deficit_lympho = ifelse(hospit_lymphopenie_duree > 0 | hospit_immunosup_duree > 0, "1", "0")
+    hc_deficit_lympho = ifelse(hospit_immunosup_duree > 0, "1", "0")
   )

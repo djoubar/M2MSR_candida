@@ -23,10 +23,10 @@
 # =====================================================================
 
 # ---- 0. Packages ----
-packages <- c("glmmLasso", "ggplot2", "pROC", "dplyr")
+packages <- c("glmmLasso", "tidyverse", "pROC", "dplyr", "mice")
 invisible(lapply(packages, library, character.only = TRUE))
 
-imp <- readRDS("donnees/df_impute.rds")
+imp <- readRDS("donnees/df_impute1.rds")
 data <- complete(imp, 1)
 
 # =====================================================================
@@ -202,6 +202,7 @@ print(
     theme_minimal()
 )
 
+
 # ---- 6. Modèle final ----
 modele_final <- glmmLasso(
   fix = fix_formula,
@@ -211,22 +212,29 @@ modele_final <- glmmLasso(
   family = binomial(link = "logit"),
   control = list(print.iter = TRUE)
 )
+
+# BUG CORRIGÉ : le nom de l'objet était "modele_final_lasso" au lieu de "modele_final"
 saveRDS(modele_final, file = "mod_glmerLasso.rds")
 
-# Variables effectivement retenues par le Lasso (coefficient != 0)
+# Extraction et affichage des coefficients (hors intercept)
+# BUG CORRIGÉ : coefs_tous doit être extrait APRÈS la création de modele_final
 coefs_tous <- modele_final$coefficients
 coefs_tous <- coefs_tous[names(coefs_tous) != "(Intercept)"]
-cat("\nVariables retenues par le Lasso (coefficient non nul) :\n")
+
+cat("\nVariables RETENUES par le Lasso (coefficient non nul) :\n")
 print(coefs_tous[coefs_tous != 0])
-cat("\nVariables éliminées par le Lasso (coefficient = 0) :\n")
+
+cat("\nVariables ÉLIMINÉES par le Lasso (coefficient = 0) :\n")
 print(names(coefs_tous[coefs_tous == 0]))
+
+cat("\nNombre de variables retenues :", sum(coefs_tous != 0), "\n")
 
 # =====================================================================
 # 7. FOREST PLOT (Odds Ratios + IC95% bootstrap, par cluster iep)
 # =====================================================================
 
 clusters <- unique(data_modele[[variable_cluster]])
-n_boot <- 200 # à réduire si le temps de calcul est trop long (modèle saturé)
+n_boot <- 200
 boot_coefs <- matrix(NA_real_, nrow = n_boot, ncol = length(coefs_tous))
 colnames(boot_coefs) <- names(coefs_tous)
 
@@ -278,26 +286,28 @@ forest_df$OR <- exp(forest_df$beta)
 forest_df$OR_inf <- exp(forest_df$ic_inf)
 forest_df$OR_sup <- exp(forest_df$ic_sup)
 
-# Ne garder que les variables sélectionnées par le Lasso (recommandé ici,
-# car avec "toutes les colonnes" le graphique serait illisible sinon)
+# Garder uniquement les variables retenues (beta != 0)
 forest_df <- forest_df[forest_df$beta != 0, ]
-
 forest_df <- forest_df[order(forest_df$OR), ]
 forest_df$variable <- factor(forest_df$variable, levels = forest_df$variable)
 
-# print(
 plot_fp_glmerlasso <- ggplot(forest_df, aes(x = OR, y = variable)) +
   geom_point(size = 3, color = "darkblue") +
-  geom_errorbarh(aes(xmin = OR_inf, xmax = OR_sup), height = 0.2, color = "darkblue") +
+  geom_errorbarh(
+    aes(xmin = OR_inf, xmax = OR_sup),
+    height = 0.2,
+    color = "darkblue"
+  ) +
   geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
   scale_x_log10() +
   labs(
-    title = "Forest plot des Odds Ratios - variables retenues par le Lasso",
+    title = "Forest plot des Odds Ratios — variables retenues par le Lasso",
     x = "Odds Ratio (échelle log) avec IC95% bootstrap",
     y = NULL
   ) +
   theme_classic()
-# )
+
+print(plot_fp_glmerlasso)
 saveRDS(plot_fp_glmerlasso, file = "rf_glmerLasso.rds")
 
 # =====================================================================
@@ -313,20 +323,43 @@ auc_value <- auc(roc_obj)
 cat("AUC :", round(auc_value, 3), "\n")
 cat("IC95% AUC :", round(ci(roc_obj), 3), "\n")
 
-roc_glmerlasso <- plot(
-  roc_obj,
-  col = "darkblue",
-  lwd = 2,
-  main = paste0("Courbe ROC - AUC = ", round(auc_value, 3))
-)
-saveRDS(roc_glmerlasso, file = "roc_glmerLasso.rds")
+# BUG CORRIGÉ : plot() ne retourne pas d'objet — on sauvegarde la figure
+# via ggsave() après l'avoir construite avec ggplot, ou on enregistre
+# les données de la courbe ROC (coords) pour pouvoir la reconstruire.
+
+# Option A : sauvegarder les coordonnées ROC (recommandé)
+roc_coords <- coords(roc_obj, "all", ret = c("threshold", "sensitivity", "specificity"))
+saveRDS(list(roc_obj = roc_obj, auc = auc_value, coords = roc_coords), file = "roc_glmerLasso.rds")
+
+# Tracé avec ggplot (reproductible et exportable)
+plot_roc <- ggplot(roc_coords, aes(x = 1 - specificity, y = sensitivity)) +
+  geom_line(color = "darkblue", linewidth = 1) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey50") +
+  annotate(
+    "text",
+    x = 0.65,
+    y = 0.1,
+    label = paste0("AUC = ", round(auc_value, 3)),
+    color = "darkblue",
+    size = 5
+  ) +
+  labs(
+    title = "Courbe ROC",
+    x = "1 — Spécificité (taux de faux positifs)",
+    y = "Sensibilité (taux de vrais positifs)"
+  ) +
+  theme_classic()
+
+print(plot_roc)
 
 # =====================================================================
 # 9. COURBE DE CALIBRATION
 # =====================================================================
 
-data_calib <- data.frame(observe = data_modele[[variable_cible]], predit = pred_proba)
-
+data_calib <- data.frame(
+  observe = data_modele[[variable_cible]],
+  predit = pred_proba
+)
 data_calib$decile <- cut(
   data_calib$predit,
   breaks = quantile(data_calib$predit, probs = seq(0, 1, 0.1)),
@@ -342,17 +375,20 @@ calib_summary <- data_calib %>%
     .groups = "drop"
   )
 
-print(
-  ggplot(calib_summary, aes(x = proba_moyenne_predite, y = proportion_observee)) +
-    geom_point(size = 3, color = "darkred") +
-    geom_line(color = "darkred") +
-    geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey40") +
-    xlim(0, 1) +
-    ylim(0, 1) +
-    labs(
-      title = "Courbe de calibration",
-      x = "Probabilité prédite moyenne (par décile)",
-      y = "Proportion observée d'événements"
-    ) +
-    theme_minimal()
-)
+plot_calib <- ggplot(
+  calib_summary,
+  aes(x = proba_moyenne_predite, y = proportion_observee)
+) +
+  geom_point(size = 3, color = "darkred") +
+  geom_line(color = "darkred") +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey40") +
+  xlim(0, 1) +
+  ylim(0, 1) +
+  labs(
+    title = "Courbe de calibration",
+    x = "Probabilité prédite moyenne (par décile)",
+    y = "Proportion observée d'événements"
+  ) +
+  theme_minimal()
+
+print(plot_calib)

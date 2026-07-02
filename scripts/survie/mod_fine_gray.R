@@ -7,10 +7,12 @@ library(tidyverse)
 library(riskRegression)
 library(gtsummary)
 library(survival)
+library(cmprsk)
 library(tidycmprsk)
 library(broom)
 library(gt)
 library(ggsurvfit)
+library(prodlim)
 
 set.seed(142)
 
@@ -18,43 +20,45 @@ if (!exists("df_base")) {
   source("scripts/brutes/_setup.R")
 }
 
-# ------------------------------------------------------------------------------
+if (!exists("df_fg")) {
+  source("scripts/survie/_setup_survie.R")
+}
+
+# ==============================================================================
 #                           MODELISATION UNIVARIEE
-# ------------------------------------------------------------------------------
-covariables <- setdiff(names(df_fg), c("iep", "temps", "outcome"))
+# ==============================================================================
+# covariables <- setdiff(names(df_fg), c("iep", "temps", "outcome"))
 
-models_uni <- lapply(covariables, function(x) {
-  tryCatch(
-    tidycmprsk::crr(
-      data = df_fg,
-      Surv(temps, outcome),
-      covariables = x
-    ),
-    error = function(e) NULL
-  )
-}) %>%
-  compact()
+# models_uni <- lapply(covariables, function(x) {
+#   tryCatch(
+#     tidycmprsk::crr(
+#       data = df_fg,
+#       Surv(temps, outcome),
+#       covariables = x
+#     ),
+#     error = function(e) NULL
+#   )
+# }) %>%
+#   compact()
 
-tbl_uni <- tbl_uvregression(
-  y = Surv(temps, outcome),
-  data = df_fg,
-  method = "crr",
-  exponentiate = TRUE
-) %>%
-  add_n(location = "level") %>%
-  bold_labels()
-tbl_uni |>
-  as_gt() |>
-  gtsave("tbl_fg_uv.docx")
+# tbl_uni <- tbl_uvregression(
+#   y = Surv(temps, outcome),
+#   data = df_fg,
+#   method = "crr",
+#   exponentiate = TRUE
+# ) %>%
+#   add_n(location = "level") %>%
+#   bold_labels()
+# tbl_uni |>
+#   as_gt() |>
+#   gtsave("tbl_fg_uv.docx")
 
 # ------------------------------------------------------------------------------
 #                              SELECTION STEPWISE
 # ------------------------------------------------------------------------------
-# library(survival)
+
 # df_fg$outcome_cat <- as.factor(df_fg$outcome_cat)
 # df_long <- finegray(Surv(temps, outcome_cat) ~ ., data = df_fg)
-# # Liste des variables prédictives candidates (à adapter selon votre dataset)
-# # Exemple : c("age", "sexe", "bmi", "traitement")
 # variables_candidates <- setdiff(
 #   names(df_fg),
 #   c(
@@ -66,8 +70,6 @@ tbl_uni |>
 #     "outcome_cat",
 #     "resultat_candida_def",
 #     "outcome_cox",
-#     "hc_glucanes_max",
-#     "hc_mannanes_max"
 #   )
 # )
 
@@ -97,53 +99,49 @@ tbl_uni |>
 # ------------------------------------------------------------------------------
 model_fg <- crr(
   Surv(temps, outcome_cat) ~
-    demo_atcd_diabete +
-    demo_atcd_hemato +
-    demo_type_rea +
-    adm_igs2 +
-    # adm_dialyse +
-    hc_temp_max +
-    hc_leuco_min +
-    hc_choc +
-    # hc_creat_max +
-    # hc_uree_max +
-    hc_dialyse +
     hc_vi_cat +
-    hc_catheter_majeur +
-    hc_transfu +
-    hospit_parenterale_duree +
+    hc_cgr +
+    hc_cp +
+    hc_dialyse +
+    hc_amines +
+    hc_vvc +
+    hospit_chirurgie_majeure +
     hospit_ctc_duree +
-    # hospit_vi_duree +
-    # hospit_fibro +
-    hospit_cgr,
+    hospit_immunosup_duree +
+    demo_age +
+    hc_amines +
+    hc_hypothermie +
+    hc_fievre +
+    hospit_parenterale_duree +
+    demo_type_rea,
   data = df_fg
 )
 
-fig_cuminc_fg <- ggcuminc(
-  model_fg,
-  pval = TRUE,
-  conf.int = TRUE,
-  xlab = "Temps (jours)",
-  ylab = "Incidence cumulée",
-  ggtheme = theme_classical(),
-  palette = c("#E7B800", "#2E9FDF", "#FC4E07"),
-  risk.table = TRUE
-) +
-  labs(title = "Courbes d'incidence cumulée par outcome")
-# saveRDS(model_fg, "models/model_fg.rds")
+# fig_cuminc_fg <- ggcuminc(
+#   model_fg,
+#   pval = TRUE,
+#   conf.int = TRUE,
+#   xlab = "Temps (jours)",
+#   ylab = "Incidence cumulée",
+#   ggtheme = theme_classical(),
+#   palette = c("#E7B800", "#2E9FDF", "#FC4E07"),
+#   risk.table = TRUE
+# ) +
+#   labs(title = "Courbes d'incidence cumulée par outcome")
+# # saveRDS(model_fg, "models/model_fg.rds")
 
-tbl_fg <- model_fg %>%
-  gtsummary::tbl_regression(
-    exponentiate = TRUE,
-    label = list(
-      outcome = "Candidémie vs Décès",
-      demo_age = "Âge",
-      demo_sexe = "Sexe",
-      nb_hemocultures = "Nombre d'hémocultures"
-      # Ajoute les labels pour les autres variables si besoin
-    )
-  ) %>%
-  add_n(location = "level")
+# tbl_fg <- model_fg %>%
+#   gtsummary::tbl_regression(
+#     exponentiate = TRUE,
+#     label = list(
+#       outcome = "Candidémie vs Décès",
+#       demo_age = "Âge",
+#       demo_sexe = "Sexe",
+#       nb_hemocultures = "Nombre d'hémocultures"
+#       # Ajoute les labels pour les autres variables si besoin
+#     )
+#   ) %>%
+#   add_n(location = "level")
 
 # labels <- c(
 #   adm_igs2 = "Score IGS2 à l'admission",
@@ -166,17 +164,18 @@ tidy_model <- tidy(
   conf.int = TRUE,
   exponentiate = TRUE,
   term = fct_reorder(term, estimate, .desc = FALSE)
-) |>
-  mutate(term = factor(term, labels = labels))
+)
+
 
 # Forest plot (identique à l'exemple précédent)
 fig_fp_fg <- ggplot(tidy_model, aes(x = estimate, y = term)) +
   geom_point() +
   geom_errorbar(aes(xmin = conf.low, xmax = conf.high)) +
   geom_vline(xintercept = 1, linetype = "dashed") +
-  labs(x = "Adjusted Hazard Ratio (aHR)", y = "Covariable") +
+  labs(x = "Adjusted Subdistribution Hazard Ratio (aSHR)", y = "Covariable") +
   theme_classic()
 
+saveRDS(fig_fp_fg, file = "models/fp_fg.rds")
 # ------------------------------------------------------------------------------
 #                     ESTIMATION AUC POUR PREDICTION CANDIDEMIE
 # ------------------------------------------------------------------------------
@@ -186,28 +185,22 @@ cause_interet <- levels(df_fg$outcome_cat)[
 times_interest <- c(28, 60, 90)
 
 model_fg_rr <- FGR(
-  Hist(temps, outcome_cat) ~ demo_age +
-    demo_atcd_hemato +
-    adm_choc +
-    adm_igs2 +
-    adm_diurese_norm +
-    adm_lactates_max +
-    adm_transfu +
-    adm_amines +
-    hc_choc +
-    demo_atcd_diabete +
-    hc_dialyse +
-    hc_transfu +
+  Hist(temps, outcome_cat) ~
     hc_vi_cat +
-    hc_catheter_majeur +
+    hc_cgr +
+    hc_cp +
+    hc_dialyse +
+    hc_amines +
+    hc_vvc +
+    hospit_chirurgie_majeure +
+    hospit_ctc_duree +
+    hospit_immunosup_duree +
+    demo_age +
+    hc_amines +
+    hc_hypothermie +
+    hc_fievre +
     hospit_parenterale_duree +
-    hospit_vvc_duree +
-    hospit_neutropen_duree +
-    hospit_lymphopenie_duree +
-    hospit_atb_duree +
-    hc_deficit_lympho +
-    hc_deficit_neutro +
-    hospit_chirurgie_majeure,
+    demo_type_rea,
   data = df_fg,
   cause = cause_interet
 )
