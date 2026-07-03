@@ -8,7 +8,7 @@ library(tibble)
 # =============================================================================
 # 0. CONFIGURATION INITIALE
 # =============================================================================
-# imp <- readRDS("donnees/df_impute.rds")
+imp <- readRDS("donnees/df_impute.rds")
 dep_var <- "resultat_candida_def"
 random_effect <- "iep"
 

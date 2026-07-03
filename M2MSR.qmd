@@ -125,7 +125,6 @@ A noter qu'en moyenne, chaque individu se voyait prélever [2 hémocultures par 
 #| lightbox: true
 #| fig-align: center
 knitr::include_graphics("figures/flow_chart.png")
-knitr::include_text("L'ensemble des hemocultures sont extraites dans un premier temps")
 ```
 
 ## Description de la population
@@ -156,9 +155,9 @@ tbl1_gt
 #| fig-cap: "Modèle de régression logistique mixte sur données imputées"
 #| lightbox: true
 
-forest_plot <- readRDS("models/fp_imp.rds")
+# forest_plot <- readRDS("models/fp_imp.rds")
 
-print(forest_plot)
+# print(forest_plot)
 ```
 
 ## Score et prédiction
@@ -223,10 +222,10 @@ Nous réalisons une comparaison bi-variées, avec correction du risque d'inflati
 #| tbl-cap: "Analyse bivariée de la survenue d'une candidémie"
 #| lightbox: true
 if (!exists("imp")) {
-  imp <- readRDS("donnees/df_impute.RDS")
+  imp <- readRDS("donnees/df_impute.rds")
 }
-
-imp_long <- complete(imp, action = "long", include = TRUE)
+library(mice)
+imp_long <- complete(imp, action = "mean", include = TRUE)
 imp_long |>
   filter(.imp > 0) |>
   select(-.imp, -.id, -id_hemoc) |>
@@ -312,9 +311,9 @@ fig_km
 #| fig-cap: "Modèle de Cox - Identification des Cause Specific Hazard Ratios"
 #| lightbox: true
 #| fig-align: center
-source("scripts/survie/mod_cox.R")
+# source("scripts/survie/mod_cox.R")
 
-fig_fp_cox
+# fig_fp_cox
 ```
 
 Une modélisation en risque compétitifs (modèle de Fine & Gray) était réalisée, pour identifier les sHR ; identifiant la dialyse, la ventilation invasive, etc comme facteurs de risque de candidémie. A l'inverse, l'age et l'exposition à des immunosuppresseurs était protectrices @fig-fine-gray.
@@ -324,17 +323,17 @@ Une modélisation en risque compétitifs (modèle de Fine & Gray) était réalis
 #| fig-cap: "Modèle FG"
 #| lightbox: true
 #| layout-ncol: 2
-source("scripts/survie/mod_fine_gray.R")
+# source("scripts/survie/mod_fine_gray.R")
 
-table(df_fg$outcome_cat)
+# table(df_fg$outcome_cat)
 
-fig_fp_fg
+# fig_fp_fg
 
-summary(auc_results)
+# summary(auc_results)
 
-calibration_plot(model_fg_rr, df_fg, time_point = 28, cause = cause_interet)
+# calibration_plot(model_fg_rr, df_fg, time_point = 28, cause = cause_interet)
 
-calibration_plot(model_fg_rr, df_fg, time_point = 60, cause = cause_interet)
+# calibration_plot(model_fg_rr, df_fg, time_point = 60, cause = cause_interet)
 ```
 
 

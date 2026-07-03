@@ -71,7 +71,7 @@ pred[, "iep"] <- -2
 imp <- mice(
   df_imp,
   m = 20,
-  defaultMethod = c("2l.pan", "2l.lmer"),
+  defaultMethod = c("2l.pmm", "2l.bin"),
   predictorMatrix = pred,
   maxit = 30
 )
@@ -81,7 +81,7 @@ densityplot(imp)
 # Sauvegarde
 # ==============================================================================
 
-saveRDS(imp, file = "donnees/df_impute.rds")
+saveRDS(imp, file = "donnees/df_impute_3.rds")
 
 # ==============================================================================
 # A tester 1

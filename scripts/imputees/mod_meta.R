@@ -13,7 +13,7 @@ library(pROC)
 library(broom.mixed)
 
 # --- 1. CHARGEMENT DES DONNÉES ------------------------------------------------
-imp <- readRDS("donnees/df_impute_2.rds")
+imp <- readRDS("donnees/df_impute.rds")
 m_imputations <- imp$m
 cat("Nombre de datasets imputés (m) :", m_imputations, "\n\n")
 
