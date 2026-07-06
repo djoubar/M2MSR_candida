@@ -14,23 +14,22 @@ library(broom.mixed)
 
 # --- 1. CHARGEMENT DES DONNÉES ------------------------------------------------
 imp <- readRDS("donnees/df_impute.rds")
-m_imputations <- imp$m
+m_imputations <- 3
 cat("Nombre de datasets imputés (m) :", m_imputations, "\n\n")
 
 # --- 2. FORMULE DU MODÈLE -----------------------------------------------------
 formule_glmer <- resultat_candida_def ~
   hc_vi_cat +
-  hc_cgr +
-  hc_cp +
+  hc_transfusion +
   hc_dialyse +
-  hc_amines +
-  hc_vvc +
-  hospit_chirurgie_majeure +
+  # hc_amines +
+  hc_catheter_majeur +
+  # hospit_chirurgie_majeure +
   hospit_ctc_duree +
   hospit_immunosup_duree +
   demo_age +
   hc_hypothermie +
-  hc_fievre +
+  # hc_fievre +
   hospit_parenterale_duree +
   demo_type_rea +
   (1 | iep)
@@ -200,6 +199,7 @@ forest_plot <- ggplot(tidy_pooled, aes(x = OR, y = label)) +
 
 print(forest_plot)
 saveRDS(forest_plot, file = "models/fp_imp.rds")
+forest_plot <- readRDS("models/fp_imp.rds")
 
 # =============================================================================
 #                         DISCRIMINATION : AUC & COURBE ROC
@@ -280,6 +280,7 @@ roc_plot <- ggplot(roc_pooled, aes(x = fpr, y = tpr)) +
   theme(aspect.ratio = 1)
 
 print(roc_plot)
+ggsave(roc_plot, plot = "figures/ROC_imp.png")
 
 
 # =============================================================================
@@ -287,12 +288,29 @@ print(roc_plot)
 # =============================================================================
 cal_pooled <- bind_rows(cal_list) %>%
   group_by(decile) %>%
-  summarise(pred = mean(pred), observed = mean(observed), .groups = "drop")
+  summarise(
+    pred = mean(pred),
+    observed = mean(observed),
+    n = n(), # nb de folds/points agrégés dans ce décile
+    .groups = "drop"
+  )
 
+# 2. Calcul des IC (approximation normale sur la proportion observée)
+#    Si vous avez le vrai nombre d'individus par bin (ex: n_obs), remplacez n par n_obs.
+z <- qnorm(0.975)
+cal_pooled <- cal_pooled %>%
+  mutate(
+    se = sqrt(observed * (1 - observed) / n),
+    lower = pmax(0, observed - z * se),
+    upper = pmin(1, observed + z * se)
+  )
+
+# 3. Graphique avec ruban de confiance
 cal_plot <- ggplot(cal_pooled, aes(x = pred, y = observed)) +
-  geom_point(size = 2.5, color = "steelblue") +
-  geom_line(color = "steelblue") +
   geom_abline(linetype = "dashed", color = "red") +
+  geom_ribbon(aes(ymin = lower, ymax = upper), fill = "steelblue", alpha = 0.2) +
+  geom_line(color = "steelblue") +
+  geom_point(size = 2.5, color = "steelblue") +
   labs(
     x = "Probabilité prédite",
     y = "Probabilité observée",

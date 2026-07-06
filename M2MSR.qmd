@@ -53,9 +53,7 @@ Des scores prédictifs ont été développés à partir de critères cliniques e
 
 ## Source des données
 
-Il s'agit d'une étude observationnelle monocentrique rétrospective, utilisant les données des patients hospitalisés en soins intensifs et réanimation au CHU de Lille du 1er Janvier 2013 au 31 Décembre 2023, contenues dans l’entrepôt de données de santé *Include* du CHU de Lille. Celui-ci intègre différentes sources informatisées de données recueillies dans le cadre d’une prise en charge au CHU de Lille, notamment le système de gestion des données de réanimation ICCA (Philips), le système d’information de laboratoire MOLIS (CompuGroupMedical) et le logiciel CORA PMSI pour le codage des diagnostics et des actes CCAM.
-
-L'extraction des données a été réalisée par les ingénieures data d'*Include* (Mme Charlotte GEAY, Mme Léa GRUMIAUX et Mme Marie Amélie RISPAL). La structuration des données, la comparaison des données, les analyses statistiques ont été réalisées sur le logiciel R, version 4.6.0.
+Il s'agit d'une étude observationnelle monocentrique rétrospective, utilisant les données des patients hospitalisés en soins intensifs et réanimation au CHU de Lille du 1er Janvier 2013 au 31 Décembre 2023, contenues dans l’entrepôt de données de santé *Include* du CHU de Lille. Celui-ci intègre différentes sources informatisées de données recueillies dans le cadre d’une prise en charge au CHU de Lille, notamment le système de gestion des données de réanimation ICCA (Philips), le système d’information de laboratoire MOLIS (CompuGroupMedical) et le logiciel CORA PMSI pour le codage des diagnostics et des actes CCAM. L'extraction des données a été réalisée à partir de l'entrepôt de donnée Include conjointement avec les équipes dédiées. Le pré-traitement et la mise en forme des données, ainsi que les analyses statistiques ont été réalisées sur le logiciel R, version 4.6.0.
 
 ## Population
 
@@ -67,7 +65,7 @@ La population éligible est la suivante :
 
 ## Critère de jugement principal
 
-L'objectif de notre modélisation est la stratitification du risque de candidémie inaugurale acquise en soins intensifs/réanimation. Afin d'être au plus proche de la réflexion du clinicien, nous procédons à un regroupement des hémocultures par épisode de suspicion d'infection. En effet, lors d'une suspicion d'infection, plusieurs hémocultures sont prélevées à des temporalités proches, afin d'identifier au mieux l'agent infectieux responsable & un site d'infection s'il en existe ([exemple]{.underline} : infections de cathéters). Les hémocultures sont donc regroupées jusqu'à ce que la dernière hémoculture prélevée pour un même patient soit séparée d'un délai strictement supérieur à 24 heures de la prochaine hémoculture. Une fois les hémocultures regroupées, si l'une des hémocultures d'un groupe était positive à *Candida*, nous considérions toutes les hémocultures de ce groupe comme positives à *Candida*. Enfin, seules les données de la première hémoculture du groupe étaient gardées, afin de placer notre modélisation à la phase la plus initiale de l'épisode de suspicion d'infection.
+L'objectif de notre étude est la stratitification du risque de candidémie inaugurale acquise en soins intensifs et réanimation. Afin d'être au plus proche de la réflexion du clinicien, nous procédons à un regroupement des hémocultures par épisode de suspicion d'infection. En effet, lors d'une suspicion d'infection, plusieurs hémocultures sont prélevées à des temporalités proches, afin d'identifier au mieux l'agent infectieux responsable & un site d'infection s'il en existe ([exemple]{.underline} : infections de cathéters). Les hémocultures étaient donc regroupées jusqu'à ce que la dernière hémoculture prélevée pour un même patient soit séparée d'un délai strictement supérieur à 24 heures de la prochaine hémoculture. Une fois les hémocultures regroupées, si l'une des hémocultures d'un groupe était positive à *Candida*, nous considérions toutes les hémocultures de ce groupe comme positives à *Candida*. Enfin, seules les données de la première hémoculture du groupe étaient gardées, afin de placer notre modélisation à la phase la plus initiale de l'épisode de suspicion d'infection.
 
 L'objectif étant d'identifier une candidémie inaugurale, toutes les hémocultures suivants une hémoculture positive à *Candida* sont supprimées.
 
@@ -81,7 +79,7 @@ La méthode de regroupement est résumée dans la @fig-regroupement.
 knitr::include_graphics("figures/regroupement.png")
 ```
 
-## Variables et feature Extraction
+## Variables
 
 Les variables candidates pour la modélisation étaient identifiées en fonction de facteurs de risques identifiés dans la littérature (18). Les données démographiques sont récoltées à l'admission et considérées comme inchangées au décours. Ces données portaient sur le lieu d'hospitalisation, l'âge à l'admission, les antécédents de maladie hématologique maligne, de transplantation d'organe solide, de diabète, de pancréatite aigue, et de tumeurs d'organes solides.
 

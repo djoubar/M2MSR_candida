@@ -276,3 +276,28 @@ tbl2 <-
     style = gt::cell_text(weight = "bold"),
     locations = gt::cells_row_groups(groups = everything())
   )
+
+
+# =================================================================================================
+# Bivariées données complètes
+# =================================================================================================
+
+library(gtsummary)
+pak::pak("gtsummary4mice")
+install.packages("gtsummary4mice")
+library(gtsummary4mice)
+library(mice)
+library(lme4)
+
+tbl <- tbl_uvregression(
+  imp,
+  method = glmer,
+  y = resultat_candida_def,
+  formula = "{y} ~ {x} + (1 | iep)", # ajoute l'effet aléatoire à chaque modèle univarié
+  method.args = list(
+    family = binomial,
+    control = glmerControl(optimizer = "bobyqa") # aide à la convergence
+  ),
+  exponentiate = TRUE
+)
+saveRDS(tbl, file = "tbl_biv.rds")
