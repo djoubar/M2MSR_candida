@@ -14,8 +14,9 @@ subres <- with(
       hc_catheter_majeur +
       # hospit_chirurgie_majeure +
       hospit_ctc_duree +
-      hospit_immunosup_duree +
-      demo_age +
+      # hospit_immunosup_duree +
+      # demo_age +
+      adm_igs2 +
       hc_hypothermie +
       # hc_fievre +
       hospit_parenterale_duree +
@@ -77,3 +78,32 @@ for (i in seq_len(m)) {
 subres <- as.mira(fits)
 
 summary(pool(subres), conf.int = TRUE)
+
+# ===============================================================================
+# TEST 3
+# ===============================================================================
+library(lme4)
+source("scripts/brutes/_setup.R")
+mod_brutes <- glmer(
+  resultat_candida_def ~
+    hc_vi_cat +
+    hc_cgr +
+    hc_dialyse +
+    # hc_amines +
+    hc_vvc +
+    # hospit_chirurgie_majeure +
+    # hospit_ctc_duree +
+    # hospit_immunosup_duree +
+    adm_igs2 +
+    # hc_hypothermie +
+    hc_fievre +
+    # hospit_parenterale_duree +
+    demo_type_rea +
+    (1 | iep),
+  data = df_base,
+  family = binomial()
+)
+
+tbl_regression(mod_brutes, exponentiate = TRUE)
+
+saveRDS(mod_brutes, file = "mod_brutes.rds")

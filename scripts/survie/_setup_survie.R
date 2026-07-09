@@ -1,30 +1,31 @@
 library(tidyverse)
 library(mice)
 
-imp <- readRDS("donnees/df_impute_2.rds")
-
 if (!exists("df_base")) {
   source("scripts/brutes/_setup.R")
 }
 
-
 ################################################################################
 #                                    SETUP                                     #
 ################################################################################
-df_fg <- complete(imp, 1) %>%
-  left_join(
-    df_base %>%
-      dplyr::select(
-        id_hemoc,
-        date_adm_hospit,
-        date_adm_rea,
-        date_hemoc,
-        date_sortie_rea,
-        date_deces,
-        date_candidemie
-      ),
-    by = "id_hemoc"
-  ) %>%
+df_fg <- df_base
+
+# %>%
+#   left_join(
+#     df_base %>%
+#       dplyr::select(
+#         id_hemoc,
+#         date_adm_hospit,
+#         date_adm_rea,
+#         date_hemoc,
+#         date_sortie_rea,
+#         date_deces,
+#         date_candidemie
+#       ),
+#     by = "id_hemoc"
+#   )
+
+df_fg <- df_fg |>
   group_by(iep) %>%
   summarise(
     temps = min(

@@ -1,77 +1,69 @@
-# =====================================================================
-# SCRIPT R : Régression logistique mixte LASSO (glmmLasso)
+# =====================================================================# =====================================================================
+# SCRIPT R : Sélection de variables par régression logistique mixte LASSO
+#            (glmmLasso) sur données multi-imputées (objet mids "imp")
+#
 # Variable à expliquer : resultat_candida_def (0/1)
 # Effet aléatoire      : (1 | iep)
 #
-# Étapes :
-#   1. Préparation des données
-#   2. Sélection du lambda optimal (grille + AIC)
-#   3. Ajustement du modèle final glmmLasso
-#   4. Forest plot des coefficients (Odds Ratios, IC95% par bootstrap)
-#   5. Courbe ROC + AUC
-#   6. Courbe de calibration
+# Objectif : ne produire QU'une sélection de variables (pas de forest plot,
+# pas de courbe ROC, pas de calibration), en tenant compte des m
+# imputations contenues dans l'objet mids "imp".
 #
-# IMPORTANT :
-#   - glmmLasso ne tolère pas les NA -> on filtre les lignes complètes
-#   - glmmLasso ne fournit pas d'erreur standard fiable pour des
-#     coefficients pénalisés -> les IC du forest plot sont obtenus par
-#     bootstrap (ré-échantillonnage par cluster "iep")
-#   - Les courbes ROC/calibration ci-dessous sont calculées "en interne"
-#     (mêmes données que l'ajustement) : c'est optimiste. Pour une
-#     évaluation plus honnête, remplacez par une validation croisée
-#     (k-fold en respectant les clusters iep) ou un échantillon externe.
+# Principe (approche "vote majoritaire", cf. Wood et al. 2008,
+# "How should variable selection be performed with multiply imputed
+# data?", Statistics in Medicine) :
+#   1. On ajuste un glmmLasso séparément sur CHACUN des m jeux de données
+#      complétés issus de "imp".
+#   2. Le lambda de pénalisation est choisi UNE SEULE FOIS pour tous les
+#      jeux imputés, en minimisant l'AIC MOYEN sur les m jeux (afin de ne
+#      pas obtenir m sélections de variables incohérentes entre elles).
+#   3. Une variable est considérée comme "retenue" si son coefficient est
+#      non nul dans au moins une proportion "seuil_selection" des m jeux
+#      imputés (0.5 par défaut = majorité absolue).
+#   4. Pour les variables retenues, on rapporte à titre indicatif le
+#      coefficient moyen (moyenné uniquement sur les imputations où la
+#      variable a été sélectionnée). Ce n'est PAS une estimation poolée
+#      au sens des règles de Rubin, qui ne s'appliquent pas directement à
+#      des coefficients pénalisés (biaisés par construction).
+#
+# Prérequis : un objet mids nommé "imp" doit déjà exister dans
+# l'environnement (issu par ex. de mice::mice(...)).
 # =====================================================================
 
 # ---- 0. Packages ----
-packages <- c("glmmLasso", "tidyverse", "pROC", "dplyr", "mice")
+packages <- c("glmmLasso", "tidyverse", "dplyr", "purrr", "mice")
 invisible(lapply(packages, library, character.only = TRUE))
 
-imp <- readRDS("donnees/df_impute1.rds")
-data <- complete(imp, 1)
-
-# =====================================================================
-# SCRIPT R : glmmLasso en utilisant TOUTES LES COLONNES du jeu de données
-# comme variables explicatives candidates
-# Variable à expliquer : resultat_candida_def (0/1)
-# Effet aléatoire      : (1 | iep)
-#
-# Différence avec le script précédent : la formule fixe n'est plus écrite
-# à la main, elle est construite automatiquement à partir de toutes les
-# colonnes du data.frame (hors variable cible et hors identifiant de cluster).
-#
-# ATTENTION - points de vigilance avec une approche "toutes variables" :
-#   1) glmmLasso ne tolère pas les NA -> les colonnes très incomplètes
-#      peuvent faire perdre beaucoup de lignes après na.omit().
-#   2) glmmLasso pénalise CHAQUE indicatrice d'une variable catégorielle
-#      séparément (pas de pénalisation groupée par variable) : une variable
-#      catégorielle à plusieurs niveaux peut donc être retenue partiellement
-#      (certains niveaux gardés, d'autres ramenés à 0).
-#   3) Plus il y a de variables, plus il faut explorer une grille de lambda
-#      plus large pour trouver un optimum (sinon le modèle reste saturé).
-#   4) Les colonnes de type identifiant (numéro de dossier, texte libre...)
-#      doivent être exclues : elles n'ont aucun sens comme prédicteurs.
-#   5) Avec beaucoup de variables et un faible nombre d'événements, le risque
-#      de surapprentissage augmente fortement (cf. règle empirique des
-#      "10 événements par variable" en régression logistique classique).
-# =====================================================================
+imp <- readRDS("donnees/df_impute.rds")
 
 variable_cible <- "resultat_candida_def"
 variable_cluster <- "iep"
 
-data <- data |>
-  mutate(
-    resultat_candida_def = ifelse(resultat_candida_def == "Positive", 1, 0)
-  )
-# data[[variable_cible]] <- as.numeric(as.character(data[[variable_cible]]))
-data[[variable_cluster]] <- as.factor(data[[variable_cluster]])
+m <- imp$m
+cat("Nombre d'imputations dans l'objet mids 'imp' :", m, "\n\n")
 
-# ---- 2. Construction automatique de la liste des prédicteurs ----
-# Toutes les colonnes SAUF la variable cible et l'identifiant de cluster
-predicteurs <- setdiff(names(data), c(variable_cible, variable_cluster))
+# ---- 1. Liste des jeux de données complétés ----
+liste_data <- map(seq_len(m), ~ complete(imp, action = .x))
+
+# Recodage de la cible (identique pour toutes les imputations, car la
+# variable cible n'est en principe jamais imputée quand elle sert d'outcome)
+liste_data <- map(liste_data, function(d) {
+  d[[variable_cible]] <- ifelse(d[[variable_cible]] == "Positive", 1, 0)
+  d[[variable_cluster]] <- as.factor(d[[variable_cluster]])
+  d
+})
+
+# ---- 2. Construction de la liste des prédicteurs candidats ----
+# Basée sur le PREMIER jeu imputé : la structure des colonnes (types,
+# modalités disponibles) est la même dans les m jeux, seules les valeurs
+# imputées diffèrent.
+data_ref <- liste_data[[1]]
+
+predicteurs <- setdiff(names(data_ref), c(variable_cible, variable_cluster))
 cat("Nombre de prédicteurs candidats avant nettoyage :", length(predicteurs), "\n")
 
 # --- 2a. Retirer les colonnes constantes ou quasi-constantes ---
-variance_nulle <- sapply(data[predicteurs], function(x) {
+variance_nulle <- sapply(data_ref[predicteurs], function(x) {
   if (is.numeric(x)) var(x, na.rm = TRUE) == 0 else length(unique(na.omit(x))) <= 1
 })
 if (any(variance_nulle)) {
@@ -85,7 +77,7 @@ if (any(variance_nulle)) {
 
 # --- 2b. Retirer les colonnes probablement de type identifiant / texte libre ---
 # Seuil arbitraire à ajuster : variable non numérique avec > 20 niveaux uniques
-trop_de_niveaux <- sapply(data[predicteurs], function(x) {
+trop_de_niveaux <- sapply(data_ref[predicteurs], function(x) {
   !is.numeric(x) && length(unique(na.omit(x))) > 20
 })
 if (any(trop_de_niveaux)) {
@@ -97,93 +89,93 @@ if (any(trop_de_niveaux)) {
   predicteurs <- predicteurs[!trop_de_niveaux]
 }
 
-# --- 2c. Vous pouvez exclure ici manuellement des colonnes non pertinentes ---
-# (dates brutes, doublons d'une autre variable, variables connues comme
-#  des proxys de la variable cible, etc.)
+# --- 2c. Exclusions manuelles éventuelles ---
 # exclusions_manuelles <- c("nom_colonne_a_exclure")
 # predicteurs <- setdiff(predicteurs, exclusions_manuelles)
 
 cat("Nombre de prédicteurs retenus :", length(predicteurs), "\n")
 cat(paste(predicteurs, collapse = ", "), "\n\n")
 
-# ---- 3. Préparation du jeu de données pour le modèle ----
-data_modele <- data[, c(variable_cible, predicteurs, variable_cluster)]
-data_modele <- na.omit(data_modele) # glmmLasso ne tolère pas les NA
+# ---- 3. Préparation homogène des m jeux de données ----
+preparer_jeu <- function(d) {
+  d <- d[, c(variable_cible, predicteurs, variable_cluster)]
 
-cat(
-  "Nombre de lignes après suppression des NA :",
-  nrow(data_modele),
-  "/ initial :",
-  nrow(data),
-  "\n\n"
-)
-
-# Conversion en facteur des variables de type texte ou logique
-for (v in predicteurs) {
-  if (is.character(data_modele[[v]]) || is.logical(data_modele[[v]])) {
-    data_modele[[v]] <- as.factor(data_modele[[v]])
+  # Comme les données sont imputées, il ne devrait normalement plus y
+  # avoir de NA ; on filtre par sécurité (ex : variables non incluses
+  # dans le modèle d'imputation).
+  n_avant <- nrow(d)
+  d <- na.omit(d)
+  if (nrow(d) < n_avant) {
+    cat(
+      "Attention : ",
+      n_avant - nrow(d),
+      " lignes supprimées pour NA résiduels après imputation.\n"
+    )
   }
+
+  # Conversion en facteur des variables texte / logiques
+  for (v in predicteurs) {
+    if (is.character(d[[v]]) || is.logical(d[[v]])) {
+      d[[v]] <- as.factor(d[[v]])
+    }
+  }
+
+  # Centrage/réduction des variables continues
+  vars_continues <- predicteurs[sapply(d[predicteurs], is.numeric)]
+  if (length(vars_continues) > 0) {
+    d[vars_continues] <- scale(d[vars_continues])
+  }
+
+  d
 }
 
-# Repérage des variables numériques codant potentiellement une catégorie
-# (ex : 0/1/2 pour une sévérité) -> à vérifier manuellement, conversion non
-# automatique pour éviter de transformer à tort une variable continue.
-vars_num_peu_niveaux <- predicteurs[sapply(data_modele[predicteurs], function(x) {
-  is.numeric(x) && length(unique(x)) <= 5
-})]
-if (length(vars_num_peu_niveaux) > 0) {
-  cat(
-    "Variables numériques à peu de niveaux (vérifiez s'il s'agit de catégories) :",
-    paste(vars_num_peu_niveaux, collapse = ", "),
-    "\n"
-  )
-  # Pour convertir l'une d'elles en facteur :
-  # data_modele$nom_variable <- as.factor(data_modele$nom_variable)
-}
+liste_data_modele <- map(liste_data, preparer_jeu)
 
-# Centrage/réduction des variables continues uniquement
-vars_continues <- predicteurs[sapply(data_modele[predicteurs], is.numeric)]
-data_modele[vars_continues] <- scale(data_modele[vars_continues])
-
-# ---- 4. Construction automatique des formules fixe et aléatoire ----
+# ---- 4. Formules fixe et aléatoire (communes aux m jeux) ----
 fix_formula <- as.formula(
   paste(variable_cible, "~", paste(predicteurs, collapse = " + "))
 )
 rnd_formula <- setNames(list(~1), variable_cluster)
-
 print(fix_formula)
 
-# ---- 5. Sélection du lambda optimal par grille + AIC ----
-# Grille plus large que pour un modèle restreint, car davantage de variables
-# à pénaliser : à ajuster si le minimum de AIC est atteint en bord de grille.
+# ---- 5. Sélection du lambda optimal : AIC moyenné sur les m imputations ----
 lambda_grid <- seq(0, 300, by = 10)
-aic_values <- rep(NA_real_, length(lambda_grid))
+aic_matrix <- matrix(NA_real_, nrow = length(lambda_grid), ncol = m)
 
 set.seed(123)
 for (i in seq_along(lambda_grid)) {
   lam <- lambda_grid[i]
   cat("Ajustement avec lambda =", lam, "\n")
 
-  fit_tmp <- tryCatch(
-    {
-      glmmLasso(
-        fix = fix_formula,
-        rnd = rnd_formula,
-        data = data_modele,
-        lambda = lam,
-        family = binomial(link = "logit"),
-        control = list(print.iter = FALSE)
-      )
-    },
-    error = function(e) NULL
-  )
-
-  if (!is.null(fit_tmp)) aic_values[i] <- fit_tmp$aic
+  for (j in seq_len(m)) {
+    fit_tmp <- tryCatch(
+      {
+        glmmLasso(
+          fix = fix_formula,
+          rnd = rnd_formula,
+          data = liste_data_modele[[j]],
+          lambda = lam,
+          family = binomial(link = "logit"),
+          control = list(print.iter = FALSE)
+        )
+      },
+      error = function(e) NULL
+    )
+    if (!is.null(fit_tmp)) aic_matrix[i, j] <- fit_tmp$aic
+  }
 }
 
-resultats_aic <- data.frame(lambda = lambda_grid, aic = aic_values)
-lambda_opt <- resultats_aic$lambda[which.min(resultats_aic$aic)]
-cat("\nLambda optimal retenu (AIC minimal) :", lambda_opt, "\n")
+aic_moyen <- rowMeans(aic_matrix, na.rm = TRUE)
+resultats_aic <- data.frame(lambda = lambda_grid, aic_moyen = aic_moyen)
+lambda_opt <- resultats_aic$lambda[which.min(resultats_aic$aic_moyen)]
+
+cat(
+  "\nLambda optimal retenu (AIC moyen minimal sur les",
+  m,
+  "imputations) :",
+  lambda_opt,
+  "\n"
+)
 
 if (lambda_opt == max(lambda_grid, na.rm = TRUE)) {
   cat(
@@ -194,201 +186,96 @@ if (lambda_opt == max(lambda_grid, na.rm = TRUE)) {
 cat("\n")
 
 print(
-  ggplot(resultats_aic, aes(x = lambda, y = aic)) +
+  ggplot(resultats_aic, aes(x = lambda, y = aic_moyen)) +
     geom_line() +
     geom_point() +
     geom_vline(xintercept = lambda_opt, linetype = "dashed", color = "red") +
-    labs(title = "Sélection du lambda par AIC", x = "Lambda", y = "AIC") +
+    labs(
+      title = paste("Sélection du lambda par AIC moyen sur", m, "imputations"),
+      x = "Lambda",
+      y = "AIC moyen"
+    ) +
     theme_minimal()
 )
 
+# ---- 6. Ajustement du glmmLasso final sur chacun des m jeux imputés ----
+modeles_finaux <- map(liste_data_modele, function(d) {
+  glmmLasso(
+    fix = fix_formula,
+    rnd = rnd_formula,
+    data = d,
+    lambda = lambda_opt,
+    family = binomial(link = "logit"),
+    control = list(print.iter = FALSE)
+  )
+})
 
-# ---- 6. Modèle final ----
-modele_final <- glmmLasso(
-  fix = fix_formula,
-  rnd = rnd_formula,
-  data = data_modele,
-  lambda = lambda_opt,
-  family = binomial(link = "logit"),
-  control = list(print.iter = TRUE)
+saveRDS(modeles_finaux, file = "mod_glmmLasso_MI.rds")
+
+# =====================================================================
+# 7. SÉLECTION DE VARIABLES : fréquence de sélection sur les m imputations
+# =====================================================================
+
+noms_coefs <- setdiff(names(modeles_finaux[[1]]$coefficients), "(Intercept)")
+
+coef_matrix <- matrix(
+  NA_real_,
+  nrow = m,
+  ncol = length(noms_coefs),
+  dimnames = list(NULL, noms_coefs)
 )
 
-# BUG CORRIGÉ : le nom de l'objet était "modele_final_lasso" au lieu de "modele_final"
-saveRDS(modele_final, file = "mod_glmerLasso.rds")
-
-# Extraction et affichage des coefficients (hors intercept)
-# BUG CORRIGÉ : coefs_tous doit être extrait APRÈS la création de modele_final
-coefs_tous <- modele_final$coefficients
-coefs_tous <- coefs_tous[names(coefs_tous) != "(Intercept)"]
-
-cat("\nVariables RETENUES par le Lasso (coefficient non nul) :\n")
-print(coefs_tous[coefs_tous != 0])
-
-cat("\nVariables ÉLIMINÉES par le Lasso (coefficient = 0) :\n")
-print(names(coefs_tous[coefs_tous == 0]))
-
-cat("\nNombre de variables retenues :", sum(coefs_tous != 0), "\n")
-
-# =====================================================================
-# 7. FOREST PLOT (Odds Ratios + IC95% bootstrap, par cluster iep)
-# =====================================================================
-
-clusters <- unique(data_modele[[variable_cluster]])
-n_boot <- 200
-boot_coefs <- matrix(NA_real_, nrow = n_boot, ncol = length(coefs_tous))
-colnames(boot_coefs) <- names(coefs_tous)
-
-set.seed(456)
-for (b in 1:n_boot) {
-  clusters_boot <- sample(clusters, length(clusters), replace = TRUE)
-  data_boot <- do.call(
-    rbind,
-    lapply(clusters_boot, function(cl) {
-      data_modele[data_modele[[variable_cluster]] == cl, ]
-    })
-  )
-  data_boot[[variable_cluster]] <- factor(data_boot[[variable_cluster]])
-
-  fit_boot <- tryCatch(
-    {
-      glmmLasso(
-        fix = fix_formula,
-        rnd = rnd_formula,
-        data = data_boot,
-        lambda = lambda_opt,
-        family = binomial(link = "logit"),
-        control = list(print.iter = FALSE)
-      )
-    },
-    error = function(e) NULL
-  )
-
-  if (!is.null(fit_boot)) {
-    cf <- fit_boot$coefficients
-    cf <- cf[names(cf) != "(Intercept)"]
-    noms_communs <- intersect(names(cf), colnames(boot_coefs))
-    boot_coefs[b, noms_communs] <- cf[noms_communs]
-  }
-  cat("Bootstrap", b, "/", n_boot, "\r")
+for (j in seq_len(m)) {
+  cf <- modeles_finaux[[j]]$coefficients
+  cf <- cf[names(cf) != "(Intercept)"]
+  noms_communs <- intersect(names(cf), noms_coefs)
+  coef_matrix[j, noms_communs] <- cf[noms_communs]
 }
-cat("\n")
 
-ic_inf <- apply(boot_coefs, 2, quantile, probs = 0.025, na.rm = TRUE)
-ic_sup <- apply(boot_coefs, 2, quantile, probs = 0.975, na.rm = TRUE)
+selection_freq <- colMeans(coef_matrix != 0, na.rm = TRUE)
+coef_moyen_si_selectionne <- apply(coef_matrix, 2, function(x) {
+  mean(x[x != 0], na.rm = TRUE)
+})
 
-forest_df <- data.frame(
-  variable = names(coefs_tous),
-  beta = coefs_tous,
-  ic_inf = ic_inf,
-  ic_sup = ic_sup
+tableau_selection <- data.frame(
+  variable = noms_coefs,
+  frequence_selection = selection_freq,
+  coef_moyen_si_selectionne = coef_moyen_si_selectionne,
+  OR_moyen_si_selectionne = exp(coef_moyen_si_selectionne)
+) |>
+  arrange(desc(frequence_selection))
+
+cat("\n===== Fréquence de sélection des variables sur les", m, "imputations =====\n")
+print(tableau_selection, row.names = FALSE)
+
+# ---- 8. Liste finale des variables retenues (seuil de majorité) ----
+seuil_selection <- 0.5 # à ajuster : 0.5 = majorité absolue des m imputations
+
+variables_retenues <- tableau_selection$variable[
+  tableau_selection$frequence_selection >= seuil_selection
+]
+
+cat(
+  "\nVariables retenues (fréquence de sélection >=",
+  seuil_selection,
+  ") :\n"
 )
-forest_df$OR <- exp(forest_df$beta)
-forest_df$OR_inf <- exp(forest_df$ic_inf)
-forest_df$OR_sup <- exp(forest_df$ic_sup)
+print(variables_retenues)
+cat("\nNombre de variables retenues :", length(variables_retenues), "\n")
 
-# Garder uniquement les variables retenues (beta != 0)
-forest_df <- forest_df[forest_df$beta != 0, ]
-forest_df <- forest_df[order(forest_df$OR), ]
-forest_df$variable <- factor(forest_df$variable, levels = forest_df$variable)
-
-plot_fp_glmerlasso <- ggplot(forest_df, aes(x = OR, y = variable)) +
-  geom_point(size = 3, color = "darkblue") +
-  geom_errorbarh(
-    aes(xmin = OR_inf, xmax = OR_sup),
-    height = 0.2,
-    color = "darkblue"
-  ) +
-  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
-  scale_x_log10() +
-  labs(
-    title = "Forest plot des Odds Ratios — variables retenues par le Lasso",
-    x = "Odds Ratio (échelle log) avec IC95% bootstrap",
-    y = NULL
-  ) +
-  theme_classic()
-
-print(plot_fp_glmerlasso)
-saveRDS(plot_fp_glmerlasso, file = "rf_glmerLasso.rds")
-
-# =====================================================================
-# 8. COURBE ROC ET AUC
-# =====================================================================
-
-pred_lin <- predict(modele_final, data_modele)
-pred_proba <- 1 / (1 + exp(-pred_lin))
-
-roc_obj <- roc(data_modele[[variable_cible]], pred_proba, ci = TRUE)
-auc_value <- auc(roc_obj)
-
-cat("AUC :", round(auc_value, 3), "\n")
-cat("IC95% AUC :", round(ci(roc_obj), 3), "\n")
-
-# BUG CORRIGÉ : plot() ne retourne pas d'objet — on sauvegarde la figure
-# via ggsave() après l'avoir construite avec ggplot, ou on enregistre
-# les données de la courbe ROC (coords) pour pouvoir la reconstruire.
-
-# Option A : sauvegarder les coordonnées ROC (recommandé)
-roc_coords <- coords(roc_obj, "all", ret = c("threshold", "sensitivity", "specificity"))
-saveRDS(list(roc_obj = roc_obj, auc = auc_value, coords = roc_coords), file = "roc_glmerLasso.rds")
-
-# Tracé avec ggplot (reproductible et exportable)
-plot_roc <- ggplot(roc_coords, aes(x = 1 - specificity, y = sensitivity)) +
-  geom_line(color = "darkblue", linewidth = 1) +
-  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey50") +
-  annotate(
-    "text",
-    x = 0.65,
-    y = 0.1,
-    label = paste0("AUC = ", round(auc_value, 3)),
-    color = "darkblue",
-    size = 5
-  ) +
-  labs(
-    title = "Courbe ROC",
-    x = "1 — Spécificité (taux de faux positifs)",
-    y = "Sensibilité (taux de vrais positifs)"
-  ) +
-  theme_classic()
-
-print(plot_roc)
-
-# =====================================================================
-# 9. COURBE DE CALIBRATION
-# =====================================================================
-
-data_calib <- data.frame(
-  observe = data_modele[[variable_cible]],
-  predit = pred_proba
-)
-data_calib$decile <- cut(
-  data_calib$predit,
-  breaks = quantile(data_calib$predit, probs = seq(0, 1, 0.1)),
-  include.lowest = TRUE
+# ---- 9. Sauvegarde des résultats ----
+saveRDS(
+  list(
+    lambda_opt = lambda_opt,
+    tableau_selection = tableau_selection,
+    variables_retenues = variables_retenues,
+    seuil_selection = seuil_selection
+  ),
+  file = "selection_variables_glmmLasso_MI.rds"
 )
 
-calib_summary <- data_calib %>%
-  group_by(decile) %>%
-  summarise(
-    proba_moyenne_predite = mean(predit),
-    proportion_observee = mean(observe),
-    n = n(),
-    .groups = "drop"
-  )
-
-plot_calib <- ggplot(
-  calib_summary,
-  aes(x = proba_moyenne_predite, y = proportion_observee)
-) +
-  geom_point(size = 3, color = "darkred") +
-  geom_line(color = "darkred") +
-  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey40") +
-  xlim(0, 1) +
-  ylim(0, 1) +
-  labs(
-    title = "Courbe de calibration",
-    x = "Probabilité prédite moyenne (par décile)",
-    y = "Proportion observée d'événements"
-  ) +
-  theme_minimal()
-
-print(plot_calib)
+write.csv2(
+  tableau_selection,
+  file = "selection_variables_glmmLasso_MI.csv",
+  row.names = FALSE
+)

@@ -13,43 +13,43 @@ library(splines)
 library(reshape2)
 library(RColorBrewer)
 
-if (!exists("df_base")) {
-  source("scripts/brutes/_setup.R")
+if (!exists("df_fg")) {
+  source("scripts/survie/_setup_survie.R")
 }
 
 
-df_imp <- df_base |>
+df_imp <- df_fg |>
   select(
     -c(
-      date_adm_hospit,
-      date_adm_rea,
-      date_hemoc,
-      date_deces,
-      deces_rea,
+      # date_adm_hospit,
+      # date_adm_rea,
+      # date_hemoc,
+      # date_deces,
+      # deces_rea,
       demo_centre,
       demo_uf,
-      date_sortie_rea,
-      date_candidemie,
+      # date_sortie_rea,
+      # date_candidemie,
       adm_choc,
       all_of(starts_with("adm_sofa")),
       all_of(starts_with("hc_sofa")),
-      adm_leuco_min,
-      adm_lactates_moy,
-      adm_lactates_max,
-      adm_neutro_min,
-      adm_lympho_min,
-      adm_diurese_tot,
-      hc_diurese_tot,
-      hc_leuco_min,
-      hc_neutro_min,
-      hc_lympho_min,
-      adm_pfio2_min,
-      hc_choc,
-      hc_pfio2_min,
-      hc_lactates_max,
-      hc_glucanes_max,
-      hc_mannanes_max,
-      hospit_lymphopenie_duree
+      # adm_leuco_min,
+      # adm_lactates_moy,
+      # adm_lactates_max,
+      # adm_neutro_min,
+      # adm_lympho_min,
+      # adm_diurese_tot,
+      # hc_diurese_tot,
+      # hc_leuco_min,
+      # hc_neutro_min,
+      # hc_lympho_min,
+      # adm_pfio2_min,
+      # hc_choc,
+      # hc_pfio2_min,
+      # hc_lactates_max,
+      # hc_glucanes_max,
+      # hc_mannanes_max,
+      # hospit_lymphopenie_duree
     )
   )
 
@@ -59,6 +59,7 @@ df_imp <- df_base |>
 # df_num <- sapply(df_imp, as.numeric)
 # cormat <- cor(df_num, use = "pair", method = "spearman")
 # corrplot::corrplot(cormat, method = 'square', type = 'lower')
+md.pattern(head(df_fg))
 
 # ==============================================================================
 # Matrice de prédiction
@@ -67,9 +68,9 @@ df_imp <- df_base |>
 ini <- mice(df_imp, maxit = 0)
 pred <- quickpred(df_imp, mincor = 0.1, minpuc = 0.3)
 rowSums(pred)
-pred[, "iep"] <- -2
-pred[, "id_hemoc"] <- 0
-pred[, "groupehc"] <- 0
+# pred[, "iep"] <- -2
+# pred[, "id_hemoc"] <- 0
+# pred[, "groupehc"] <- 0
 
 # ==============================================================================
 # Imputations
@@ -78,7 +79,7 @@ pred[, "groupehc"] <- 0
 imp <- mice(
   df_imp,
   m = 50,
-  defaultMethod = c("2l.pmm", "2l.bin"),
+  # defaultMethod = c("pmm", "rlog"),
   predictorMatrix = pred,
   maxit = 50
 )
@@ -89,7 +90,7 @@ densityplot(imp)
 # Sauvegarde
 # ==============================================================================
 
-saveRDS(imp, file = "donnees/df_impute.rds")
+saveRDS(imp, file = "donnees/df_impute_surv.rds")
 
 # ==============================================================================
 # A tester 1

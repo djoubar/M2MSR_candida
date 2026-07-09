@@ -1,4 +1,4 @@
-RhpcBLASctl::blas_set_num_threads(30)
+RhpcBLASctl::blas_set_num_threads(20)
 
 # =============================================================================
 # ~/.Rprofile — Configuration système

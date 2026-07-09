@@ -1,26 +1,22 @@
-library(lme4)
 library(mice)
 library(purrr)
-library(broom.mixed)
+library(broom)
 library(dplyr)
 library(tibble)
 
 # =============================================================================
 # 0. CONFIGURATION INITIALE
 # =============================================================================
-imp <- readRDS("donnees/df_impute.rds")
+# imp <- readRDS("donnees/df_impute_surv.rds")
 dep_var <- "resultat_candida_def"
-random_effect <- "iep"
-
-n_boot <- 200 # Nombre de bootstraps par dataset imputé
-alpha_final <- 0.05 # Seuil de significativité pour la sélection finale
-
+exclude_vars <- "iep"
+n_boot <- 200
+alpha_final <- 0.15
 n_imputations <- imp$m
-candidate_vars <- setdiff(names(imp$data), c(dep_var, random_effect))
+candidate_vars <- setdiff(names(imp$data), c(dep_var, exclude_vars))
 
-# Active/désactive la parallélisation des bootstraps (recommandé : le coût total
-# est de l'ordre de n_imputations * n_boot * longueur(candidate_vars) ajustements glmer).
-use_parallel <- TRUE
+# Parrélélisation (optionnelle)
+use_parallel <- FALSE
 n_cores <- max(1, parallel::detectCores() - 1)
 
 if (use_parallel) {
@@ -30,56 +26,27 @@ if (use_parallel) {
 }
 
 # =============================================================================
-# 1. BOOTSTRAP (n_boot réplications) + SÉLECTION FORWARD (AIC) PAR IMPUTATION
+# 1. BOOTSTRAP + SÉLECTION FORWARD (AIC)
 # =============================================================================
-# Toutes les variables candidates (candidate_vars) sont soumises directement à
-# la sélection forward par bootstrap : il n'y a plus d'étape de présélection
-# univariée en amont.
-#
-# Deux corrections importantes par rapport à la version initiale :
-#  (a) Le critère d'arrêt de la sélection forward comparait seulement les AIC
-#      des variables candidates entre elles, sans jamais les comparer à l'AIC
-#      du modèle courant. Une variable était donc TOUJOURS ajoutée tant qu'au
-#      moins un modèle convergeait : ce n'était plus une sélection, mais un
-#      simple classement de toutes les variables. Ici, on n'ajoute une variable
-#      que si elle améliore réellement l'AIC du modèle courant.
-#  (b) Le bootstrap rééchantillonnait les lignes individuellement, ce qui casse
-#      la structure de cluster induite par l'effet aléatoire (un même cluster
-#      pouvant se retrouver fragmenté ou avec une taille très différente d'un
-#      bootstrap à l'autre). On rééchantillonne maintenant les clusters
-#      eux-mêmes (bootstrap par cluster), pratique standard pour les modèles
-#      mixtes.
-
-fit_glmer_safe <- function(formula, data) {
+fit_glm_safe <- function(formula, data) {
   tryCatch(
     suppressWarnings(
-      glmer(formula, data = data, family = binomial, control = glmerControl(optimizer = "bobyqa"))
+      glm(formula, data = data, family = binomial)
     ),
     error = function(e) NULL
   )
 }
 
-cluster_bootstrap_sample <- function(data, cluster_var) {
-  ids <- unique(data[[cluster_var]])
-  boot_ids <- sample(ids, length(ids), replace = TRUE)
-  do.call(
-    rbind,
-    lapply(seq_along(boot_ids), function(i) {
-      d <- data[data[[cluster_var]] == boot_ids[i], ]
-      # Suffixe pour que chaque tirage du même cluster soit traité comme une
-      # unité distincte par glmer (sinon les doublons seraient fusionnés en un
-      # seul niveau d'effet aléatoire).
-      d[[cluster_var]] <- paste0(d[[cluster_var]], "_b", i)
-      d
-    })
-  )
+row_bootstrap_sample <- function(data) {
+  idx <- sample(seq_len(nrow(data)), nrow(data), replace = TRUE)
+  data[idx, , drop = FALSE]
 }
 
 run_one_bootstrap <- function(data, vars) {
-  boot_data <- cluster_bootstrap_sample(data, random_effect)
+  boot_data <- row_bootstrap_sample(data)
 
-  null_formula <- as.formula(paste(dep_var, "~ 1 + (1 |", random_effect, ")"))
-  null_model <- fit_glmer_safe(null_formula, boot_data)
+  null_formula <- as.formula(paste(dep_var, "~ 1"))
+  null_model <- fit_glm_safe(null_formula, boot_data)
   if (is.null(null_model)) {
     return(list(variables = character(0), p_values = setNames(numeric(0), character(0))))
   }
@@ -97,12 +64,9 @@ run_one_bootstrap <- function(data, vars) {
       test_formula <- as.formula(paste(
         dep_var,
         "~",
-        paste(test_vars, collapse = " + "),
-        "+ (1 |",
-        random_effect,
-        ")"
+        paste(test_vars, collapse = " + ")
       ))
-      test_model <- fit_glmer_safe(test_formula, boot_data)
+      test_model <- fit_glm_safe(test_formula, boot_data)
       if (!is.null(test_model) && AIC(test_model) < best_aic) {
         best_aic <- AIC(test_model)
         best_var <- var
@@ -126,17 +90,14 @@ run_one_bootstrap <- function(data, vars) {
   final_formula <- as.formula(paste(
     dep_var,
     "~",
-    paste(current_vars, collapse = " + "),
-    "+ (1 |",
-    random_effect,
-    ")"
+    paste(current_vars, collapse = " + ")
   ))
-  final_model <- fit_glmer_safe(final_formula, boot_data)
+  final_model <- fit_glm_safe(final_formula, boot_data)
   if (is.null(final_model)) {
     return(list(variables = current_vars, p_values = setNames(numeric(0), character(0))))
   }
 
-  p_values <- tidy(final_model, conf.int = FALSE, effects = "fixed") %>%
+  p_values <- tidy(final_model, conf.int = FALSE) %>%
     filter(term %in% current_vars) %>%
     select(term, p.value) %>%
     deframe()
@@ -169,16 +130,8 @@ bootstrap_all_imputations <- map(
 # 2. SÉLECTION FINALE : VARIABLES SIGNIFICATIVES (p < alpha_final) DANS >= 60%
 #    DES n_boot * n_imputations MODÈLES
 # =============================================================================
-# Correction critique par rapport à la version initiale : il fallait garder un
-# résultat PAR bootstrap (et non tout aplatir avec unlist/do.call(c, ...)), sinon
-# il est impossible de relier une p-value à "ce" bootstrap précis, et le
-# dénominateur (n_imputations seulement, au lieu de n_boot * n_imputations) ne
-# correspondait plus au numérateur. On aplatit ici la liste de listes en une
-# liste plate de longueur n_imputations * n_boot, chaque élément représentant
-# un modèle bootstrap individuel.
-
 all_boot_results <- unlist(bootstrap_all_imputations, recursive = FALSE)
-total_models <- length(all_boot_results) # = n_imputations * n_boot (modèles ayant convergé ou non)
+total_models <- length(all_boot_results)
 
 count_variable <- function(var) {
   selected <- vapply(all_boot_results, function(b) var %in% b$variables, logical(1))
@@ -235,15 +188,12 @@ if (length(final_vars) == 0) {
 final_formula <- as.formula(paste(
   dep_var,
   "~",
-  paste(final_vars, collapse = " + "),
-  "+ (1 |",
-  random_effect,
-  ")"
+  paste(final_vars, collapse = " + ")
 ))
 
 fits <- lapply(1:n_imputations, function(i) {
   data_imputed <- complete(imp, i)
-  fit_glmer_safe(final_formula, data_imputed)
+  fit_glm_safe(final_formula, data_imputed)
 })
 
 if (any(vapply(fits, is.null, logical(1)))) {
@@ -255,10 +205,7 @@ if (any(vapply(fits, is.null, logical(1)))) {
 
 pooled_results <- pool(fits)
 
-# summary() sur l'objet "pool" donne directement term / estimate / std.error /
-# statistic / df / p.value déjà combinés selon les règles de Rubin.
-# (as.data.frame() sur l'objet pool, utilisé dans la version initiale, ne
-# renvoie pas ce tableau.)
+
 pooled_summary <- summary(pooled_results, conf.int = TRUE)
 print(pooled_summary)
 saveRDS(pooled_summary, file = "pooled_summary_selection.rds")
@@ -266,13 +213,6 @@ saveRDS(pooled_summary, file = "pooled_summary_selection.rds")
 # =============================================================================
 # 4. (OPTIONNEL) PERFORMANCE DU MODÈLE
 # =============================================================================
-# Attention : l'AUC ci-dessous est calculée sur les mêmes données qui ont servi
-# à la sélection des variables (étapes 1 à 2). Il s'agit donc d'une AUC
-# "apparente", optimiste (double dipping). Pour une estimation honnête de la
-# performance, il faudrait soit une validation externe, soit une correction de
-# l'optimisme par bootstrap (ex. méthode de Harrell), ce qui dépasse le cadre
-# de ce script.
-
 if (requireNamespace("pROC", quietly = TRUE)) {
   library(pROC)
   auc_values <- sapply(seq_along(fits), function(i) {

@@ -14,22 +14,22 @@ library(pROC)
 library(broom.mixed)
 
 # --- 1. CHARGEMENT DES DONNÉES ------------------------------------------------
-imp <- readRDS("donnees/df_impute_2.rds")
+imp <- readRDS("donnees/df_impute.rds")
 m_imputations <- imp$m
 cat("Nombre de datasets imputés (m) :", m_imputations, "\n\n")
 
 # --- 2. FORMULE DU MODÈLE -----------------------------------------------------
 formule_glmer <- resultat_candida_def ~
   hc_vi_cat +
-  hc_cgr +
-  hc_cp +
+  hc_transfu +
   hc_dialyse +
-  hc_amines +
+  # hc_amines +
+  adm_igs2 +
   hc_vvc +
   hospit_chirurgie_majeure +
   hospit_ctc_duree +
   hospit_immunosup_duree +
-  demo_age +
+  # demo_age +
   hc_hypothermie +
   hc_fievre +
   hospit_parenterale_duree +
@@ -137,15 +137,17 @@ tidy_pooled <- resultats_pool$pooled %>%
 
 labels_lisibles <- c(
   "hc_vi_catOui" = "Ventilation invasive (catégorie)",
-  "hc_cgrOui" = "Transfusion CGR",
-  "hc_cpOui" = "Transfusion CP",
+  "hc_transfuOui" = "Transfusion",
+  # "hc_cgrOui" = "Transfusion CGR",
+  # "hc_cpOui" = "Transfusion CP",
   "hc_dialyseOui" = "Dialyse",
-  "hc_aminesOui" = "Amines vasopressives",
+  # "hc_aminesOui" = "Amines vasopressives",
   "hc_vvcOui" = "Voie veineuse centrale",
   "hospit_chirurgie_majeureOui" = "Chirurgie majeure",
   "hospit_ctc_duree" = "Durée corticothérapie (j)",
   "hospit_immunosup_duree" = "Durée immunosuppresseurs (j)",
-  "demo_age" = "Âge (années)",
+  # "demo_age" = "Âge (années)",
+  "adm_igs2" = "IGS à l'admission",
   "hc_hypothermieOui" = "Hypothermie",
   "hc_fievreOui" = "Fièvre",
   "hospit_parenterale_duree" = "Durée nutrition parentérale (j)",
@@ -546,9 +548,85 @@ cat(sprintf(
   coords_eleve$specificity * 100
 ))
 
-# saveRDS(tidy_pooled,        file = "models/tidy_pooled_nouveaux.rds")
-# saveRDS(forest_plot,        file = "models/fp_imp.rds")
-# saveRDS(df_strat,           file = "models/df_strat.rds")
-# saveRDS(plot_density_strate, file = "models/plot_density_strate.rds")
-# saveRDS(roc_plot,           file = "models/roc_plot_strat.rds")
-# saveRDS(cal_plot,           file = "models/cal_plot_strat.rds")
+saveRDS(tidy_pooled, file = "models/reg_log/tidy_pooled.rds")
+saveRDS(forest_plot, file = "models/reg_log/fp_imp.rds")
+saveRDS(df_strat, file = "models/reg_log/df_strat.rds")
+saveRDS(plot_density_strate, file = "models/reg_log/plot_density_strate.rds")
+saveRDS(roc_plot, file = "models/reg_log/roc_plot_strat.rds")
+saveRDS(cal_plot, file = "models/reg_log/cal_plot_strat.rds")
+
+
+# ==============================================================================
+# ROC/AUC & Courbe calibration sans strates
+# ==============================================================================
+# ── Courbe ROC poolée (performance globale du modèle) ─────────────────────────
+roc_pooled <- bind_rows(roc_list) %>%
+  mutate(fpr = round(fpr, 3)) %>%
+  group_by(fpr) %>%
+  summarise(tpr = mean(tpr), .groups = "drop") %>%
+  arrange(fpr)
+
+roc_plot <- ggplot(roc_pooled, aes(x = fpr, y = tpr)) +
+  geom_line(color = "steelblue", linewidth = 1.1) +
+  geom_abline(linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    x = 0.75,
+    y = 0.12,
+    label = sprintf(
+      "AUC = %.3f\n[%.3f – %.3f]",
+      auc_pooled["mean"],
+      auc_pooled["lower"],
+      auc_pooled["upper"]
+    ),
+    color = "steelblue",
+    size = 3.8,
+    hjust = 0
+  ) +
+  scale_x_continuous(labels = scales::percent_format()) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    x = "1 − Spécificité (Taux de faux positifs)",
+    y = "Sensibilité (Taux de vrais positifs)",
+    title = "Courbe ROC poolée — Modèle mixte",
+    subtitle = "Évaluation de la discrimination globale du modèle"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(aspect.ratio = 1)
+
+print(roc_plot)
+
+
+# =============================================================================
+#                    CALIBRATION POOLÉE (performance globale du modèle)
+# =============================================================================
+# =============================================================================
+#        CALIBRATION POOLÉE — COURBE LISSÉE (LOESS) SUR PROBABILITÉS POOLÉES
+# =============================================================================
+df_cal <- data.frame(
+  pred = probs_pooled,
+  observed = as.numeric(outcome_ref)
+)
+
+cal_plot <- ggplot(df_cal, aes(x = pred, y = observed)) +
+  geom_abline(linetype = "dashed", color = "red", linewidth = 0.8) +
+  geom_smooth(
+    method = "loess",
+    se = TRUE,
+    color = "steelblue",
+    fill = "steelblue",
+    alpha = 0.15,
+    linewidth = 1
+  ) +
+  geom_rug(sides = "b", alpha = 0.15, length = unit(0.02, "npc")) +
+  scale_x_continuous(labels = scales::percent_format(accuracy = 1), limits = c(0, NA)) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1), limits = c(0, NA)) +
+  labs(
+    x = "Probabilité prédite",
+    y = "Probabilité observée (lissée)",
+    title = "Courbe de calibration poolée — Modèle mixte",
+    subtitle = "Lissage loess sur probabilités moyennées (m imputations) ; diagonale rouge = calibration parfaite"
+  ) +
+  theme_minimal(base_size = 12)
+
+print(cal_plot)

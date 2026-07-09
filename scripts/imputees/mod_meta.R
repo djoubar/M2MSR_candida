@@ -20,14 +20,26 @@ cat("Nombre de datasets imputés (m) :", m_imputations, "\n\n")
 # --- 2. FORMULE DU MODÈLE -----------------------------------------------------
 formule_glmer <- resultat_candida_def ~
   hc_vi_cat +
-  hc_transfusion +
+  hospit_cgr +
+  # hc_transfu +
   hc_dialyse +
+  hc_vvc +
+  hc_uree_max +
   # hc_amines +
   hc_catheter_majeur +
   # hospit_chirurgie_majeure +
   hospit_ctc_duree +
   hospit_immunosup_duree +
+  adm_transfu +
   demo_age +
+  hc_amines +
+  adm_hypothermie +
+  hc_cp +
+  hospit_chirurgie_abdominale +
+  adm_uree_max +
+  adm_creat_max +
+  hc_fievre +
+  adm_vi_cat +
   hc_hypothermie +
   # hc_fievre +
   hospit_parenterale_duree +
@@ -156,15 +168,16 @@ tidy_pooled <- resultats_pool$pooled %>%
   filter(term != "(Intercept)")
 
 saveRDS(tidy_pooled, file = "models/mod_meta_pooled.rds")
-# tidy_pooled <- readRDS("models/tidy_pooled_nouveaux.rds")
+tidy_pooled <- readRDS("models/tidy_pooled_nouveaux.rds")
 
 # Étiquettes lisibles pour le graphique
 labels_lisibles <- c(
   "hc_vi_catOui" = "Ventilation invasive (catégorie)",
-  "hc_cgrOui" = "Transfusion CGR",
-  "hc_cpOui" = "Transfusion CP",
+  # "hc_cgrOui" = "Transfusion CGR",
+  # "hc_cpOui" = "Transfusion CP",
+  "hc_transfuOui" = "Transfusion",
   "hc_dialyseOui" = "Dialyse",
-  "hc_aminesOui" = "Amines vasopressives",
+  # "hc_aminesOui" = "Amines vasopressives",
   "hc_vvcOui" = "Voie veineuse centrale",
   "hospit_chirurgie_majeureOui" = "Chirurgie majeure",
   "hospit_ctc_duree" = "Durée corticothérapie (j)",
@@ -198,8 +211,8 @@ forest_plot <- ggplot(tidy_pooled, aes(x = OR, y = label)) +
   theme(axis.text.y = element_text(size = 10, hjust = 1))
 
 print(forest_plot)
-saveRDS(forest_plot, file = "models/fp_imp.rds")
-forest_plot <- readRDS("models/fp_imp.rds")
+saveRDS(forest_plot, file = "models/reg_log/fp_imp.rds")
+forest_plot <- readRDS("models/reg_log/fp_imp.rds")
 
 # =============================================================================
 #                         DISCRIMINATION : AUC & COURBE ROC

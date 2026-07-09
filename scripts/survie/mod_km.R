@@ -41,7 +41,7 @@ fig_km <-
     ncensor.plot = TRUE,
     ncensor.plot.height = 0.25,
     legend = "none",
-    risk.table.legend = TRUE, # 👈 Garde la légende de la table
+    risk.table.legend = TRUE,
     legend.labs = c("Absence de Candidémie", "Candidémie"),
     ggtheme = theme_classic(),
     xlim = c(0, 60),
