@@ -27,8 +27,8 @@ tbl1 <-
       demo_atcd_diabete,
       demo_atcd_pancreatite,
       demo_atcd_tumeur,
-      demo_type_rea,
       demo_atcd_transplantation,
+      demo_type_rea,
       # variables à l'admission
       ## gravité
       adm_igs2,
@@ -54,9 +54,10 @@ tbl1 <-
       adm_vi_cat,
       adm_amines,
       hc_delai,
-      deces_rea,
       hospit_chirurgie_majeure,
-      hospit_chirurgie_abdominale
+      hospit_chirurgie_abdominale,
+      hospit_fibro,
+      deces_rea
     ),
     label = list(
       demo_sexe = "Sexe masculin",
@@ -78,10 +79,11 @@ tbl1 <-
       hc_delai = "Délai entre admission & hémoculture",
       deces_rea = "Décès en réanimation",
       hospit_chirurgie_majeure = "Chirurgie majeure",
-      hospit_chirurgie_abdominale = "Chirurgie abdominale"
+      hospit_chirurgie_abdominale = "Chirurgie abdominale",
+      hospit_fibro = "Fibroscopie"
     ),
     statistic = list(
-      all_continuous() ~ "{median} ({min}, {max})",
+      # all_continuous() ~ "{median} ({min}, {max})",
       all_categorical() ~
         "{n} ({p}%)"
     ),
@@ -100,7 +102,8 @@ tbl1 <-
         adm_amines,
         deces_rea,
         hospit_chirurgie_majeure,
-        hospit_chirurgie_abdominale
+        hospit_chirurgie_abdominale,
+        hospit_fibro
       ) ~ "dichotomous"
     ),
     value = list(
@@ -116,11 +119,12 @@ tbl1 <-
         adm_amines,
         deces_rea,
         hospit_chirurgie_majeure,
-        hospit_chirurgie_abdominale
+        hospit_chirurgie_abdominale,
+        hospit_fibro
       ) ~ "Oui",
       demo_type_rea ~ "Medicale",
       demo_sexe ~ "Masculin"
     )
   ) |>
-  bold_labels() |>
+  # bold_labels() |>
   italicize_levels()

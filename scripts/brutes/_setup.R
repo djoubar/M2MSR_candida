@@ -573,6 +573,10 @@ df_base <- df_base |>
   mutate(across(
     starts_with("demo_atcd"),
     ~ fct_explicit_na(., na_level = "Non")
+  )) |>
+  mutate(across(
+    starts_with("hospit_chirurgie"),
+    ~ fct_explicit_na(., na_level = "Non")
   ))
 
 # ==============================================================================

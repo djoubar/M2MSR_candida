@@ -14,36 +14,24 @@ library(broom.mixed)
 
 # --- 1. CHARGEMENT DES DONNÉES ------------------------------------------------
 imp <- readRDS("donnees/df_impute.rds")
-m_imputations <- 3
+m_imputations <- imp$m
 cat("Nombre de datasets imputés (m) :", m_imputations, "\n\n")
 
 # --- 2. FORMULE DU MODÈLE -----------------------------------------------------
 formule_glmer <- resultat_candida_def ~
   hc_vi_cat +
-  hospit_cgr +
+  hc_cgr +
   # hc_transfu +
-  hc_dialyse +
-  hc_vvc +
-  hc_uree_max +
-  # hc_amines +
+  # hc_dialyse +
+  # hc_vvc +
+  # hc_uree_max +
   hc_catheter_majeur +
-  # hospit_chirurgie_majeure +
-  hospit_ctc_duree +
-  hospit_immunosup_duree +
-  adm_transfu +
-  demo_age +
-  hc_amines +
-  adm_hypothermie +
-  hc_cp +
-  hospit_chirurgie_abdominale +
-  adm_uree_max +
-  adm_creat_max +
-  hc_fievre +
-  adm_vi_cat +
-  hc_hypothermie +
-  # hc_fievre +
-  hospit_parenterale_duree +
-  demo_type_rea +
+  adm_igs2 +
+  # hospit_ctc_duree +
+  # adm_transfu +
+  # demo_age +
+  # hc_amines +
+  # demo_type_rea +
   (1 | iep)
 
 # --- 3. AJUSTEMENT SÉQUENTIEL SUR LES m DATASETS IMPUTÉS ---------------------
@@ -130,23 +118,23 @@ print(resume_OR, digits = 3)
 # =============================================================================
 
 # Niveaux des termes (hors intercept) dans l'ordre souhaité
-niveaux_termes <- c(
-  "(Intercept)",
-  "hc_vi_cat",
-  "hc_cgr",
-  "hc_cp",
-  "hc_dialyse",
-  "hc_amines",
-  "hc_vvc",
-  "hospit_chirurgie_majeure",
-  "hospit_ctc_duree",
-  "hospit_immunosup_duree",
-  "demo_age",
-  "hc_hypothermie",
-  "hc_fievre",
-  "hospit_parenterale_duree",
-  "demo_type_rea"
-)
+# niveaux_termes <- c(
+# "(Intercept)",
+# "hc_vi_cat",
+# "hc_cgr",
+# "hc_cp",
+# "hc_dialyse",
+# "hc_amines",
+# "hc_vvc",
+# "hospit_chirurgie_majeure",
+# "hospit_ctc_duree",
+# "hospit_immunosup_duree",
+# "demo_age",
+# "hc_hypothermie",
+# "hc_fievre",
+# "hospit_parenterale_duree",
+# "demo_type_rea"
+# )
 # Pour les variables catégorielles (hc_vi_cat, demo_type_rea), R génère
 # automatiquement un terme par modalité (ex. hc_vi_catModX, demo_type_reaY) ;
 # ajustez `niveaux_termes` ci-dessus en fonction des sorties de resume_OR$term.
@@ -173,20 +161,22 @@ tidy_pooled <- readRDS("models/tidy_pooled_nouveaux.rds")
 # Étiquettes lisibles pour le graphique
 labels_lisibles <- c(
   "hc_vi_catOui" = "Ventilation invasive (catégorie)",
-  # "hc_cgrOui" = "Transfusion CGR",
-  # "hc_cpOui" = "Transfusion CP",
-  "hc_transfuOui" = "Transfusion",
-  "hc_dialyseOui" = "Dialyse",
-  # "hc_aminesOui" = "Amines vasopressives",
-  "hc_vvcOui" = "Voie veineuse centrale",
-  "hospit_chirurgie_majeureOui" = "Chirurgie majeure",
-  "hospit_ctc_duree" = "Durée corticothérapie (j)",
-  "hospit_immunosup_duree" = "Durée immunosuppresseurs (j)",
-  "demo_age" = "Âge (années)",
-  "hc_hypothermieOui" = "Hypothermie",
-  "hc_fievreOui" = "Fièvre",
-  "hospit_parenterale_duree" = "Durée nutrition parentérale (j)",
-  "demo_type_rea" = "Type de réanimation"
+  "hc_cgrOui" = "Transfusion CGR",
+  #   # "hc_cpOui" = "Transfusion CP",
+  # "hc_transfuOui" = "Transfusion",
+  # "hc_dialyseOui" = "Dialyse"
+  #   # "hc_aminesOui" = "Amines vasopressives",
+  # "hc_vvcOui" = "Voie veineuse centrale",
+  #   "hospit_chirurgie_majeureOui" = "Chirurgie majeure",
+  #   "hospit_ctc_duree" = "Durée corticothérapie (j)",
+  "hospit_catheter_majeureOui" = "Cathéter majeure",
+  "adm_igs2" = "IGS 2 à l'admission",
+  #   "hospit_immunosup_duree" = "Durée immunosuppresseurs (j)",
+  #   "demo_age" = "Âge (années)",
+  #   "hc_hypothermieOui" = "Hypothermie",
+  #   "hc_fievreOui" = "Fièvre",
+  #   "hospit_parenterale_duree" = "Durée nutrition parentérale (j)",
+  #   "demo_type_rea" = "Type de réanimation"
 )
 
 # Pour les termes catégoriels, garder le nom original si non trouvé dans labels_lisibles

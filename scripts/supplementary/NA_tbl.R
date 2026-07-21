@@ -10,115 +10,115 @@ if (!exists("df_base")) {
   source("scripts/brutes/_setup.R")
 }
 
-tbl_NA <- tbl_custom_summary(
-  df_base,
-  missing = "no",
-  include = c(
-    -id_hemoc,
-    -iep,
-    -demo_centre,
-    -demo_uf,
-    -adm_sofa_respi,
-    -adm_sofa_cardio,
-    -adm_sofa_coag,
-    -adm_sofa_hepatique,
-    -adm_sofa_neuro,
-    -hc_sofa_respi,
-    -hc_sofa_cardio,
-    -hc_sofa_coag,
-    -hc_sofa_hepatique,
-    -hc_sofa_neuro
-  ),
-  stat_fns = ~missing,
-  statistic = everything() ~ "{N_miss} ({p_miss} %)",
-  type = list(
-    c(
-      resultat_candida_def,
-      deces_rea,
-      demo_type_rea,
-      demo_sexe,
-      demo_atcd_hemato,
-      demo_atcd_diabete,
-      demo_atcd_pancreatite,
-      demo_atcd_tumeur,
-      adm_pancreatite_aigue,
-      demo_atcd_transplantation,
-      adm_choc,
-      adm_vi_cat,
-      adm_cgr,
-      adm_pfc,
-      adm_cp,
-      adm_transfu,
-      hc_choc,
-      hc_glucanes_max,
-      hc_mannanes_max,
-      hc_vi_cat,
-      hc_dialyse,
-      hc_kta,
-      hc_vvc,
-      hc_ktd,
-      hc_ecmo,
-      hc_catheter_majeur,
-      hc_cgr,
-      hc_pfc,
-      hc_transfu,
-      hc_cp,
-      hc_amines,
-      hospit_fibro,
-      hospit_chirurgie_majeure,
-      hospit_chirurgie_abdominale,
-      adm_amines
-    ) ~ "dichotomous"
-  ),
-  value = list(
-    c(
-      resultat_candida_def,
-      deces_rea,
+# tbl_NA <- tbl_custom_summary(
+#   df_base,
+#   missing = "no",
+#   include = c(
+#     -id_hemoc,
+#     -iep,
+#     -demo_centre,
+#     -demo_uf,
+#     -adm_sofa_respi,
+#     -adm_sofa_cardio,
+#     -adm_sofa_coag,
+#     -adm_sofa_hepatique,
+#     -adm_sofa_neuro,
+#     -hc_sofa_respi,
+#     -hc_sofa_cardio,
+#     -hc_sofa_coag,
+#     -hc_sofa_hepatique,
+#     -hc_sofa_neuro
+#   ),
+#   stat_fns = ~missing,
+#   statistic = everything() ~ "{N_miss} ({p_miss} %)",
+#   type = list(
+#     c(
+#       resultat_candida_def,
+#       deces_rea,
+#       demo_type_rea,
+#       demo_sexe,
+#       demo_atcd_hemato,
+#       demo_atcd_diabete,
+#       demo_atcd_pancreatite,
+#       demo_atcd_tumeur,
+#       adm_pancreatite_aigue,
+#       demo_atcd_transplantation,
+#       adm_choc,
+#       adm_vi_cat,
+#       adm_cgr,
+#       adm_pfc,
+#       adm_cp,
+#       adm_transfu,
+#       hc_choc,
+#       hc_glucanes_max,
+#       hc_mannanes_max,
+#       hc_vi_cat,
+#       hc_dialyse,
+#       hc_kta,
+#       hc_vvc,
+#       hc_ktd,
+#       hc_ecmo,
+#       hc_catheter_majeur,
+#       hc_cgr,
+#       hc_pfc,
+#       hc_transfu,
+#       hc_cp,
+#       hc_amines,
+#       hospit_fibro,
+#       hospit_chirurgie_majeure,
+#       hospit_chirurgie_abdominale,
+#       adm_amines
+#     ) ~ "dichotomous"
+#   ),
+#   value = list(
+#     c(
+#       resultat_candida_def,
+#       deces_rea,
+#       demo_atcd_hemato,
+#       demo_atcd_diabete,
+#       demo_atcd_pancreatite,
+#       demo_atcd_tumeur,
+#       adm_pancreatite_aigue,
+#       demo_atcd_transplantation,
+#       adm_choc,
+#       adm_vi_cat,
+#       adm_cgr,
+#       adm_pfc,
+#       adm_cp,
+#       adm_transfu,
+#       hc_choc,
+#       hc_glucanes_max,
+#       hc_mannanes_max,
+#       hc_vi_cat,
+#       hc_dialyse,
+#       hc_kta,
+#       hc_vvc,
+#       hc_ktd,
+#       hc_ecmo,
+#       hc_catheter_majeur,
+#       hc_transfu,
+#       hc_cgr,
+#       hc_pfc,
+#       hc_cp,
+#       hc_amines,
+#       hospit_fibro,
+#       hospit_chirurgie_majeure,
+#       hospit_chirurgie_abdominale,
+#       adm_amines
+#     ) ~ "Oui",
+#     c(hc_catheter_majeur) ~ "1",
+#     c(hc_glucanes_max, hc_mannanes_max) ~ "Positif",
+#     demo_type_rea ~ "Medicale",
+#     demo_sexe ~ "Masculin",
+#     demo_centre ~ "SLG",
 
-      demo_atcd_hemato,
-      demo_atcd_diabete,
-      demo_atcd_pancreatite,
-      demo_atcd_tumeur,
-      adm_pancreatite_aigue,
-      demo_atcd_transplantation,
-      adm_choc,
-      adm_vi_cat,
-      adm_cgr,
-      adm_pfc,
-      adm_cp,
-      adm_transfu,
-      hc_choc,
-      hc_glucanes_max,
-      hc_mannanes_max,
-      hc_vi_cat,
-      hc_dialyse,
-      hc_kta,
-      hc_vvc,
-      hc_ktd,
-      hc_ecmo,
-      hc_catheter_majeur,
-      hc_transfu,
-      hc_cgr,
-      hc_pfc,
-      hc_cp,
-      hc_amines,
-      hospit_fibro,
-      hospit_chirurgie_majeure,
-      hospit_chirurgie_abdominale,
-      adm_amines
-    ) ~ "Oui",
-    c(hc_catheter_majeur) ~ "1",
-    c(hc_glucanes_max, hc_mannanes_max) ~ "Positif",
-    demo_type_rea ~ "Medicale",
-    demo_sexe ~ "Masculin"
-  )
-) |>
-  add_overall() |>
-  modify_footnote_header(
-    footnote = "Nombre de NA (% de NA)",
-    columns = all_stat_cols()
-  )
-
+#   )
+# ) |>
+#   add_overall() |>
+#   modify_footnote_header(
+#     footnote = "Nombre de NA (% de NA)",
+#     columns = all_stat_cols()
+#   )
 
 # ==============================================================================
 #
@@ -150,7 +150,8 @@ tbl_na_demo <-
         demo_atcd_diabete,
         demo_atcd_pancreatite,
         demo_atcd_tumeur,
-        demo_atcd_transplantation
+        demo_atcd_transplantation,
+        demo_centre
       ) ~ "dichotomous"
     ),
     value = list(
@@ -162,7 +163,8 @@ tbl_na_demo <-
         demo_atcd_transplantation
       ) ~ "Oui",
       demo_type_rea ~ "Medicale",
-      demo_sexe ~ "Masculin"
+      demo_sexe ~ "Masculin",
+      demo_centre ~ "SLG"
     )
   ) |>
   add_overall() |>
@@ -218,7 +220,10 @@ tbl_na_adm <-
         adm_cgr,
         adm_pfc,
         adm_cp,
-        adm_transfu
+        adm_transfu,
+        adm_hypothermie,
+        adm_fievre,
+        adm_pfio2_min
       ) ~ "dichotomous"
     ),
     value = list(
@@ -231,8 +236,11 @@ tbl_na_adm <-
         adm_cgr,
         adm_pfc,
         adm_cp,
-        adm_transfu
-      ) ~ "Oui"
+        adm_transfu,
+        adm_hypothermie,
+        adm_fievre
+      ) ~ "Oui",
+      adm_pfio2_min = "< 100"
     )
   ) |>
   add_overall() |>
@@ -251,7 +259,9 @@ tbl_na_hc <-
       all_of(starts_with("hc")),
       -all_of(
         starts_with("hc_sofa")
-      )
+      ),
+      -hc_deficit_neutro,
+      -hc_deficit_lympho
     ),
     label = list(
       hc_delai = "Délai entre admission et prélèvements de l'hémoculture",
@@ -280,7 +290,9 @@ tbl_na_hc <-
       hc_ecmo = "ECMO",
       hc_cgr = "CGR",
       hc_pfc = "PFC",
-      hc_cp = "CP"
+      hc_cp = "CP",
+      hc_catheter_majeur = "Cathéter central (VVC, KTD, ECMO)",
+      hc_antifongique = "Antifongique"
     ),
     type = list(
       c(
@@ -297,7 +309,12 @@ tbl_na_hc <-
         hc_transfu,
         hc_amines,
         hc_glucanes_max,
-        hc_mannanes_max
+        hc_mannanes_max,
+        hc_hypothermie,
+        hc_fievre,
+        hc_pfio2_min,
+        hc_catheter_majeur,
+        hc_antifongique
       ) ~ "dichotomous"
     ),
     value = list(
@@ -313,9 +330,14 @@ tbl_na_hc <-
         hc_pfc,
         hc_cp,
         hc_transfu,
-        hc_amines
+        hc_amines,
+        hc_hypothermie,
+        hc_fievre,
+        hc_antifongique
       ) ~ "Oui",
-      c(hc_glucanes_max, hc_mannanes_max) ~ "Positif"
+      c(hc_glucanes_max, hc_mannanes_max) ~ "Positif",
+      hc_pfio2_min ~ "< 100",
+      hc_catheter_majeur ~ "1"
     )
   ) |>
   add_overall() |>
@@ -330,7 +352,7 @@ tbl_na_hospit <-
     missing = "no",
     stat_fns = ~missing,
     statistic = everything() ~ "{N_miss} ({p_miss} %)",
-    include = c(all_of(starts_with("hospit"))),
+    include = starts_with("hospit"),
     label = list(
       hospit_vi_duree = "Durée de ventilation invasive ",
       hospit_parenterale_duree = "Durée de nutrition parentérale ",
@@ -340,29 +362,35 @@ tbl_na_hospit <-
       hospit_ecmo_duree = "Durée ECMO",
       hospit_atb_duree = "Durée ATBT",
       hospit_ctc_duree = "Durée CTC",
-      hospit_immunosup_duree = "Durée immunosuppression ",
-      hospit_neutropen_duree = "Durée neutropénie ",
-      hospit_neutrophi_duree = "Durée neutrophilie ",
-      hospit_lymphopenie_duree = "Durée lymphopénie ",
+      hospit_immunosup_duree = "Durée de immunosuppression ",
+      hospit_neutropen_duree = "Durée de neutropénie ",
+      hospit_neutrophi_duree = "Durée de neutrophilie ",
+      hospit_lymphopenie_duree = "Durée de lymphopénie ",
       hospit_cgr = "Nombres CGR",
       hospit_pfc = "Nombres PFC",
       hospit_cp = "Nombres CP",
       hospit_fibro = "Fibroscopie",
       hospit_chirurgie_majeure = "Chirurgie majeure",
-      hospit_chirurgie_abdominale = "Chirurgie abdominale"
+      hospit_chirurgie_abdominale = "Chirurgie abdominale",
+      hospit_chirurgie_susmesocolique = "Chirurgie sus-mésocolique",
+      hospit_chirurgie_hepatobiliaire = "Chirurgie hepato-biliaire"
     ),
     type = list(
       c(
         hospit_fibro,
         hospit_chirurgie_majeure,
-        hospit_chirurgie_abdominale
+        hospit_chirurgie_abdominale,
+        hospit_chirurgie_susmesocolique,
+        hospit_chirurgie_hepatobiliaire
       ) ~ "dichotomous"
     ),
     value = list(
       c(
         hospit_fibro,
         hospit_chirurgie_majeure,
-        hospit_chirurgie_abdominale
+        hospit_chirurgie_abdominale,
+        hospit_chirurgie_susmesocolique,
+        hospit_chirurgie_hepatobiliaire
       ) ~ "Oui"
     )
   ) |>

@@ -7,7 +7,7 @@ library(tibble)
 # =============================================================================
 # 0. CONFIGURATION INITIALE
 # =============================================================================
-# imp <- readRDS("donnees/df_impute_surv.rds")
+imp <- readRDS("donnees/df_impute_surv.rds")
 dep_var <- "resultat_candida_def"
 exclude_vars <- "iep"
 n_boot <- 200
@@ -16,7 +16,7 @@ n_imputations <- imp$m
 candidate_vars <- setdiff(names(imp$data), c(dep_var, exclude_vars))
 
 # Parrélélisation (optionnelle)
-use_parallel <- FALSE
+use_parallel <- TRUE
 n_cores <- max(1, parallel::detectCores() - 1)
 
 if (use_parallel) {

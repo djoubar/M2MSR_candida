@@ -8,7 +8,7 @@ library(tibble)
 # =============================================================================
 # 0. CONFIGURATION INITIALE
 # =============================================================================
-imp <- readRDS("donnees/df_impute.rds")
+imp <- readRDS("donnees/df_impute_surv.rds")
 dep_var <- "resultat_candida_def"
 random_effect <- "iep"
 
@@ -21,7 +21,7 @@ candidate_vars <- setdiff(names(imp$data), c(dep_var, random_effect))
 # Active/désactive la parallélisation des bootstraps (recommandé : le coût total
 # est de l'ordre de n_imputations * n_boot * longueur(candidate_vars) ajustements glmer).
 use_parallel <- TRUE
-n_cores <- max(1, parallel::detectCores() - 1)
+n_cores <- max(1, parallel::detectCores() - 10)
 
 if (use_parallel) {
   library(future)

@@ -80,7 +80,7 @@ imp <- mice(
   m = 50,
   defaultMethod = c("2l.pmm", "2l.bin"),
   predictorMatrix = pred,
-  maxit = 50
+  maxit = 30
 )
 plot(imp)
 densityplot(imp)
