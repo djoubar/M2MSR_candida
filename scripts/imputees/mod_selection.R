@@ -17,8 +17,8 @@ dep_var <- "resultat_candida_def"
 # (ce n'est pas un prédicteur).
 id_var <- "iep"
 
-n_boot <- 200 # Nombre de bootstraps par dataset imputé
-alpha_final <- 0.05 # Seuil de significativité pour la sélection finale
+n_boot <- 50 # Nombre de bootstraps par dataset imputé
+alpha_final <- 0.15 # Seuil de significativité pour la sélection finale
 
 n_imputations <- imp$m
 candidate_vars <- setdiff(names(imp$data), c(dep_var, id_var))
@@ -64,21 +64,68 @@ fit_glm_safe <- function(formula, data) {
   )
 }
 
-stratified_bootstrap_sample <- function(data, dep_var) {
-  outcome <- as.numeric(as.character(data[[dep_var]]))
-  idx_0 <- which(outcome == 0)
-  idx_1 <- which(outcome == 1)
+stratified_bootstrap_sample <- function(data, dep_var, dep_levels) {
+  # Utilise les deux modalités réellement observées (dep_levels), quel que
+  # soit leur codage (0/1, 1/2, facteur texte...), plutôt que de supposer
+  # "0"/"1" en dur. C'est indispensable pour repérer immédiatement un
+  # problème de codage plutôt que de produire silencieusement des
+  # échantillons vides.
+  outcome <- as.character(data[[dep_var]])
+  idx_a <- which(outcome == dep_levels[1])
+  idx_b <- which(outcome == dep_levels[2])
 
   boot_idx <- c(
-    if (length(idx_0) > 0) sample(idx_0, length(idx_0), replace = TRUE) else integer(0),
-    if (length(idx_1) > 0) sample(idx_1, length(idx_1), replace = TRUE) else integer(0)
+    sample(idx_a, length(idx_a), replace = TRUE),
+    sample(idx_b, length(idx_b), replace = TRUE)
   )
 
   data[boot_idx, , drop = FALSE]
 }
 
-run_one_bootstrap <- function(data, vars) {
-  boot_data <- stratified_bootstrap_sample(data, dep_var)
+# Vérifie que dep_var est bien binaire (exactement 2 modalités non manquantes)
+# dans un dataset donné, et retourne ces modalités. Arrête le script avec un
+# message explicite plutôt que de laisser le bootstrap produire des
+# échantillons vides ou dégénérés en silence.
+validate_binary_outcome <- function(data, dep_var) {
+  if (!(dep_var %in% names(data))) {
+    stop(sprintf(
+      "La variable dep_var = '%s' n'existe pas dans le dataset imputé (noms disponibles : %s).",
+      dep_var,
+      paste(names(data), collapse = ", ")
+    ))
+  }
+
+  outcome <- as.character(data[[dep_var]])
+  n_na <- sum(is.na(outcome))
+  observed_levels <- sort(unique(outcome[!is.na(outcome)]))
+
+  if (n_na > 0) {
+    warning(sprintf(
+      "%d valeur(s) manquante(s) dans %s après imputation : vérifier le dataset.",
+      n_na,
+      dep_var
+    ))
+  }
+
+  if (length(observed_levels) != 2) {
+    stop(sprintf(
+      paste(
+        "dep_var = '%s' n'a pas exactement 2 modalités non manquantes",
+        "(modalités observées : %s). Le bootstrap stratifié et glm(family = binomial)",
+        "nécessitent une issue binaire à 2 niveaux. Vérifiez le codage de cette variable",
+        "dans df_impute_surv.rds (ex. 0/1 attendu, mais peut-être codée en 1/2, en texte,",
+        "ou avec un nom de colonne différent)."
+      ),
+      dep_var,
+      paste(observed_levels, collapse = ", ")
+    ))
+  }
+
+  observed_levels
+}
+
+run_one_bootstrap <- function(data, vars, dep_levels) {
+  boot_data <- stratified_bootstrap_sample(data, dep_var, dep_levels)
 
   null_formula <- as.formula(paste(dep_var, "~ 1"))
   null_model <- fit_glm_safe(null_formula, boot_data)
@@ -138,6 +185,26 @@ run_one_bootstrap <- function(data, vars) {
 
 imputed_datasets <- lapply(seq_len(n_imputations), function(i) complete(imp, i))
 
+# Validation immédiate du codage de dep_var (une fois par dataset imputé) :
+# arrête le script tout de suite avec un message clair si dep_var n'est pas
+# binaire ou n'existe pas sous ce nom, plutôt que de laisser tourner
+# n_imputations * n_boot bootstraps qui échoueront tous silencieusement.
+dep_levels_by_imputation <- lapply(imputed_datasets, function(d) {
+  validate_binary_outcome(d, dep_var)
+})
+
+cat(
+  "\n[Info] Modalités observées de '",
+  dep_var,
+  "' (imputation 1) : ",
+  paste(dep_levels_by_imputation[[1]], collapse = " / "),
+  "\n",
+  "[Info] Effectifs correspondants (imputation 1) :\n",
+  sep = ""
+)
+print(table(imputed_datasets[[1]][[dep_var]], useNA = "ifany"))
+cat("\n")
+
 # --- Boucle principale : toutes les combinaisons (imputation, bootstrap) ---
 # On aplatit directement l'espace des itérations en n_imputations * n_boot
 # tâches indépendantes, ce qui simplifie à la fois la parallélisation et le
@@ -151,7 +218,11 @@ run_all_bootstraps <- function() {
 
   worker <- function(idx) {
     im_index <- ((idx - 1) %/% n_boot) + 1
-    res <- run_one_bootstrap(imputed_datasets[[im_index]], candidate_vars)
+    res <- run_one_bootstrap(
+      imputed_datasets[[im_index]],
+      candidate_vars,
+      dep_levels_by_imputation[[im_index]]
+    )
     p(sprintf("imputation %d/%d", im_index, n_imputations))
     res
   }
@@ -167,7 +238,7 @@ set.seed(123)
 all_boot_results <- with_progress(run_all_bootstraps())
 
 # =============================================================================
-# 2. SÉLECTION FINALE : VARIABLES SIGNIFICATIVES (p < alpha_final) DANS >= 60%
+# 2. SÉLECTION FINALE : VARIABLES SIGNIFICATIVES (p < alpha_final) DANS >= 50%
 #    DES n_boot * n_imputations MODÈLES
 # =============================================================================
 total_models <- length(all_boot_results) # = n_imputations * n_boot
@@ -202,13 +273,13 @@ final_selection <- data.frame(
 print(final_selection)
 
 final_vars <- final_selection %>%
-  filter(proportion_significant >= 0.6) %>%
+  filter(proportion_significant >= 0.5) %>%
   pull(variable)
 
 cat(
   "\nVariables sélectionnées dans le modèle final (p <",
   alpha_final,
-  "dans >= 60% des",
+  "dans >= 50% des",
   total_models,
   "modèles bootstrap) :\n",
   paste(final_vars, collapse = ", "),
