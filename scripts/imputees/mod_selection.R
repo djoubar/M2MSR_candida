@@ -1,7 +1,6 @@
-library(lme4)
 library(mice)
 library(purrr)
-library(broom.mixed)
+library(broom)
 library(dplyr)
 library(tibble)
 library(progressr)
@@ -11,33 +10,22 @@ library(progressr)
 # =============================================================================
 imp <- readRDS("donnees/df_impute_surv.rds")
 dep_var <- "resultat_candida_def"
-random_effect <- "iep"
+
+# "iep" n'est plus un effet aléatoire : avec un seul épisode par cluster, la
+# corrélation intra-cluster qui justifiait un modèle mixte n'existe plus. On
+# garde uniquement cet identifiant pour l'exclure des variables candidates
+# (ce n'est pas un prédicteur).
+id_var <- "iep"
 
 n_boot <- 200 # Nombre de bootstraps par dataset imputé
 alpha_final <- 0.05 # Seuil de significativité pour la sélection finale
 
-# Règle de résumé de l'issue au niveau cluster, utilisée pour stratifier le
-# bootstrap. resultat_candida_def N'EST PAS constant au sein d'un même iep
-# (confirmé), donc il faut choisir comment définir "l'issue du cluster" :
-#   - "any_positive" : le cluster est positif s'il contient au moins un 1
-#                       (ex : Candida détecté au moins une fois pendant le
-#                       séjour). C'est en général la définition cliniquement
-#                       la plus naturelle pour ce type d'issue.
-#   - "majority"      : le cluster prend la valeur la plus fréquente parmi
-#                       ses observations (égalité tranchée en faveur de 1).
-# À confirmer/ajuster selon le sens clinique de vos données.
-cluster_outcome_rule <- "any_positive" # ou "majority"
-
 n_imputations <- imp$m
-candidate_vars <- setdiff(names(imp$data), c(dep_var, random_effect))
+candidate_vars <- setdiff(names(imp$data), c(dep_var, id_var))
 
 # Active/désactive la parallélisation des bootstraps (recommandé : le coût total
-# est de l'ordre de n_imputations * n_boot * longueur(candidate_vars) ajustements glmer).
+# est de l'ordre de n_imputations * n_boot * longueur(candidate_vars) ajustements glm).
 use_parallel <- TRUE
-# Correction : sur la plupart des machines, detectCores() - 10 est négatif ou
-# nul, ce qui forçait n_cores à 1 (donc aucune parallélisation réelle, avec en
-# plus l'overhead de sérialisation de future). On garde ici un cœur de libre
-# pour le système, ce qui est le compromis standard.
 n_cores <- max(1, parallel::detectCores() - 1)
 
 if (use_parallel) {
@@ -52,83 +40,48 @@ handlers(global = TRUE)
 handlers(handler_txtprogressbar(width = 60))
 
 # =============================================================================
-# 1. BOOTSTRAP DE CLUSTERS STRATIFIÉ SUR L'ISSUE + SÉLECTION FORWARD (AIC)
+# 1. BOOTSTRAP STRATIFIÉ SUR L'ISSUE + SÉLECTION FORWARD (AIC)
 # =============================================================================
-# Le bootstrap rééchantillonne les clusters (et non les lignes individuelles),
-# pour préserver la structure de corrélation intra-cluster propre aux modèles
-# mixtes. De plus, il est stratifié sur l'issue résumée au niveau cluster
-# (cf. cluster_outcome_rule ci-dessus) :
-#   - le nombre de clusters tirés dans chaque strate (0 / 1) est fixé et égal
-#     au nombre de clusters de cette strate dans les données originales
-#     => taille (en nombre de clusters) et proportion 0/1 (au niveau cluster)
-#     identiques à chaque bootstrap.
-# Note : le nombre total de LIGNES peut encore varier légèrement d'un
-# bootstrap à l'autre, car les clusters n'ont pas tous la même taille. Fixer
-# exactement le nombre de lignes nécessiterait un bootstrap au niveau
-# individuel, ce qui casserait la structure de cluster : c'est le compromis
-# standard pour les modèles mixtes.
+# Puisqu'il n'y a plus de structure de cluster (un seul épisode par iep), le
+# bootstrap rééchantillonne directement les LIGNES, stratifié sur dep_var :
+# on tire avec remise, séparément parmi les lignes à 0 et parmi les lignes à
+# 1, en gardant exactement le même effectif dans chaque strate que dans les
+# données originales.
+#   => taille d'échantillon ET proportion de resultat_candida_def = 0/1
+#      exactement identiques à chaque bootstrap (contrairement à
+#      l'approximation "au niveau cluster" nécessaire avec un modèle mixte).
 #
 # Le critère d'arrêt de la sélection forward compare l'AIC du meilleur ajout
 # candidat à l'AIC du modèle courant : une variable n'est ajoutée que si elle
 # améliore réellement l'AIC (et non simplement si un modèle converge).
 
-fit_glmer_safe <- function(formula, data) {
+fit_glm_safe <- function(formula, data) {
   tryCatch(
     suppressWarnings(
-      glmer(formula, data = data, family = binomial, control = glmerControl(optimizer = "bobyqa"))
+      glm(formula, data = data, family = binomial())
     ),
     error = function(e) NULL
   )
 }
 
-# Résume l'issue au niveau cluster selon la règle choisie. Calculé une seule
-# fois par dataset imputé (pas à chaque bootstrap), puisque la composition
-# des clusters ne change pas entre bootstraps d'une même imputation.
-get_cluster_outcome <- function(data, cluster_var, dep_var, rule) {
-  data %>%
-    mutate(.dep_num = as.numeric(as.character(.data[[dep_var]]))) %>%
-    group_by(.data[[cluster_var]]) %>%
-    summarise(
-      n_obs = n(),
-      n_positive = sum(.dep_num == 1, na.rm = TRUE),
-      outcome = if (rule == "any_positive") {
-        as.integer(n_positive > 0)
-      } else {
-        tab <- table(.dep_num)
-        as.integer(names(tab)[which.max(tab)])
-      },
-      .groups = "drop"
-    ) %>%
-    rename(cluster_id = 1)
-}
+stratified_bootstrap_sample <- function(data, dep_var) {
+  outcome <- as.numeric(as.character(data[[dep_var]]))
+  idx_0 <- which(outcome == 0)
+  idx_1 <- which(outcome == 1)
 
-cluster_bootstrap_sample <- function(data, cluster_var, cluster_outcome) {
-  ids_0 <- cluster_outcome$cluster_id[cluster_outcome$outcome == 0]
-  ids_1 <- cluster_outcome$cluster_id[cluster_outcome$outcome == 1]
-
-  boot_ids <- c(
-    if (length(ids_0) > 0) sample(ids_0, length(ids_0), replace = TRUE) else character(0),
-    if (length(ids_1) > 0) sample(ids_1, length(ids_1), replace = TRUE) else character(0)
+  boot_idx <- c(
+    if (length(idx_0) > 0) sample(idx_0, length(idx_0), replace = TRUE) else integer(0),
+    if (length(idx_1) > 0) sample(idx_1, length(idx_1), replace = TRUE) else integer(0)
   )
 
-  do.call(
-    rbind,
-    lapply(seq_along(boot_ids), function(i) {
-      d <- data[data[[cluster_var]] == boot_ids[i], ]
-      # Suffixe pour que chaque tirage du même cluster soit traité comme une
-      # unité distincte par glmer (sinon les doublons seraient fusionnés en un
-      # seul niveau d'effet aléatoire).
-      d[[cluster_var]] <- paste0(d[[cluster_var]], "_b", i)
-      d
-    })
-  )
+  data[boot_idx, , drop = FALSE]
 }
 
-run_one_bootstrap <- function(data, vars, cluster_outcome) {
-  boot_data <- cluster_bootstrap_sample(data, random_effect, cluster_outcome)
+run_one_bootstrap <- function(data, vars) {
+  boot_data <- stratified_bootstrap_sample(data, dep_var)
 
-  null_formula <- as.formula(paste(dep_var, "~ 1 + (1 |", random_effect, ")"))
-  null_model <- fit_glmer_safe(null_formula, boot_data)
+  null_formula <- as.formula(paste(dep_var, "~ 1"))
+  null_model <- fit_glm_safe(null_formula, boot_data)
   if (is.null(null_model)) {
     return(list(variables = character(0), p_values = setNames(numeric(0), character(0))))
   }
@@ -143,15 +96,8 @@ run_one_bootstrap <- function(data, vars, cluster_outcome) {
 
     for (var in remaining_vars) {
       test_vars <- c(current_vars, var)
-      test_formula <- as.formula(paste(
-        dep_var,
-        "~",
-        paste(test_vars, collapse = " + "),
-        "+ (1 |",
-        random_effect,
-        ")"
-      ))
-      test_model <- fit_glmer_safe(test_formula, boot_data)
+      test_formula <- as.formula(paste(dep_var, "~", paste(test_vars, collapse = " + ")))
+      test_model <- fit_glm_safe(test_formula, boot_data)
       if (!is.null(test_model) && AIC(test_model) < best_aic) {
         best_aic <- AIC(test_model)
         best_var <- var
@@ -172,20 +118,13 @@ run_one_bootstrap <- function(data, vars, cluster_outcome) {
     return(list(variables = character(0), p_values = setNames(numeric(0), character(0))))
   }
 
-  final_formula <- as.formula(paste(
-    dep_var,
-    "~",
-    paste(current_vars, collapse = " + "),
-    "+ (1 |",
-    random_effect,
-    ")"
-  ))
-  final_model <- fit_glmer_safe(final_formula, boot_data)
+  final_formula <- as.formula(paste(dep_var, "~", paste(current_vars, collapse = " + ")))
+  final_model <- fit_glm_safe(final_formula, boot_data)
   if (is.null(final_model)) {
     return(list(variables = current_vars, p_values = setNames(numeric(0), character(0))))
   }
 
-  p_values <- tidy(final_model, conf.int = FALSE, effects = "fixed") %>%
+  p_values <- tidy(final_model) %>%
     filter(term %in% current_vars) %>%
     select(term, p.value) %>%
     deframe()
@@ -193,43 +132,11 @@ run_one_bootstrap <- function(data, vars, cluster_outcome) {
   list(variables = current_vars, p_values = p_values)
 }
 
-# --- Pré-calcul : jeux de données imputés + résumé d'issue par cluster ------
+# --- Pré-calcul : jeux de données imputés -----------------------------------
 # Fait une seule fois (pas à chaque bootstrap ni à chaque itération), pour
-# éviter de rappeler complete(imp, i) inutilement et pour pouvoir afficher un
-# résumé des clusters mixtes avant de lancer les n_imputations * n_boot
-# ajustements.
+# éviter de rappeler complete(imp, i) inutilement.
 
 imputed_datasets <- lapply(seq_len(n_imputations), function(i) complete(imp, i))
-
-cluster_outcomes <- lapply(imputed_datasets, function(d) {
-  get_cluster_outcome(d, random_effect, dep_var, cluster_outcome_rule)
-})
-
-# Résumé informatif sur les clusters mixtes (imprimé une fois, sur la 1ère
-# imputation ; la composition des clusters ne dépend pas de l'imputation sauf
-# si dep_var lui-même a des valeurs imputées).
-mixed_summary <- imputed_datasets[[1]] %>%
-  mutate(.dep_num = as.numeric(as.character(.data[[dep_var]]))) %>%
-  group_by(.data[[random_effect]]) %>%
-  summarise(n_distinct_outcome = n_distinct(.dep_num), .groups = "drop")
-
-n_mixed <- sum(mixed_summary$n_distinct_outcome > 1)
-cat(
-  "\n[Info] Règle de stratification cluster : '",
-  cluster_outcome_rule,
-  "'\n",
-  "[Info] Nombre de clusters (",
-  random_effect,
-  ") avec issue non constante : ",
-  n_mixed,
-  " / ",
-  nrow(mixed_summary),
-  "\n",
-  "[Info] Répartition des clusters obtenue avec cette règle (imputation 1) :\n",
-  sep = ""
-)
-print(table(outcome = cluster_outcomes[[1]]$outcome))
-cat("\n")
 
 # --- Boucle principale : toutes les combinaisons (imputation, bootstrap) ---
 # On aplatit directement l'espace des itérations en n_imputations * n_boot
@@ -244,11 +151,7 @@ run_all_bootstraps <- function() {
 
   worker <- function(idx) {
     im_index <- ((idx - 1) %/% n_boot) + 1
-    res <- run_one_bootstrap(
-      imputed_datasets[[im_index]],
-      candidate_vars,
-      cluster_outcomes[[im_index]]
-    )
+    res <- run_one_bootstrap(imputed_datasets[[im_index]], candidate_vars)
     p(sprintf("imputation %d/%d", im_index, n_imputations))
     res
   }
@@ -321,17 +224,10 @@ if (length(final_vars) == 0) {
 # =============================================================================
 # 3. MODÈLE FINAL + COMBINAISON AVEC LES RÈGLES DE RUBIN
 # =============================================================================
-final_formula <- as.formula(paste(
-  dep_var,
-  "~",
-  paste(final_vars, collapse = " + "),
-  "+ (1 |",
-  random_effect,
-  ")"
-))
+final_formula <- as.formula(paste(dep_var, "~", paste(final_vars, collapse = " + ")))
 
 fits <- lapply(seq_len(n_imputations), function(i) {
-  fit_glmer_safe(final_formula, imputed_datasets[[i]])
+  fit_glm_safe(final_formula, imputed_datasets[[i]])
 })
 
 if (any(vapply(fits, is.null, logical(1)))) {
