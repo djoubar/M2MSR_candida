@@ -118,23 +118,25 @@ print(resume_OR, digits = 3)
 # =============================================================================
 
 # Niveaux des termes (hors intercept) dans l'ordre souhaité
-# niveaux_termes <- c(
-# "(Intercept)",
-# "hc_vi_cat",
-# "hc_cgr",
-# "hc_cp",
-# "hc_dialyse",
-# "hc_amines",
-# "hc_vvc",
-# "hospit_chirurgie_majeure",
-# "hospit_ctc_duree",
-# "hospit_immunosup_duree",
-# "demo_age",
-# "hc_hypothermie",
-# "hc_fievre",
-# "hospit_parenterale_duree",
-# "demo_type_rea"
-# )
+niveaux_termes <- c(
+  "(Intercept)",
+  "hc_vi_cat",
+  "hc_cgr",
+  "hc_catheter_majeur",
+  "adm_igs2",
+  # "hc_cp",
+  # "hc_dialyse",
+  # "hc_amines",
+  # "hc_vvc",
+  # "hospit_chirurgie_majeure",
+  # "hospit_ctc_duree",
+  # "hospit_immunosup_duree",
+  # "demo_age",
+  # "hc_hypothermie",
+  # "hc_fievre",
+  # "hospit_parenterale_duree",
+  # "demo_type_rea"
+)
 # Pour les variables catégorielles (hc_vi_cat, demo_type_rea), R génère
 # automatiquement un terme par modalité (ex. hc_vi_catModX, demo_type_reaY) ;
 # ajustez `niveaux_termes` ci-dessus en fonction des sorties de resume_OR$term.
@@ -156,7 +158,7 @@ tidy_pooled <- resultats_pool$pooled %>%
   filter(term != "(Intercept)")
 
 saveRDS(tidy_pooled, file = "models/mod_meta_pooled.rds")
-tidy_pooled <- readRDS("models/tidy_pooled_nouveaux.rds")
+# tidy_pooled <- readRDS("models/tidy_pooled_nouveaux.rds")
 
 # Étiquettes lisibles pour le graphique
 labels_lisibles <- c(
@@ -202,7 +204,7 @@ forest_plot <- ggplot(tidy_pooled, aes(x = OR, y = label)) +
 
 print(forest_plot)
 saveRDS(forest_plot, file = "models/reg_log/fp_imp.rds")
-forest_plot <- readRDS("models/reg_log/fp_imp.rds")
+# forest_plot <- readRDS("models/reg_log/fp_imp.rds")
 
 # =============================================================================
 #                         DISCRIMINATION : AUC & COURBE ROC

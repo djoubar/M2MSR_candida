@@ -2618,9 +2618,9 @@ src: url(data:font/woff2;base64,d09GMk9UVE8AAbpsAAkAAAAEzT4AAbokA4ADAAAAAAAAAAAA
 <!--  -->
 <section id="abstract" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> <u>Abstract</u></h1>
-<p>La candidémie est une infection nosocomiale grave en réanimation, associée à une mortalité élevée. Son diagnostic précoce reste un défi en raison des limites des hémocultures. Dans cette étude rétrospective monocentrique incluant 31 671 épisodes de suspicion d’infection, nous avons développé un score de stratification du risque de candidémie acquise en réanimation, en 3 catégories (faible, intermédiaire, élevé).[Variables significatives] étaient associées à un risque accru de candidémie. Le score présentait une AUC-ROC de X,XX (IC 95 % : X,XX–X,XX), avec une sensibilité de X % et une spécificité de X %. Ce score nécessite d’être validé de façon prospective pour valider sa capacité à guider la prise en charge des patients hospitalisés en médecine intensive réanimation.</p>
-<p><strong>Mots clés</strong> : Candidémie - Réanimation - Score prédictif</p>
-<p><strong>Abbréviations</strong> : - aOR : Adjusted Odds Ratio (Odds Ratio Ajusté) - AUC : Area under curve (Aire sous la courbe) - MIR : Médecine Intensive Réanimation</p>
+<p>La candidémie est une infection nosocomiale fréquente en réanimation, associée à une mortalité élevée. Son diagnostic précoce reste un défi en raison des limites de performance des hémocultures. Dans cette étude rétrospective monocentrique incluant 31 671 épisodes de suspicion d’infection, nous avons développé un score de stratification du risque de candidémie acquise en réanimation, en 3 catégories (faible, intermédiaire, élevé).[Variables significatives] étaient associées à un risque accru de candidémie. Le score présentait une AUC-ROC de X,XX (IC 95 % : X,XX–X,XX), avec une sensibilité de X % et une spécificité de X %. Ce score nécessite d’être validé de façon prospective pour valider sa capacité à guider la prise en charge des patients hospitalisés en médecine intensive réanimation.</p>
+<p><strong>Mots clés</strong> : Candidémie - Réanimation - Score prédictif - Régression logistique mixte</p>
+<p><strong>Abbréviations</strong> : - aOR : Adjusted Odds Ratio (Odds Ratio Ajusté) - ATBT : Antibiothérapie - AUC : Area under curve (Aire sous la courbe) - CGR : Culots globulaire - CTC : Corticothérapie - CP : Culot plaquettaire - ECMO : Extra corporal membrane oxygenation - KTA : Cathéter artériel - KTD : Cathéter de dialyse - MIR : Médecine Intensive Réanimation - PFC : Plasma frais congelé - VVC : Voie veineuse centrale</p>
 </section>
 <section id="introduction" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> <u>Introduction</u></h1>
@@ -2671,7 +2671,8 @@ Figure 1. Regroupement des hémocultures par épisode de suspicion d’infectio
 </section>
 <section id="données-manquantes" class="level2" data-number="3.5">
 <h2 data-number="3.5" data-anchor-id="données-manquantes"><span class="header-section-number">3.5</span> Données manquantes</h2>
-<p>Après extraction des données, les données manquantes (&lt; 30%) supposées <em>Missing-At-Random</em> ont été imputées par imputation multiple par équation enchainées (MICE) avec 20 imputations ; via “two-level normal model” pour les variables continues et par “two-level normal model using lmer” pour les variables catégorielles. Les données manquantes &gt; 30% étaient exclues.</p>
+<p>Après extraction des données, les données manquantes (&lt; 30%) supposées <em>Missing-At-Random</em> ont été imputées par imputation multiple par équation enchainées (MICE) avec 20 imputations ; via “two-level normal model” pour les variables continues et par “two-level normal model using lmer” pour les variables catégorielles.</p>
+<p>Les données manquantes &gt; 30% étaient exclues.</p>
 </section>
 <section id="sélection-des-variables" class="level2" data-number="3.6">
 <h2 data-number="3.6" data-anchor-id="sélection-des-variables"><span class="header-section-number">3.6</span> Sélection des variables</h2>
@@ -2713,7 +2714,7 @@ Figure 2. Flow chart
 </section>
 <section id="description-de-la-population" class="level2" data-number="4.2">
 <h2 data-number="4.2" data-anchor-id="description-de-la-population"><span class="header-section-number">4.2</span> Description de la population</h2>
-<p>Dans notre cohorte, les patients étaient majoritairement de <strong>sexe masculin (66,0 %)</strong> et avaient un <strong>âge médian de 61 ans [49-70]</strong>. 4,7 % présentaient des antécédents de maladie hématologique maligne, 26 % de diabète, et 18% de tumeurs solides et 3,1 % de transplantation d’organe solide. Au cours de leur hospitalisation, 16 % de nos patients ont eu une chirurgie abdominale et 9,7 % ont eu une fibroscopie digestive. A l’admission, le score IGS 2 médiane était de 46 [33-61] ; 84,0 % des patients présentaient un état de choc et 67,0 % étaient sous ventilation invasive invasive. L’ensemble des caractéristiques est présentée dans le <a href="#tbl-demographique" class="quarto-xref">Table 1</a> .</p>
+<p>Dans notre cohorte, les patients étaient majoritairement de <strong>sexe masculin</strong> (66,0 %) et avaient un <strong>âge médian de 61 ans</strong> [49-70]. 4,7 % présentaient des antécédents de maladie hématologique maligne, 26 % de diabète, et 18% de tumeurs solides et 3,1 % de transplantation d’organe solide. Au cours de leur hospitalisation, 16 % de nos patients ont eu une chirurgie abdominale et 9,7 % ont eu une fibroscopie digestive. A l’admission, le <strong>score IGS 2 médian était de 46</strong> [33-61] ; 84,0 % des patients présentaient un état de choc et 67,0 % étaient sous ventilation invasive invasive. L’ensemble des caractéristiques est présentée dans le <a href="#tbl-demographique" class="quarto-xref">Table 1</a> .</p>
 <div class="cell">
 <div id="tbl-demographique" class="cell quarto-float quarto-figure quarto-figure-center" data-lightbox="true">
 <figure class="quarto-float quarto-float-tbl figure">
@@ -2722,20 +2723,20 @@ Table 1. Description démographique de la population, données clinico-biologiq
 </figcaption>
 <div aria-describedby="tbl-demographique-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="xbomckxhvx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#xbomckxhvx table {
+<div id="emktnyfeyi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#emktnyfeyi table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#xbomckxhvx thead, #xbomckxhvx tbody, #xbomckxhvx tfoot, #xbomckxhvx tr, #xbomckxhvx td, #xbomckxhvx th {
+#emktnyfeyi thead, #emktnyfeyi tbody, #emktnyfeyi tfoot, #emktnyfeyi tr, #emktnyfeyi td, #emktnyfeyi th {
 border-style: none;
 }
-#xbomckxhvx p {
+#emktnyfeyi p {
 margin: 0;
 padding: 0;
 }
-#xbomckxhvx .gt_table {
+#emktnyfeyi .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -2760,11 +2761,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#xbomckxhvx .gt_caption {
+#emktnyfeyi .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#xbomckxhvx .gt_title {
+#emktnyfeyi .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -2775,7 +2776,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#xbomckxhvx .gt_subtitle {
+#emktnyfeyi .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -2786,7 +2787,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#xbomckxhvx .gt_heading {
+#emktnyfeyi .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -2797,12 +2798,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#xbomckxhvx .gt_bottom_border {
+#emktnyfeyi .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#xbomckxhvx .gt_col_headings {
+#emktnyfeyi .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2816,7 +2817,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#xbomckxhvx .gt_col_heading {
+#emktnyfeyi .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2835,7 +2836,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#xbomckxhvx .gt_column_spanner_outer {
+#emktnyfeyi .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2846,13 +2847,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#xbomckxhvx .gt_column_spanner_outer:first-child {
+#emktnyfeyi .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#xbomckxhvx .gt_column_spanner_outer:last-child {
+#emktnyfeyi .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#xbomckxhvx .gt_column_spanner {
+#emktnyfeyi .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -2863,10 +2864,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#xbomckxhvx .gt_spanner_row {
+#emktnyfeyi .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#xbomckxhvx .gt_group_heading {
+#emktnyfeyi .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2891,7 +2892,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#xbomckxhvx .gt_empty_group_heading {
+#emktnyfeyi .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -2905,13 +2906,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#xbomckxhvx .gt_from_md > :first-child {
+#emktnyfeyi .gt_from_md > :first-child {
 margin-top: 0;
 }
-#xbomckxhvx .gt_from_md > :last-child {
+#emktnyfeyi .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#xbomckxhvx .gt_row {
+#emktnyfeyi .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2929,7 +2930,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#xbomckxhvx .gt_stub {
+#emktnyfeyi .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2941,7 +2942,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xbomckxhvx .gt_stub_row_group {
+#emktnyfeyi .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2954,13 +2955,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#xbomckxhvx .gt_row_group_first td {
+#emktnyfeyi .gt_row_group_first td {
 border-top-width: 2px;
 }
-#xbomckxhvx .gt_row_group_first th {
+#emktnyfeyi .gt_row_group_first th {
 border-top-width: 2px;
 }
-#xbomckxhvx .gt_summary_row {
+#emktnyfeyi .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2969,14 +2970,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xbomckxhvx .gt_first_summary_row {
+#emktnyfeyi .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#xbomckxhvx .gt_first_summary_row.thick {
+#emktnyfeyi .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#xbomckxhvx .gt_last_summary_row {
+#emktnyfeyi .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2985,7 +2986,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#xbomckxhvx .gt_grand_summary_row {
+#emktnyfeyi .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2994,7 +2995,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xbomckxhvx .gt_first_grand_summary_row {
+#emktnyfeyi .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3003,7 +3004,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#xbomckxhvx .gt_last_grand_summary_row_top {
+#emktnyfeyi .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3012,10 +3013,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#xbomckxhvx .gt_striped {
+#emktnyfeyi .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#xbomckxhvx .gt_table_body {
+#emktnyfeyi .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -3023,7 +3024,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#xbomckxhvx .gt_footnotes {
+#emktnyfeyi .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3036,7 +3037,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#xbomckxhvx .gt_footnote {
+#emktnyfeyi .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -3044,7 +3045,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xbomckxhvx .gt_sourcenotes {
+#emktnyfeyi .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3057,64 +3058,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#xbomckxhvx .gt_sourcenote {
+#emktnyfeyi .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xbomckxhvx .gt_left {
+#emktnyfeyi .gt_left {
 text-align: left;
 }
-#xbomckxhvx .gt_center {
+#emktnyfeyi .gt_center {
 text-align: center;
 }
-#xbomckxhvx .gt_right {
+#emktnyfeyi .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#xbomckxhvx .gt_font_normal {
+#emktnyfeyi .gt_font_normal {
 font-weight: normal;
 }
-#xbomckxhvx .gt_font_bold {
+#emktnyfeyi .gt_font_bold {
 font-weight: bold;
 }
-#xbomckxhvx .gt_font_italic {
+#emktnyfeyi .gt_font_italic {
 font-style: italic;
 }
-#xbomckxhvx .gt_super {
+#emktnyfeyi .gt_super {
 font-size: 65%;
 }
-#xbomckxhvx .gt_footnote_marks {
+#emktnyfeyi .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#xbomckxhvx .gt_asterisk {
+#emktnyfeyi .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#xbomckxhvx .gt_indent_1 {
+#emktnyfeyi .gt_indent_1 {
 text-indent: 5px;
 }
-#xbomckxhvx .gt_indent_2 {
+#emktnyfeyi .gt_indent_2 {
 text-indent: 10px;
 }
-#xbomckxhvx .gt_indent_3 {
+#emktnyfeyi .gt_indent_3 {
 text-indent: 15px;
 }
-#xbomckxhvx .gt_indent_4 {
+#emktnyfeyi .gt_indent_4 {
 text-indent: 20px;
 }
-#xbomckxhvx .gt_indent_5 {
+#emktnyfeyi .gt_indent_5 {
 text-indent: 25px;
 }
-#xbomckxhvx .katex-display {
+#emktnyfeyi .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#xbomckxhvx div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#emktnyfeyi div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -3126,37 +3127,37 @@ height: 0px !important;
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Age</td>
+    <tr><td headers="label" class="gt_row gt_left">Age</td>
 <td headers="stat_0" class="gt_row gt_center">61 (49 – 70)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Sexe masculin</td>
+    <tr><td headers="label" class="gt_row gt_left">Sexe masculin</td>
 <td headers="stat_0" class="gt_row gt_center">6 443 (66%)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Antécédent de maladie hématologique maligne</td>
+    <tr><td headers="label" class="gt_row gt_left">Antécédent de maladie hématologique maligne</td>
 <td headers="stat_0" class="gt_row gt_center">455 (4,7%)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Antécédent de diabète</td>
+    <tr><td headers="label" class="gt_row gt_left">Antécédent de diabète</td>
 <td headers="stat_0" class="gt_row gt_center">2 514 (26%)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Antécédent de pancréatite aigue</td>
+    <tr><td headers="label" class="gt_row gt_left">Antécédent de pancréatite aigue</td>
 <td headers="stat_0" class="gt_row gt_center">162 (1,7%)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Antécédent de tumeur solide</td>
+    <tr><td headers="label" class="gt_row gt_left">Antécédent de tumeur solide</td>
 <td headers="stat_0" class="gt_row gt_center">1 740 (18%)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Antécédent de transplantation</td>
+    <tr><td headers="label" class="gt_row gt_left">Antécédent de transplantation</td>
 <td headers="stat_0" class="gt_row gt_center">305 (3,1%)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Hospitalisation en réanimation médicale</td>
+    <tr><td headers="label" class="gt_row gt_left">Hospitalisation en réanimation médicale</td>
 <td headers="stat_0" class="gt_row gt_center">7 312 (75%)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">IGS 2 à l&#39;admission</td>
+    <tr><td headers="label" class="gt_row gt_left">IGS 2 à l&#39;admission</td>
 <td headers="stat_0" class="gt_row gt_center">46 (33 – 61)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Ventilation invasive</td>
+    <tr><td headers="label" class="gt_row gt_left">Ventilation invasive</td>
 <td headers="stat_0" class="gt_row gt_center">6 550 (67%)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Administration d&#39;amines</td>
+    <tr><td headers="label" class="gt_row gt_left">Administration d&#39;amines</td>
 <td headers="stat_0" class="gt_row gt_center">5 347 (55%)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Délai entre admission &amp; hémoculture</td>
+    <tr><td headers="label" class="gt_row gt_left">Délai entre admission &amp; hémoculture</td>
 <td headers="stat_0" class="gt_row gt_center">3,5 days (2,5 days – 5,6 days)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Chirurgie majeure</td>
+    <tr><td headers="label" class="gt_row gt_left">Chirurgie majeure</td>
 <td headers="stat_0" class="gt_row gt_center">3 511 (36%)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Chirurgie abdominale</td>
+    <tr><td headers="label" class="gt_row gt_left">Chirurgie abdominale</td>
 <td headers="stat_0" class="gt_row gt_center">1 584 (16%)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Fibroscopie</td>
+    <tr><td headers="label" class="gt_row gt_left">Fibroscopie</td>
 <td headers="stat_0" class="gt_row gt_center">947 (9,7%)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Décès en réanimation</td>
+    <tr><td headers="label" class="gt_row gt_left">Décès en réanimation</td>
 <td headers="stat_0" class="gt_row gt_center">2 746 (28%)</td></tr>
   </tbody>
   <tfoot>
@@ -3230,20 +3231,20 @@ Table 2. Données manquantes
 </figcaption>
 <div aria-describedby="tbl-NA-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="leqpbggrpb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#leqpbggrpb table {
+<div id="aiermsqevn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#aiermsqevn table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#leqpbggrpb thead, #leqpbggrpb tbody, #leqpbggrpb tfoot, #leqpbggrpb tr, #leqpbggrpb td, #leqpbggrpb th {
+#aiermsqevn thead, #aiermsqevn tbody, #aiermsqevn tfoot, #aiermsqevn tr, #aiermsqevn td, #aiermsqevn th {
 border-style: none;
 }
-#leqpbggrpb p {
+#aiermsqevn p {
 margin: 0;
 padding: 0;
 }
-#leqpbggrpb .gt_table {
+#aiermsqevn .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -3268,11 +3269,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#leqpbggrpb .gt_caption {
+#aiermsqevn .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#leqpbggrpb .gt_title {
+#aiermsqevn .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -3283,7 +3284,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#leqpbggrpb .gt_subtitle {
+#aiermsqevn .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -3294,7 +3295,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#leqpbggrpb .gt_heading {
+#aiermsqevn .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -3305,12 +3306,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#leqpbggrpb .gt_bottom_border {
+#aiermsqevn .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#leqpbggrpb .gt_col_headings {
+#aiermsqevn .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -3324,7 +3325,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#leqpbggrpb .gt_col_heading {
+#aiermsqevn .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3343,7 +3344,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#leqpbggrpb .gt_column_spanner_outer {
+#aiermsqevn .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3354,13 +3355,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#leqpbggrpb .gt_column_spanner_outer:first-child {
+#aiermsqevn .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#leqpbggrpb .gt_column_spanner_outer:last-child {
+#aiermsqevn .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#leqpbggrpb .gt_column_spanner {
+#aiermsqevn .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -3371,10 +3372,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#leqpbggrpb .gt_spanner_row {
+#aiermsqevn .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#leqpbggrpb .gt_group_heading {
+#aiermsqevn .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3399,7 +3400,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#leqpbggrpb .gt_empty_group_heading {
+#aiermsqevn .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -3413,13 +3414,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#leqpbggrpb .gt_from_md > :first-child {
+#aiermsqevn .gt_from_md > :first-child {
 margin-top: 0;
 }
-#leqpbggrpb .gt_from_md > :last-child {
+#aiermsqevn .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#leqpbggrpb .gt_row {
+#aiermsqevn .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3437,7 +3438,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#leqpbggrpb .gt_stub {
+#aiermsqevn .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3449,7 +3450,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#leqpbggrpb .gt_stub_row_group {
+#aiermsqevn .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3462,13 +3463,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#leqpbggrpb .gt_row_group_first td {
+#aiermsqevn .gt_row_group_first td {
 border-top-width: 2px;
 }
-#leqpbggrpb .gt_row_group_first th {
+#aiermsqevn .gt_row_group_first th {
 border-top-width: 2px;
 }
-#leqpbggrpb .gt_summary_row {
+#aiermsqevn .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -3477,14 +3478,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#leqpbggrpb .gt_first_summary_row {
+#aiermsqevn .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#leqpbggrpb .gt_first_summary_row.thick {
+#aiermsqevn .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#leqpbggrpb .gt_last_summary_row {
+#aiermsqevn .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3493,7 +3494,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#leqpbggrpb .gt_grand_summary_row {
+#aiermsqevn .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -3502,7 +3503,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#leqpbggrpb .gt_first_grand_summary_row {
+#aiermsqevn .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3511,7 +3512,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#leqpbggrpb .gt_last_grand_summary_row_top {
+#aiermsqevn .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3520,10 +3521,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#leqpbggrpb .gt_striped {
+#aiermsqevn .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#leqpbggrpb .gt_table_body {
+#aiermsqevn .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -3531,7 +3532,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#leqpbggrpb .gt_footnotes {
+#aiermsqevn .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3544,7 +3545,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#leqpbggrpb .gt_footnote {
+#aiermsqevn .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -3552,7 +3553,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#leqpbggrpb .gt_sourcenotes {
+#aiermsqevn .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3565,64 +3566,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#leqpbggrpb .gt_sourcenote {
+#aiermsqevn .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#leqpbggrpb .gt_left {
+#aiermsqevn .gt_left {
 text-align: left;
 }
-#leqpbggrpb .gt_center {
+#aiermsqevn .gt_center {
 text-align: center;
 }
-#leqpbggrpb .gt_right {
+#aiermsqevn .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#leqpbggrpb .gt_font_normal {
+#aiermsqevn .gt_font_normal {
 font-weight: normal;
 }
-#leqpbggrpb .gt_font_bold {
+#aiermsqevn .gt_font_bold {
 font-weight: bold;
 }
-#leqpbggrpb .gt_font_italic {
+#aiermsqevn .gt_font_italic {
 font-style: italic;
 }
-#leqpbggrpb .gt_super {
+#aiermsqevn .gt_super {
 font-size: 65%;
 }
-#leqpbggrpb .gt_footnote_marks {
+#aiermsqevn .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#leqpbggrpb .gt_asterisk {
+#aiermsqevn .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#leqpbggrpb .gt_indent_1 {
+#aiermsqevn .gt_indent_1 {
 text-indent: 5px;
 }
-#leqpbggrpb .gt_indent_2 {
+#aiermsqevn .gt_indent_2 {
 text-indent: 10px;
 }
-#leqpbggrpb .gt_indent_3 {
+#aiermsqevn .gt_indent_3 {
 text-indent: 15px;
 }
-#leqpbggrpb .gt_indent_4 {
+#aiermsqevn .gt_indent_4 {
 text-indent: 20px;
 }
-#leqpbggrpb .gt_indent_5 {
+#aiermsqevn .gt_indent_5 {
 text-indent: 25px;
 }
-#leqpbggrpb .katex-display {
+#aiermsqevn .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#leqpbggrpb div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#aiermsqevn div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -3782,13 +3783,13 @@ height: 0px !important;
 <td headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_0" class="gt_row gt_center">0 (0 %)</td></tr>
     <tr><td headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label" class="gt_row gt_left">Durée CTC</td>
 <td headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_0" class="gt_row gt_center">0 (0 %)</td></tr>
-    <tr><td headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label" class="gt_row gt_left">Durée immunosuppression </td>
+    <tr><td headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label" class="gt_row gt_left">Durée de immunosuppression </td>
 <td headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_0" class="gt_row gt_center">0 (0 %)</td></tr>
-    <tr><td headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label" class="gt_row gt_left">Durée neutropénie </td>
+    <tr><td headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label" class="gt_row gt_left">Durée de neutropénie </td>
 <td headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_0" class="gt_row gt_center">2 086 (7,0 %)</td></tr>
-    <tr><td headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label" class="gt_row gt_left">Durée neutrophilie </td>
+    <tr><td headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label" class="gt_row gt_left">Durée de neutrophilie </td>
 <td headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_0" class="gt_row gt_center">2 086 (7,0 %)</td></tr>
-    <tr><td headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label" class="gt_row gt_left">Durée lymphopénie </td>
+    <tr><td headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label" class="gt_row gt_left">Durée de lymphopénie </td>
 <td headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_0" class="gt_row gt_center">2 086 (7,0 %)</td></tr>
     <tr><td headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  label" class="gt_row gt_left">Nombres CGR</td>
 <td headers="Données au cours de l&#39;hospitalisation préalablement à l&#39;hémoculture  stat_0" class="gt_row gt_center">0 (0 %)</td></tr>

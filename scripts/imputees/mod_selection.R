@@ -4,6 +4,7 @@ library(purrr)
 library(broom.mixed)
 library(dplyr)
 library(tibble)
+library(progressr)
 
 # =============================================================================
 # 0. CONFIGURATION INITIALE
@@ -15,13 +16,29 @@ random_effect <- "iep"
 n_boot <- 200 # Nombre de bootstraps par dataset imputé
 alpha_final <- 0.05 # Seuil de significativité pour la sélection finale
 
+# Règle de résumé de l'issue au niveau cluster, utilisée pour stratifier le
+# bootstrap. resultat_candida_def N'EST PAS constant au sein d'un même iep
+# (confirmé), donc il faut choisir comment définir "l'issue du cluster" :
+#   - "any_positive" : le cluster est positif s'il contient au moins un 1
+#                       (ex : Candida détecté au moins une fois pendant le
+#                       séjour). C'est en général la définition cliniquement
+#                       la plus naturelle pour ce type d'issue.
+#   - "majority"      : le cluster prend la valeur la plus fréquente parmi
+#                       ses observations (égalité tranchée en faveur de 1).
+# À confirmer/ajuster selon le sens clinique de vos données.
+cluster_outcome_rule <- "any_positive" # ou "majority"
+
 n_imputations <- imp$m
 candidate_vars <- setdiff(names(imp$data), c(dep_var, random_effect))
 
 # Active/désactive la parallélisation des bootstraps (recommandé : le coût total
 # est de l'ordre de n_imputations * n_boot * longueur(candidate_vars) ajustements glmer).
 use_parallel <- TRUE
-n_cores <- max(1, parallel::detectCores() - 10)
+# Correction : sur la plupart des machines, detectCores() - 10 est négatif ou
+# nul, ce qui forçait n_cores à 1 (donc aucune parallélisation réelle, avec en
+# plus l'overhead de sérialisation de future). On garde ici un cœur de libre
+# pour le système, ce qui est le compromis standard.
+n_cores <- max(1, parallel::detectCores() - 1)
 
 if (use_parallel) {
   library(future)
@@ -29,26 +46,31 @@ if (use_parallel) {
   plan(multisession, workers = n_cores)
 }
 
+# Barre de progression : fonctionne aussi bien en séquentiel qu'en parallèle
+# (future_lapply) grâce à progressr.
+handlers(global = TRUE)
+handlers(handler_txtprogressbar(width = 60))
+
 # =============================================================================
-# 1. BOOTSTRAP (n_boot réplications) + SÉLECTION FORWARD (AIC) PAR IMPUTATION
+# 1. BOOTSTRAP DE CLUSTERS STRATIFIÉ SUR L'ISSUE + SÉLECTION FORWARD (AIC)
 # =============================================================================
-# Toutes les variables candidates (candidate_vars) sont soumises directement à
-# la sélection forward par bootstrap : il n'y a plus d'étape de présélection
-# univariée en amont.
+# Le bootstrap rééchantillonne les clusters (et non les lignes individuelles),
+# pour préserver la structure de corrélation intra-cluster propre aux modèles
+# mixtes. De plus, il est stratifié sur l'issue résumée au niveau cluster
+# (cf. cluster_outcome_rule ci-dessus) :
+#   - le nombre de clusters tirés dans chaque strate (0 / 1) est fixé et égal
+#     au nombre de clusters de cette strate dans les données originales
+#     => taille (en nombre de clusters) et proportion 0/1 (au niveau cluster)
+#     identiques à chaque bootstrap.
+# Note : le nombre total de LIGNES peut encore varier légèrement d'un
+# bootstrap à l'autre, car les clusters n'ont pas tous la même taille. Fixer
+# exactement le nombre de lignes nécessiterait un bootstrap au niveau
+# individuel, ce qui casserait la structure de cluster : c'est le compromis
+# standard pour les modèles mixtes.
 #
-# Deux corrections importantes par rapport à la version initiale :
-#  (a) Le critère d'arrêt de la sélection forward comparait seulement les AIC
-#      des variables candidates entre elles, sans jamais les comparer à l'AIC
-#      du modèle courant. Une variable était donc TOUJOURS ajoutée tant qu'au
-#      moins un modèle convergeait : ce n'était plus une sélection, mais un
-#      simple classement de toutes les variables. Ici, on n'ajoute une variable
-#      que si elle améliore réellement l'AIC du modèle courant.
-#  (b) Le bootstrap rééchantillonnait les lignes individuellement, ce qui casse
-#      la structure de cluster induite par l'effet aléatoire (un même cluster
-#      pouvant se retrouver fragmenté ou avec une taille très différente d'un
-#      bootstrap à l'autre). On rééchantillonne maintenant les clusters
-#      eux-mêmes (bootstrap par cluster), pratique standard pour les modèles
-#      mixtes.
+# Le critère d'arrêt de la sélection forward compare l'AIC du meilleur ajout
+# candidat à l'AIC du modèle courant : une variable n'est ajoutée que si elle
+# améliore réellement l'AIC (et non simplement si un modèle converge).
 
 fit_glmer_safe <- function(formula, data) {
   tryCatch(
@@ -59,9 +81,36 @@ fit_glmer_safe <- function(formula, data) {
   )
 }
 
-cluster_bootstrap_sample <- function(data, cluster_var) {
-  ids <- unique(data[[cluster_var]])
-  boot_ids <- sample(ids, length(ids), replace = TRUE)
+# Résume l'issue au niveau cluster selon la règle choisie. Calculé une seule
+# fois par dataset imputé (pas à chaque bootstrap), puisque la composition
+# des clusters ne change pas entre bootstraps d'une même imputation.
+get_cluster_outcome <- function(data, cluster_var, dep_var, rule) {
+  data %>%
+    mutate(.dep_num = as.numeric(as.character(.data[[dep_var]]))) %>%
+    group_by(.data[[cluster_var]]) %>%
+    summarise(
+      n_obs = n(),
+      n_positive = sum(.dep_num == 1, na.rm = TRUE),
+      outcome = if (rule == "any_positive") {
+        as.integer(n_positive > 0)
+      } else {
+        tab <- table(.dep_num)
+        as.integer(names(tab)[which.max(tab)])
+      },
+      .groups = "drop"
+    ) %>%
+    rename(cluster_id = 1)
+}
+
+cluster_bootstrap_sample <- function(data, cluster_var, cluster_outcome) {
+  ids_0 <- cluster_outcome$cluster_id[cluster_outcome$outcome == 0]
+  ids_1 <- cluster_outcome$cluster_id[cluster_outcome$outcome == 1]
+
+  boot_ids <- c(
+    if (length(ids_0) > 0) sample(ids_0, length(ids_0), replace = TRUE) else character(0),
+    if (length(ids_1) > 0) sample(ids_1, length(ids_1), replace = TRUE) else character(0)
+  )
+
   do.call(
     rbind,
     lapply(seq_along(boot_ids), function(i) {
@@ -75,8 +124,8 @@ cluster_bootstrap_sample <- function(data, cluster_var) {
   )
 }
 
-run_one_bootstrap <- function(data, vars) {
-  boot_data <- cluster_bootstrap_sample(data, random_effect)
+run_one_bootstrap <- function(data, vars, cluster_outcome) {
+  boot_data <- cluster_bootstrap_sample(data, random_effect, cluster_outcome)
 
   null_formula <- as.formula(paste(dep_var, "~ 1 + (1 |", random_effect, ")"))
   null_model <- fit_glmer_safe(null_formula, boot_data)
@@ -144,41 +193,81 @@ run_one_bootstrap <- function(data, vars) {
   list(variables = current_vars, p_values = p_values)
 }
 
-bootstrap_forward_selection <- function(data, vars) {
-  if (length(vars) == 0) {
-    return(list())
+# --- Pré-calcul : jeux de données imputés + résumé d'issue par cluster ------
+# Fait une seule fois (pas à chaque bootstrap ni à chaque itération), pour
+# éviter de rappeler complete(imp, i) inutilement et pour pouvoir afficher un
+# résumé des clusters mixtes avant de lancer les n_imputations * n_boot
+# ajustements.
+
+imputed_datasets <- lapply(seq_len(n_imputations), function(i) complete(imp, i))
+
+cluster_outcomes <- lapply(imputed_datasets, function(d) {
+  get_cluster_outcome(d, random_effect, dep_var, cluster_outcome_rule)
+})
+
+# Résumé informatif sur les clusters mixtes (imprimé une fois, sur la 1ère
+# imputation ; la composition des clusters ne dépend pas de l'imputation sauf
+# si dep_var lui-même a des valeurs imputées).
+mixed_summary <- imputed_datasets[[1]] %>%
+  mutate(.dep_num = as.numeric(as.character(.data[[dep_var]]))) %>%
+  group_by(.data[[random_effect]]) %>%
+  summarise(n_distinct_outcome = n_distinct(.dep_num), .groups = "drop")
+
+n_mixed <- sum(mixed_summary$n_distinct_outcome > 1)
+cat(
+  "\n[Info] Règle de stratification cluster : '",
+  cluster_outcome_rule,
+  "'\n",
+  "[Info] Nombre de clusters (",
+  random_effect,
+  ") avec issue non constante : ",
+  n_mixed,
+  " / ",
+  nrow(mixed_summary),
+  "\n",
+  "[Info] Répartition des clusters obtenue avec cette règle (imputation 1) :\n",
+  sep = ""
+)
+print(table(outcome = cluster_outcomes[[1]]$outcome))
+cat("\n")
+
+# --- Boucle principale : toutes les combinaisons (imputation, bootstrap) ---
+# On aplatit directement l'espace des itérations en n_imputations * n_boot
+# tâches indépendantes, ce qui simplifie à la fois la parallélisation et le
+# suivi de progression global (au lieu d'une boucle imbriquée imputation ->
+# bootstrap).
+
+total_iterations <- n_imputations * n_boot
+
+run_all_bootstraps <- function() {
+  p <- progressor(steps = total_iterations)
+
+  worker <- function(idx) {
+    im_index <- ((idx - 1) %/% n_boot) + 1
+    res <- run_one_bootstrap(
+      imputed_datasets[[im_index]],
+      candidate_vars,
+      cluster_outcomes[[im_index]]
+    )
+    p(sprintf("imputation %d/%d", im_index, n_imputations))
+    res
   }
 
   if (use_parallel) {
-    future_lapply(1:n_boot, function(i) run_one_bootstrap(data, vars), future.seed = TRUE)
+    future_lapply(seq_len(total_iterations), worker, future.seed = TRUE)
   } else {
-    lapply(1:n_boot, function(i) run_one_bootstrap(data, vars))
+    lapply(seq_len(total_iterations), worker)
   }
 }
 
 set.seed(123)
-bootstrap_all_imputations <- map(
-  1:n_imputations,
-  ~ {
-    data_imputed <- complete(imp, .x)
-    bootstrap_forward_selection(data_imputed, candidate_vars)
-  }
-)
+all_boot_results <- with_progress(run_all_bootstraps())
 
 # =============================================================================
 # 2. SÉLECTION FINALE : VARIABLES SIGNIFICATIVES (p < alpha_final) DANS >= 60%
 #    DES n_boot * n_imputations MODÈLES
 # =============================================================================
-# Correction critique par rapport à la version initiale : il fallait garder un
-# résultat PAR bootstrap (et non tout aplatir avec unlist/do.call(c, ...)), sinon
-# il est impossible de relier une p-value à "ce" bootstrap précis, et le
-# dénominateur (n_imputations seulement, au lieu de n_boot * n_imputations) ne
-# correspondait plus au numérateur. On aplatit ici la liste de listes en une
-# liste plate de longueur n_imputations * n_boot, chaque élément représentant
-# un modèle bootstrap individuel.
-
-all_boot_results <- unlist(bootstrap_all_imputations, recursive = FALSE)
-total_models <- length(all_boot_results) # = n_imputations * n_boot (modèles ayant convergé ou non)
+total_models <- length(all_boot_results) # = n_imputations * n_boot
 
 count_variable <- function(var) {
   selected <- vapply(all_boot_results, function(b) var %in% b$variables, logical(1))
@@ -241,9 +330,8 @@ final_formula <- as.formula(paste(
   ")"
 ))
 
-fits <- lapply(1:n_imputations, function(i) {
-  data_imputed <- complete(imp, i)
-  fit_glmer_safe(final_formula, data_imputed)
+fits <- lapply(seq_len(n_imputations), function(i) {
+  fit_glmer_safe(final_formula, imputed_datasets[[i]])
 })
 
 if (any(vapply(fits, is.null, logical(1)))) {
@@ -257,8 +345,6 @@ pooled_results <- pool(fits)
 
 # summary() sur l'objet "pool" donne directement term / estimate / std.error /
 # statistic / df / p.value déjà combinés selon les règles de Rubin.
-# (as.data.frame() sur l'objet pool, utilisé dans la version initiale, ne
-# renvoie pas ce tableau.)
 pooled_summary <- summary(pooled_results, conf.int = TRUE)
 print(pooled_summary)
 saveRDS(pooled_summary, file = "pooled_summary_selection.rds")
@@ -276,7 +362,7 @@ saveRDS(pooled_summary, file = "pooled_summary_selection.rds")
 if (requireNamespace("pROC", quietly = TRUE)) {
   library(pROC)
   auc_values <- sapply(seq_along(fits), function(i) {
-    data_imputed <- complete(imp, i)
+    data_imputed <- imputed_datasets[[i]]
     pred_prob <- predict(fits[[i]], type = "response", newdata = data_imputed)
     as.numeric(auc(roc(data_imputed[[dep_var]], pred_prob, quiet = TRUE)))
   })
