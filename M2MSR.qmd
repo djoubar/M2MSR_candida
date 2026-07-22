@@ -169,8 +169,8 @@ Après sélection, les variables significativement associées au risque de candi
 #| fig-cap: "Modèle de régression logistique mixte sur données imputées"
 #| lightbox: true
 
-# forest_plot <- readRDS("models/fp_imp.rds")
-# print(forest_plot)
+forest_plot <- readRDS("models/fp_imp.rds")
+print(forest_plot)
 ```
 
 ## Score et prédiction
@@ -180,24 +180,45 @@ Le score prédicitif a été construit à partir de l'équation suivante :
 L'AUC (IC à 95%) de ce score était de ... [ ; ], avec une sensibilité à ..., une spécificité à ... ; une valeur prédictive positive à ... et une valeur prédictive négative à ... .
 Le rapport de vraisemblance positif était à .
 
-L'analyse de la courbe de calibration révélait une .
+L'analyse de la courbe de calibration révélait ... (@fig-cc)
+
+```{r}
+#| label: fig-cc
+#| fig-cap: "Courbe de calibration de la modélisation"
+#| lightbox: true
+
+cc_plot <- readRDS("figures/cal_plot.rds")
+print(cc_plot)
+```
+
+La réparition de probabilités prédites par notre modélisation a été évaluée sur notre population. Il semble se dégager de cette inspection 3 catégories cohérentes :
+
+```{r}
+#| label: fig-hist-score
+#| fig-cap: "Répartition des probabilités au sein de la cohorte"
+#| lightbox: true
+
+hist_plot <- readRDS("figures/hist_probs_pooled.rds")
+print(hist_plot)
+```
 
 
 # [Discussion]{.underline}
 
 Dans cette étude monocentrique rétrospective, xxx étaient associés à un surrisque de candidémie acquise en réanimation. Un nouveau score prédictif était réalisé, avec des performances diagnostiques satisfaisantes, permettant de stratifier la population décrite en 3 catégories de risque : une population à très faible risque prédit, permettant d'éliminer presque formellement le risque de candidémie, une population à risque modéré, pour laquelle des examens spécifiques (PCR, marqueurs fongiques) peuvent être indiqués, et une population à haut risque, pour laquelle il faudrait probablement introduire un traitement antifongique empirique.
 
-La population étudiée était fortement représentative, avec une variété de patients hospitalisés dans différents secteurs de réanimation. En effet, notre modélisation intéresse à la fois les secteurs médicaux, chirurgicaux, les patients immunodéprimés ou non ; ces facteurs étant largement employés pour stratifier le risque de candidémie.
-À notre connaissance, cette étude constitue la plus grande cohorte à ce jour s'intéressant à la stratification du risque de candidémie en réanimation, avec 31 671 épisodes analysés.
-Ainsi, malgré son caractère monocentrique, notre étude pourrait être généralisable à une large population et applicable à de multiples services de réanimation. La validité externe de notre score devra être évaluée de manière prospective, dans le cadre d’une étude multicentrique.
 
-Une autre force de notre étude est sa cohérence avec la littérature
+À notre connaissance, cette étude constitue la plus grande cohorte à ce jour s'intéressant à la stratification du risque de candidémie en réanimation, avec 104 620 hémocultures et 31 671 épisodes analysés. De plus, la population étudiée était fortement représentative, avec une variété de patients hospitalisés dans différents secteurs de réanimation. En effet, notre modélisation intéresse à la fois les secteurs médicaux, chirurgicaux, les patients immunodéprimés ou non. Ainsi, malgré son caractère monocentrique, notre étude pourrait être généralisable à une large population et applicable à de multiples services de réanimation. La validité externe de notre score devra néanmoins être évaluée de manière prospective, dans le cadre d’une étude multicentrique.
 
-Notre étude est toutefois limitée par son caractère monocentrique, qui malgré un recrutement large d'informations entre les deux - Monocentrique - Complexité de l'équation \>\> implémenter dans logiciels au lit du malade ?
+Une autre force de notre modélisation est sa continuité avec la littérature existante : les facteurs prédictifs employés pour la modélisation sont des facteurs de risques reconnus et identifiés. Malgré la faible spécificité de ces facteurs, et la rareté de la candidémie, les performances de notre modélisation se montrent supérieures aux modèles précédemment décrits dans la littérature.
+
+Le modèle créé est aussi marqué par sa facilité d'application : avec un faible nombre de variables, il serait facile de l'implémenter dans les logiciels informatiques au lit du malade, d'automatiser la requête des facteurs prédictifs et obtenir rapidement une aide à la décision au lit du patient.
+
+Il faut toutefois souligner le caractère rétrospectif et monocentrique de notre étude qui, malgré sa taille, nécessite une évaluation prospective au lit du patient pour évaluer de façon fiable ses performances. De plus, nous notons un taux plus faible de candidémie au sein de notre cohorte (1,2 %) que ce qui est habituellement décrit dans la littérature, limitant l'extrapolabilité de nos données.
 
 # [Conclusion]{.underline}
 
-Dans cette étude rétrospective monocentrique, xxx étaie.
+Dans cette étude rétrospective monocentrique, xxx étaient associés à un surrisque de candidémie chez les patients hospitalisés en médecine intensive réanimation. Une modélisation a été crée afin de stratifier le risque de candidémie à la survenue d'une suspicion d'infection acquise en réanimation. Les performances de notre modèle étaient satisfaisantes mais nécessitent d'être évaluées en condition réelles de façon prospective et multicentrique pour confirmation.
 
 # [Bibliographie]{.underline}
 

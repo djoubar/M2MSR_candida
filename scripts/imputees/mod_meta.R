@@ -13,21 +13,26 @@ library(pROC)
 library(broom.mixed)
 
 # --- 1. CHARGEMENT DES DONNÉES ------------------------------------------------
-imp <- readRDS("donnees/df_impute.rds")
+imp <- readRDS("donnees/df_impute_surv.rds")
+# imp <- readRDS("donnees/df_impute.rds")
 m_imputations <- imp$m
 cat("Nombre de datasets imputés (m) :", m_imputations, "\n\n")
 
 # --- 2. FORMULE DU MODÈLE -----------------------------------------------------
 formule_glmer <- resultat_candida_def ~
+  # temps +
   hc_vi_cat +
-  hc_cgr +
-  # hc_transfu +
-  # hc_dialyse +
+  # adm_poids +
+  # hc_cgr +
+  hc_transfu +
+  hc_dialyse +
   # hc_vvc +
-  # hc_uree_max +
+  hc_uree_max +
+  # hc_diurese_norm +
   hc_catheter_majeur +
   adm_igs2 +
-  # hospit_ctc_duree +
+  hospit_ctc_duree +
+  hospit_pfc +
   # adm_transfu +
   # demo_age +
   # hc_amines +
@@ -121,15 +126,19 @@ print(resume_OR, digits = 3)
 niveaux_termes <- c(
   "(Intercept)",
   "hc_vi_cat",
-  "hc_cgr",
+  # "hc_cgr",
   "hc_catheter_majeur",
   "adm_igs2",
+  "hc_diurese_norm",
+  "hospit_ctc_duree",
+  "hospit_pfc",
   # "hc_cp",
-  # "hc_dialyse",
+  "hc_dialyse",
   # "hc_amines",
   # "hc_vvc",
+  "hc_transfu",
   # "hospit_chirurgie_majeure",
-  # "hospit_ctc_duree",
+  "hospit_ctc_duree",
   # "hospit_immunosup_duree",
   # "demo_age",
   # "hc_hypothermie",
@@ -163,7 +172,7 @@ saveRDS(tidy_pooled, file = "models/mod_meta_pooled.rds")
 # Étiquettes lisibles pour le graphique
 labels_lisibles <- c(
   "hc_vi_catOui" = "Ventilation invasive (catégorie)",
-  "hc_cgrOui" = "Transfusion CGR",
+  # "hc_cgrOui" = "Transfusion CGR",
   #   # "hc_cpOui" = "Transfusion CP",
   # "hc_transfuOui" = "Transfusion",
   # "hc_dialyseOui" = "Dialyse"
@@ -199,7 +208,7 @@ forest_plot <- ggplot(tidy_pooled, aes(x = OR, y = label)) +
     title = "Forest Plot — Modèle poolé (règle de Rubin)",
     subtitle = "Facteurs prédictifs de candidémie — IC à 95 %"
   ) +
-  theme_minimal(base_size = 12) +
+  theme_classic(base_size = 12) +
   theme(axis.text.y = element_text(size = 10, hjust = 1))
 
 print(forest_plot)
@@ -281,7 +290,7 @@ roc_plot <- ggplot(roc_pooled, aes(x = fpr, y = tpr)) +
     y = "Sensibilité",
     title = "Courbe ROC poolée — Modèle mixte"
   ) +
-  theme_minimal() +
+  theme_classic() +
   theme(aspect.ratio = 1)
 
 print(roc_plot)
@@ -321,7 +330,66 @@ cal_plot <- ggplot(cal_pooled, aes(x = pred, y = observed)) +
     y = "Probabilité observée",
     title = "Courbe de calibration poolée"
   ) +
-  theme_minimal()
+  theme_classic()
 
 print(cal_plot)
 saveRDS(cal_plot, file = "figures/cal_plot.rds")
+
+
+# =============================================================================
+#         DISTRIBUTION DES PROBABILITÉS PRÉDITES POOLÉES (par statut réel)
+# =============================================================================
+
+# --- Modification de la boucle existante pour stocker aussi probs + outcome --
+probs_matrix <- matrix(NA_real_, nrow = nrow(complete(imp, 1)), ncol = n_imp)
+
+for (i in seq_len(n_imp)) {
+  imp_data <- complete(imp, i)
+
+  fit_i <- glmer(
+    formule_glmer,
+    data = imp_data,
+    family = "binomial",
+    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 2e5))
+  )
+
+  probs_matrix[, i] <- predict(fit_i, type = "response")
+}
+
+# Probabilité prédite poolée = moyenne des probabilités sur les m imputations
+# (le statut réel resultat_candida_def ne varie pas d'une imputation à l'autre,
+# on peut donc le récupérer depuis le 1er dataset complété)
+pred_pooled <- rowMeans(probs_matrix)
+outcome_ref <- complete(imp, 1)$resultat_candida_def
+
+df_hist <- data.frame(
+  prob = pred_pooled,
+  statut = outcome_ref
+)
+
+# --- Histogramme --------------------------------------------------------------
+hist_plot <- ggplot(df_hist, aes(x = prob, fill = statut)) +
+  geom_histogram(
+    position = "identity",
+    alpha = 0.6,
+    bins = 30,
+    color = "white"
+  ) +
+  scale_fill_manual(
+    values = c("Négative" = "steelblue", "Positive" = "firebrick"),
+    # adaptez les noms ci-dessus aux niveaux réels de resultat_candida_def
+    # (vérifiez avec levels(df_hist$statut))
+    labels = c("Négatif", "Positif")
+  ) +
+  labs(
+    x = "Probabilité prédite (poolée)",
+    y = "Effectifs",
+    fill = "Résultat candidémie",
+    title = "Distribution des probabilités prédites poolées",
+    subtitle = "Selon le statut réel de candidémie"
+  ) +
+  theme_classic(base_size = 12)
+
+print(hist_plot)
+ggsave("figures/hist_probs_pooled.png", plot = hist_plot, width = 7, height = 5)
+saveRDS(hist_plot, file = "figures/hist_probs_pooled.rds")

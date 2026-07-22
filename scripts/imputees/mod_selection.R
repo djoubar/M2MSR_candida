@@ -17,7 +17,7 @@ dep_var <- "resultat_candida_def"
 # (ce n'est pas un prédicteur).
 id_var <- "iep"
 
-n_boot <- 50 # Nombre de bootstraps par dataset imputé
+n_boot <- 200 # Nombre de bootstraps par dataset imputé
 alpha_final <- 0.15 # Seuil de significativité pour la sélection finale
 
 n_imputations <- imp$m
@@ -25,7 +25,7 @@ candidate_vars <- setdiff(names(imp$data), c(dep_var, id_var))
 
 # Active/désactive la parallélisation des bootstraps (recommandé : le coût total
 # est de l'ordre de n_imputations * n_boot * longueur(candidate_vars) ajustements glm).
-use_parallel <- TRUE
+use_parallel <- FALSE
 n_cores <- max(1, parallel::detectCores() - 1)
 
 if (use_parallel) {
@@ -273,7 +273,7 @@ final_selection <- data.frame(
 print(final_selection)
 
 final_vars <- final_selection %>%
-  filter(proportion_significant >= 0.5) %>%
+  filter(proportion_significant >= 0.2) %>%
   pull(variable)
 
 cat(
