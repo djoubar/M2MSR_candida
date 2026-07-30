@@ -324,6 +324,11 @@ df_base <- df_base |>
       "Oui",
       "Non"
     )),
+    hc_aki = as.factor(ifelse(
+      hc_dialyse == "Oui" | hc_creat_max > adm_creat_max,
+      "Oui",
+      "Non"
+    )),
     hc_sofa_respi = as.factor(hc_sofa_respi),
     hc_sofa_coag = as.factor(hc_sofa_coag),
     hc_sofa_hepatique = as.factor(hc_sofa_hepatique),
@@ -810,6 +815,7 @@ df_base <- df_base %>%
     # variables expo hospit
     hospit_vi_duree,
     hospit_parenterale_duree,
+    hospit_parenterale_cat,
     hospit_vvc_duree,
     hospit_kta_duree,
     hospit_ktd_duree,

@@ -20,7 +20,7 @@ format:
     toc: true
     toc-depth: 3
 execute:
-  cache: false
+  cache: true
   freeze: auto
   message: false
   warning: false
@@ -162,44 +162,56 @@ tbl1_gt
 
 ## Modélisation en régression logistique sur données imputées
 
-Après sélection, les variables significativement associées au risque de candidémie étaient xxx . En analyse multivariée, xxx était associée avec le risque de candidémie avec un OR ajusté à xxx (IC  95% : - ). Les variables et leurs intervalles de confiance à 95% sont présentés dans la @fig-meta.
+Après sélection, les variables significativement associées au risque de candidémie étaient la ventilation invasive, la transfusion, la présence d'une épuration extra-rénale, l'urémie maximale dans les 48 heures précédant la réalisation de l'hémoculture ; le score IGS 2 à l'admission et que la durée de traitement par corticoïdes. En analyse multivariée, xxx était associée avec le risque de candidémie avec un OR ajusté à xxx (IC  95% : - ). Les variables et leurs intervalles de confiance à 95% sont présentés dans la @fig-meta.
 
 ```{r}
-#| label: fig-meta
+#| label: tbl-meta
 #| fig-cap: "Modèle de régression logistique mixte sur données imputées"
 #| lightbox: true
-
-forest_plot <- readRDS("models/fp_imp.rds")
-print(forest_plot)
+tbl_multi <- readRDS("figures/tableau_uni_multivarie.rds")
+tbl_multi |> as_gt()
+# knitr::include_graphics("figures/forest_plot.png")
 ```
 
-## Score et prédiction
-
-Le score prédicitif a été construit à partir de l'équation suivante :
-
-L'AUC (IC à 95%) de ce score était de ... [ ; ], avec une sensibilité à ..., une spécificité à ... ; une valeur prédictive positive à ... et une valeur prédictive négative à ... .
+L'AUC (IC à 95%) de ce score était de 0.734 [ ; ], avec une sensibilité à ..., une spécificité à ... ; une valeur prédictive positive à ... et une valeur prédictive négative à ... .
 Le rapport de vraisemblance positif était à .
 
 L'analyse de la courbe de calibration révélait ... (@fig-cc)
 
+## Score et prédiction
+
+Le score prédicitif a été construit à partir de l'équation suivante :
+S = x Ventilation invasive (1 si présente ; 0 si absence) +
+x transfusion (1 si présente ; 0 si absence) +
+x dialyse (1 si présente ; 0 si absence) +
+x urémie maximale,
+x IGS à l'admission,
+x durée de traitement par corticothérapie.
+
+Où la probabilité de candidémie = (exp(S) / (1+ exp(S))) x 100
+
 ```{r}
 #| label: fig-cc
-#| fig-cap: "Courbe de calibration de la modélisation"
+#| fig-cap: "Courbes ROC & de calibration de la modélisation"
 #| lightbox: true
+#| layout-ncol: 2
 
-cc_plot <- readRDS("figures/cal_plot.rds")
-print(cc_plot)
+knitr::include_graphics("figures/cal_plot.png")
+knitr::include_graphics("figures/cal_plot.png")
 ```
 
-La réparition de probabilités prédites par notre modélisation a été évaluée sur notre population. Il semble se dégager de cette inspection 3 catégories cohérentes :
+La réparition de probabilités prédites par notre modélisation a été évaluée sur notre population. Après analyse visuelle, il semble se dégager de cette inspection 3 catégories cohérentes :
+- Une population pour laquelle la probabilité prédite est ...
+- Une population pour laquelle la probabilité prédite est ...
+- Une population pour laquelle la probabilité prédite est située ...
+
 
 ```{r}
 #| label: fig-hist-score
 #| fig-cap: "Répartition des probabilités au sein de la cohorte"
 #| lightbox: true
 
-hist_plot <- readRDS("figures/hist_probs_pooled.rds")
-print(hist_plot)
+knitr::include_graphics("figures/hist_probs_pooled.png")
 ```
 
 
@@ -207,8 +219,9 @@ print(hist_plot)
 
 Dans cette étude monocentrique rétrospective, xxx étaient associés à un surrisque de candidémie acquise en réanimation. Un nouveau score prédictif était réalisé, avec des performances diagnostiques satisfaisantes, permettant de stratifier la population décrite en 3 catégories de risque : une population à très faible risque prédit, permettant d'éliminer presque formellement le risque de candidémie, une population à risque modéré, pour laquelle des examens spécifiques (PCR, marqueurs fongiques) peuvent être indiqués, et une population à haut risque, pour laquelle il faudrait probablement introduire un traitement antifongique empirique.
 
-
 À notre connaissance, cette étude constitue la plus grande cohorte à ce jour s'intéressant à la stratification du risque de candidémie en réanimation, avec 104 620 hémocultures et 31 671 épisodes analysés. De plus, la population étudiée était fortement représentative, avec une variété de patients hospitalisés dans différents secteurs de réanimation. En effet, notre modélisation intéresse à la fois les secteurs médicaux, chirurgicaux, les patients immunodéprimés ou non. Ainsi, malgré son caractère monocentrique, notre étude pourrait être généralisable à une large population et applicable à de multiples services de réanimation. La validité externe de notre score devra néanmoins être évaluée de manière prospective, dans le cadre d’une étude multicentrique.
+
+En analyse multivariée, la présence ou non de ventilation invasive, de dialyse, de transfusion, ainsi que l'urémie maximale, l'IGS 2 à l'admission et la durée de corticothérapie étaient associés à un surrisque de candidémie. Ces marqueurs sont facilement identifiables, sont récoltés pluri-quotidiennement au lit du patient, est permettent donc d'évaluer la probabilité de candidémie instantanément en soins courants. Ces facteurs ne dépendent pas non plus de technologies supplémentaires et ce score pourrait ainsi être réalisé dans tous types d'hôpitaux, indépendemment des moyens de chaque centre.
 
 Une autre force de notre modélisation est sa continuité avec la littérature existante : les facteurs prédictifs employés pour la modélisation sont des facteurs de risques reconnus et identifiés. Malgré la faible spécificité de ces facteurs, et la rareté de la candidémie, les performances de notre modélisation se montrent supérieures aux modèles précédemment décrits dans la littérature.
 

@@ -13,30 +13,21 @@ library(pROC)
 library(broom.mixed)
 
 # --- 1. CHARGEMENT DES DONNÉES ------------------------------------------------
-imp <- readRDS("donnees/df_impute_surv.rds")
+imp <- readRDS("donnees/df_impute.rds")
 # imp <- readRDS("donnees/df_impute.rds")
 m_imputations <- imp$m
 cat("Nombre de datasets imputés (m) :", m_imputations, "\n\n")
 
 # --- 2. FORMULE DU MODÈLE -----------------------------------------------------
 formule_glmer <- resultat_candida_def ~
-  # temps +
   hc_vi_cat +
-  # adm_poids +
-  # hc_cgr +
   hc_transfu +
   hc_dialyse +
-  # hc_vvc +
-  hc_uree_max +
-  # hc_diurese_norm +
-  hc_catheter_majeur +
-  adm_igs2 +
-  hospit_ctc_duree +
-  hospit_pfc +
-  # adm_transfu +
-  # demo_age +
-  # hc_amines +
-  # demo_type_rea +
+  # adm_igs2 +
+  # hospit_ctc_duree +
+  # hc_catheter_majeur +
+  # hospit_cgr +
+  # hospit_chirurgie_abdominale +
   (1 | iep)
 
 # --- 3. AJUSTEMENT SÉQUENTIEL SUR LES m DATASETS IMPUTÉS ---------------------
@@ -125,30 +116,17 @@ print(resume_OR, digits = 3)
 # Niveaux des termes (hors intercept) dans l'ordre souhaité
 niveaux_termes <- c(
   "(Intercept)",
-  "hc_vi_cat",
-  # "hc_cgr",
-  "hc_catheter_majeur",
-  "adm_igs2",
-  "hc_diurese_norm",
-  "hospit_ctc_duree",
-  "hospit_pfc",
-  # "hc_cp",
-  "hc_dialyse",
-  # "hc_amines",
-  # "hc_vvc",
-  "hc_transfu",
-  # "hospit_chirurgie_majeure",
-  "hospit_ctc_duree",
-  # "hospit_immunosup_duree",
-  # "demo_age",
-  # "hc_hypothermie",
-  # "hc_fievre",
-  # "hospit_parenterale_duree",
-  # "demo_type_rea"
+  "hc_vi_catOui",
+  "hc_transfuOui",
+  "hc_dialyseOui"
+  # "hc_uree_max",
+  # "adm_igs2",
+  # "hospit_ctc_duree",
+  # "hc_catheter_majeurOui",
+  # "hospit_cgr"
+  # "hospit_chirurgie_abdominale"
 )
-# Pour les variables catégorielles (hc_vi_cat, demo_type_rea), R génère
-# automatiquement un terme par modalité (ex. hc_vi_catModX, demo_type_reaY) ;
-# ajustez `niveaux_termes` ci-dessus en fonction des sorties de resume_OR$term.
+
 
 summary_results <- summary(resultats_pool)
 
@@ -172,25 +150,16 @@ saveRDS(tidy_pooled, file = "models/mod_meta_pooled.rds")
 # Étiquettes lisibles pour le graphique
 labels_lisibles <- c(
   "hc_vi_catOui" = "Ventilation invasive (catégorie)",
-  # "hc_cgrOui" = "Transfusion CGR",
-  #   # "hc_cpOui" = "Transfusion CP",
-  # "hc_transfuOui" = "Transfusion",
-  # "hc_dialyseOui" = "Dialyse"
-  #   # "hc_aminesOui" = "Amines vasopressives",
-  # "hc_vvcOui" = "Voie veineuse centrale",
-  #   "hospit_chirurgie_majeureOui" = "Chirurgie majeure",
-  #   "hospit_ctc_duree" = "Durée corticothérapie (j)",
-  "hospit_catheter_majeureOui" = "Cathéter majeure",
-  "adm_igs2" = "IGS 2 à l'admission",
-  #   "hospit_immunosup_duree" = "Durée immunosuppresseurs (j)",
-  #   "demo_age" = "Âge (années)",
-  #   "hc_hypothermieOui" = "Hypothermie",
-  #   "hc_fievreOui" = "Fièvre",
-  #   "hospit_parenterale_duree" = "Durée nutrition parentérale (j)",
-  #   "demo_type_rea" = "Type de réanimation"
+  # "hospit_pfc" = "PFC hospit",
+  "hc_transfuOui" = "Transfusion",
+  "hc_dialyseOui" = "Dialyse"
+  # "hospit_ctc_duree" = "Durée corticothérapie (j)",
+  # "adm_igs2" = "IGS 2 à l'admission",
+  # "hc_catheter_majeurOui" = "Cathéter veineux central",
+  # "hospit_cgr" = "Nombre de CGR administrés"
+  # "hospit_chirurgie_abdominale" = "Chirurgie abdominale"
 )
 
-# Pour les termes catégoriels, garder le nom original si non trouvé dans labels_lisibles
 tidy_pooled <- tidy_pooled %>%
   mutate(
     label = ifelse(term %in% names(labels_lisibles), labels_lisibles[term], term),
@@ -212,7 +181,7 @@ forest_plot <- ggplot(tidy_pooled, aes(x = OR, y = label)) +
   theme(axis.text.y = element_text(size = 10, hjust = 1))
 
 print(forest_plot)
-saveRDS(forest_plot, file = "models/reg_log/fp_imp.rds")
+ggsave(forest_plot, file = "figures/fp_imp.png")
 # forest_plot <- readRDS("models/reg_log/fp_imp.rds")
 
 # =============================================================================
@@ -333,7 +302,7 @@ cal_plot <- ggplot(cal_pooled, aes(x = pred, y = observed)) +
   theme_classic()
 
 print(cal_plot)
-saveRDS(cal_plot, file = "figures/cal_plot.rds")
+ggsave(cal_plot, plot = "figures/cal_plot.png")
 
 
 # =============================================================================
@@ -368,19 +337,19 @@ df_hist <- data.frame(
 )
 
 # --- Histogramme --------------------------------------------------------------
-hist_plot <- ggplot(df_hist, aes(x = prob, fill = statut)) +
+hist_plot <- ggplot(df_hist, aes(x = prob)) +
   geom_histogram(
     position = "identity",
     alpha = 0.6,
     bins = 30,
     color = "white"
   ) +
-  scale_fill_manual(
-    values = c("Négative" = "steelblue", "Positive" = "firebrick"),
-    # adaptez les noms ci-dessus aux niveaux réels de resultat_candida_def
-    # (vérifiez avec levels(df_hist$statut))
-    labels = c("Négatif", "Positif")
-  ) +
+  # scale_fill_manual(
+  #   values = c("Négative" = "steelblue", "Positive" = "firebrick"),
+  #   # adaptez les noms ci-dessus aux niveaux réels de resultat_candida_def
+  #   # (vérifiez avec levels(df_hist$statut))
+  #   labels = c("Négatif", "Positif")
+  # ) +
   labs(
     x = "Probabilité prédite (poolée)",
     y = "Effectifs",
@@ -391,5 +360,5 @@ hist_plot <- ggplot(df_hist, aes(x = prob, fill = statut)) +
   theme_classic(base_size = 12)
 
 print(hist_plot)
-ggsave("figures/hist_probs_pooled.png", plot = hist_plot, width = 7, height = 5)
+ggsave(hist_plot, "figures/hist_probs_pooled.png")
 saveRDS(hist_plot, file = "figures/hist_probs_pooled.rds")

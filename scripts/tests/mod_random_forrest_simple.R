@@ -5,7 +5,7 @@
 #===================================================================================================
 library(randomForest)
 library(rsample)
-
+library(mice)
 source("scripts/survie/_setup_survie.R")
 set.seed(123)
 df_rf <- df_base |>
@@ -13,7 +13,9 @@ df_rf <- df_base |>
   distinct(iep, .keep_all = TRUE) |>
   na.omit()
 
-
+imp <- readRDS("donnees/df_impute.rds")
+df_rf <- complete(imp, 1)
+df_rf <- df_rf %>% select(where(~ !any(is.na(.))))
 #===================================================================================================
 #
 #===================================================================================================
@@ -22,7 +24,7 @@ split <- initial_split(df_rf, prop = 0.2, strata = resultat_candida_def)
 df_20 <- training(split)
 df_80 <- testing(split)
 
-model.rf <- randomForest(resultat_candida_def ~ ., data = df_80, ntree = 1000, importance = TRUE)
+model.rf <- randomForest(resultat_candida_def ~ ., data = df_rf, ntree = 1000, importance = TRUE)
 plotRF <- varImpPlot(model.rf)
 candida_pred <- predict(model.rf, df_80)
 df_80$candida_pred <- candida_pred

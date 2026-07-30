@@ -77,7 +77,7 @@ pred[, "groupehc"] <- 0
 
 imp <- mice(
   df_imp,
-  m = 50,
+  m = 20,
   defaultMethod = c("2l.pmm", "2l.bin"),
   predictorMatrix = pred,
   maxit = 30
@@ -89,7 +89,7 @@ densityplot(imp)
 # Sauvegarde
 # ==============================================================================
 
-saveRDS(imp, file = "donnees/df_impute.rds")
+saveRDS(imp, file = "donnees/df_imput_3.rds")
 
 # ==============================================================================
 # A tester 1
