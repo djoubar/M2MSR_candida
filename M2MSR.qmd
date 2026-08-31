@@ -1,5 +1,5 @@
 ---
-title: "Développement d'un score de stratification du risque de candidémie en médecine intensive réanimation : une étude rétrospective monocentrique"
+title: "Développement d’un score de risque de candidémie acquise en soins critiques : étude rétrospective multicentrique"
 subtitle: "Mémoire Master 2 Méthodologie et statistiques en recherche biomédicale"
 author:
   name: "BAERT Julien"
@@ -7,11 +7,11 @@ author:
   affiliation: CHU de Lille
 date: last-modified
 format:
-  hebstr-doc-html:
+  html:
     code-tools:
       source: "https://github.com/djoubar/M2MSR_candida"
     toc: true
-    toc-depth: 3
+    toc-depth: 2
     css: |
       p {
         text-align: justify;
@@ -20,50 +20,68 @@ format:
     toc: true
     toc-depth: 3
 execute:
-  cache: true
-  freeze: auto
+  # cache: true
+  # freeze: auto
   message: false
   warning: false
   echo: false
   editor: source
 lang: fr
 comments: false
+bibliography: bibliographie.bib
+csl: elsevier-vancouver.csl
+
 ---
 
-------------------------------------------------------------------------
-
-<!-- {{< script scripts/brutes/_setup.R >}} -->
+```{css, label}
+body{text-align: justify};
+}
+```
 
 # [Abstract]{.underline}
+## Introduction
+La candidémie acquise en soins critiques est associée à une mortalité élevée. Son diagnostic précoce reste un défi en raison des performances limitées des méthodes diagnostiques actuelles. L’objectif de cette étude était de développer un score clinique de stratification du risque de candidémie acquise en soins critiques.
 
-La candidémie est une infection nosocomiale fréquente en réanimation, associée à une mortalité élevée. Son diagnostic précoce reste un défi en raison des limites de performance des hémocultures. Dans cette étude rétrospective monocentrique incluant 31 671 épisodes de suspicion d'infection, nous avons développé un score de stratification du risque de candidémie acquise en réanimation, en 3 catégories (faible, intermédiaire, élevé).[Variables significatives] étaient associées à un risque accru de candidémie. Le score présentait une AUC-ROC de X,XX (IC 95 % : X,XX–X,XX), avec une sensibilité de X % et une spécificité de X %. Ce score nécessite d'être validé de façon prospective pour valider sa capacité à guider la prise en charge des patients hospitalisés en médecine intensive réanimation.
+## Méthodes
+Etude rétrospective multicentrique conduite au CHU de Lille (2013-2023). Les patients hospitalisés en réanimation ou en unité de surveillance continue depuis plus de 48 heures et ayant bénéficié d’au moins une hémoculture étaient inclus. Les hémocultures étaient regroupées en épisodes de suspicion d’infection. Les facteurs de risque d’un épisode lié à une candidémie ont été identifiés par régression logistique mixte multivariée avec effet aléatoire par patient, sur données imputées (MICE, 20 imputations), avec sélection par bootstrap (200 réplications). Les performances discriminatives étaient évaluées par l’aire sous la courbe ROC (AUC). À partir des probabilités prédites, une stratification en 3 catégories de risque a été réalisée.
 
-**Mots clés** : Candidémie - Réanimation - Score prédictif - Régression logistique mixte
+## Résultats
+Parmi les 29 953 épisodes de suspicion d’infection analysés (survenues chez 9 714 patients), 376 (1,2%) correspondaient à une candidémie. En analyse multivariée, la transfusion (OR ajusté 2,42 ; IC 95 % : 1,85–3,18), la ventilation mécanique invasive (OR 2,23 ; 1,72–2,91), le cathéter veineux central (OR 1,86 ; 1,34–2,58), l'épuration extra-rénale (OR 1,76 ; 1,35–2,28), la chirurgie abdominale (OR 1,42 ; 1,09–1,85), la durée de corticothérapie et le score IGS 2 à l'admission étaient associés au risque de candidémie. Le modèle présentait une AUC de 0,73 (IC 95 % 0.71–0.76). La stratification en trois catégories de risque (probabilité prédite < 2,5 %, 2,5–10 %, > 10 %) identifiait une population à faible risque représentant 15 % des épisodes avec une prévalence de candidémie de 0,4 % (VPN 99,6 %), une population à risque intermédiaire représentant 64 % des épisodes avec une prévalence de 1,6 % de candidémie, et une population à haut risque (21 % des épisodes) avec une prévalence de 4,4 %.
 
-**Abbréviations** :
-- aOR : Adjusted Odds Ratio (Odds Ratio Ajusté)
-- ATBT : Antibiothérapie
-- AUC : Area under curve (Aire sous la courbe)
-- CGR : Culots globulaire
-- CTC : Corticothérapie
-- CP : Culot plaquettaire
-- ECMO : Extra corporal membrane oxygenation
-- KTA : Cathéter artériel
-- KTD : Cathéter de dialyse
-- MIR : Médecine Intensive Réanimation
-- PFC : Plasma frais congelé
-- VVC : Voie veineuse centrale
+## Conclusion
+Le score développé, basé sur des variables cliniques accessibles au lit du patient, permet d'identifier une population à faible risque avec une valeur prédictive négative élevée. Cependant, les performances discriminatives modestes du modèle suggèrent que la régression logistique, appliquée aux seules variables cliniques et biologiques de routine, même actualisées au cours du séjour, atteint ses limites pour prédire un événement de faible prévalence tel que la candidémie. L'intégration de biomarqueurs (β-D-glucanes) et le recours à des approches de modélisation non linéaires, pourraient améliorer les capacités prédictives et devront être explorés.
+
+## Mots clés
+
+Candidémie - Réanimation - Score prédictif - Régression logistique mixte
+
+## Abréviations
+
+AUC : Area under curve (Aire sous la courbe) -
+CGR : Concentré de globules rouges -
+CP : Concentré plaquettaire -
+IGS 2 : Indice de Gravité Simplifié 2 -
+MAR : Missing at Random -
+MICE : Multiple Imputation Chain Equation -
+OR : Odds Ratio -
+PFC : Plasma frais congelé
 
 # [Introduction]{.underline}
 
+Candida spp. sont des levures commensales du revêtement cutané et de la muqueuse oro-digestive chez l’être humain. Ces champignons peuvent provoquer des infections sanguines (candidémies) et des atteintes de tissus profonds, qui constituent la première cause d’infections fongiques nosocomiales @nejm. En réanimation, les candidémies représentent environ 8 % des infections acquises en réanimation @eurobact_fungal. Les patients de réanimation cumulent en effet de nombreux facteurs de risque de candidémie, comme la présence de dispositifs intra-vasculaires, la nutrition parentérale, l’admission pour une chirurgie abdominale lourde ou une pancréatite aigue nécrosante. Par ailleurs, l’hospitalisation prolongée en réanimation, associée à une exposition répétée aux antibiotiques, favorise la colonisation à Candida, première étape vers l’infection invasive @thomas-ruddel_risk_2022.
 
-*Candida* spp. sont des levures commensales du revêtement cutané et de la muqueuse oro-digestive chez l’être humain. Ces champignons peuvent provoquer des infections sanguines (candidémies) et des atteintes de tissus profonds (candidoses invasives), qui constituent la première cause  d'infections fongiques nosocomiales dans les pays occidentaux (1). En réanimation, les candidémies constituent environ 8 % des hémocultures positives et 15 % des infections nosocomiales (2). Les patients de réanimation sont exposés à de nombreux facteurs de risque de candidémie, comme les cathéters veineux centraux, l'épuration extra-rénale ou la ventilation mécanique, la nutrition parentérale, les chirurgies abdominales lourdes ou les pancréatites aigues nécrosantes. Par ailleurs, une hospitalisation prolongée, associée à une exposition répétée aux antibiotiques, favorise la colonisation à *Candida*, première étape vers l’infection invasive (4,5).
+Les dernières décennies ont été marquées par une incidence croissante des candidoses invasives en réanimation, sans amélioration significative de leur pronostic (@worrisome_trends,@lamoth_changes_2018). La mortalité brute associée aux candidémies est de l’ordre de 70 % @bassetti_incidence_2019. Leur pronostic dépend de la précocité d’initiation du traitement antifongique (@kollef_septic_2012,@garey_time). Or le diagnostic des candidoses invasives repose en première intention sur les hémocultures, dont la sensibilité globale est estimée à environ 50%, en raison notamment de concentrations sanguines de Candida très faibles, et du fait que les candidoses profondes ne s’accompagnent pas toujours de candidémie @clancy. Le délai de positivation des hémocultures est également plus long que pour les bactériémies, ce qui retarde d’autant l’instauration du traitement @tabah_epidemiology_2023. Pour pallier ces limites, les cliniciens s’appuient sur les facteurs de risque et des biomarqueurs fongiques, tels que les β-D-glucanes, pour identifier les patients à risque et introduire précocement un traitement antifongique. Ces stratégies empiriques et préemptives entraînent toutefois une surutilisation des antifongiques, exposant les patients à une toxicité évitable et à une pression de sélection antifongique, sans bénéfice démontré sur la survie des patients (@timsit_empirical_2016,@candisep).
 
-Les dernières décennies ont été marquées par une incidence croissante des candidoses invasives en réanimation, sans amélioration significative de leur pronostic (6,7). Leur pronostic est dépendant de la précocité d’initiation du traitement antifongique (8,9). Or le diagnostic des candidoses invasives repose sur les hémocultures, dont la sensibilité est imparfaite et le délai de pousse tardif, ce qui affecte négativement le pronostic des patients (10). Pour pallier ces limites, les cliniciens s’appuient sur les facteurs de risque et des biomarqueurs, tels que les β-D-glucanes, pour identifier les patients à risque et introduire précocement un traitement antifongique. Ces stratégies empiriques ou préemptives entraînent toutefois une surutilisation des antifongiques sans bénéfice démontré sur la survie des patients (11).
+Les recommandations internationales préconisent de réserver le traitement antifongique non documenté aux patients à très haut risque de candidose invasive (@martin-loeches_esicmescmid_2019,@cornely_global_2025,@prescott_surviving_2026), mais cette sélection reste difficile en pratique. Plusieurs scores prédictifs ont été développés à partir de critères cliniques et, dans certains cas, des variables biologiques, afin d’identifier ces populations à haut risque. Ces scores présentent toutefois des limites importantes. D’une part, s’ils permettent raisonnablement d’exclure le diagnostic, leur valeur prédictive positive est médiocre, limitant leur utilité pour guider l’initiation d’un traitement antifongique @giacobbe_performance_2022. D'autre part, ces scores reposent principalement sur des variables recueillies à l'admission en réanimation (comorbidités, motif d'admission, présence de dispositifs invasifs), sans intégrer de variables cumulatives au cours du séjour, telles que les durées d'exposition aux antibiotiques, aux corticoïdes, à la ventilation invasive ou le nombre de transfusions, qui reflètent l'évolution du risque au fil de l'hospitalisation. Enfin, la faible prévalence de la candidose invasive rend toute dichotomisation binaire (haut risque/bas risque) cliniquement peu utile : aucun seuil unique ne permet un compromis acceptable entre sensibilité et spécificité. Une stratification en trois niveaux de risque, orientant vers des conduites distinctes (abstention, examens complémentaires, traitement empirique), apparaît plus adaptée @playford_problematic_2016.
 
-Des scores prédictifs ont été développés à partir de critères cliniques et, dans certains cas, des variables biologiques, afin de dichotomiser les patients en populations haut risque/bas risque (12-14). Les recommandations actuelles portent plutôt sur une stratification des patients en plusieurs groupes de risque, avec plusieurs niveaux de risque (15,16). Face à l’évolution des profils des patients en réanimation (vieillissement, comorbidités accrues), aux changements épidémiologiques des candidoses invasives (5) et à l’avènement de nouveaux outils diagnostiques (PCR, dosage des β-D-glucanes), nous avons développé un score prédictif permettant de stratifier le risque de candidémie acquise en réanimation en trois catégories.
+L'objectif de cette étude était de développer un score prédictif de candidémie acquise en soins critiques, intégrant des variables recueillies à l’admission et au cours du séjour, réévaluées à chaque épisode de suspicion d'infection, et permettant une stratification du risque en trois catégories.
+
 
 # [Méthodes]{.underline}
+
+## Design de l’étude
+Il s’agit d’une étude observationnelle rétrospective multicentrique, conduite à partir de l’entrepôt de données de santé Include, dans les unités de réanimation et de surveillance continue médicales et chirurgicales du CHU de Lille (hôpitaux Salengro, Huriez, et Institut Cœur Poumon), sur la période du 1er janvier 2013 au 31 décembre 2023.
+
 ## Population
 
 La population éligible était la suivante :
@@ -74,11 +92,7 @@ La population éligible était la suivante :
 
 ## Critère de jugement principal
 
-L'objectif de cette étude était de développer un score de stratification du risque de candidémie acquise en médecine intensive réanimation basée sur des facteurs cliniques et biologiques. Pour refléter les pratiques cliniques, nous avons procédé à un regroupement des hémocultures par épisode de suspicion d'infection. En effet, lors d'une suspicion d'infection, plusieurs hémocultures sont prélevées à des temporalités proches, afin d'identifier au mieux l'agent infectieux responsable et un site d'infection s'il en existe ([exemple]{.underline} : infections de cathéters). Un épisode de suspicion d’infection était défini par une série d’hémocultures prélevées à moins de 24 heures d’intervalle. Si l’intervalle entre deux hémocultures consécutives dépassait 24 heures, un nouvel épisode était défini. Si au moins une hémoculture de l’épisode était positive à Candida, toutes les hémocultures de cet épisode étaient classées comme positives. Seules les données de la première hémoculture de chaque épisode ont été conservées pour l’analyse, afin de se placer au début de l’épisode de suspicion.
-
-L'objectif étant d'identifier une candidémie inaugurale, toutes les hémocultures suivants une hémoculture positive à *Candida* ont été supprimées.
-
-La méthode de regroupement est présentée dans la @fig-regroupement.
+Le critère de jugement principal était la survenue d’une candidémie acquise en soins critiques, définie par la positivité à Candida d’au moins une hémoculture au sein d’un épisode de suspicion d’infection. Pour refléter les pratiques cliniques, nous avons procédé à un regroupement des hémocultures par épisode de suspicion d’infection. En effet, lors d’une suspicion d’infection, plusieurs hémocultures sont prélevées à des temporalités proches, sur différents cathéters ou par ponction périphérique, afin d’améliorer les chances de détection d’un agent infectieux. Considérer chaque résultat d’hémoculture de manière isolée aurait fragmenté l’information et introduit du bruit dans les données, réduisant la pertinence du modèle prédictif à développer. Un épisode de suspicion d’infection était défini par une série d’hémocultures prélevées à moins de 24 heures d’intervalle. Si l’intervalle entre deux hémocultures consécutives dépassait 24 heures, un nouvel épisode était défini. Si au moins une hémoculture de l’épisode était positive à Candida, l’épisode était classé comme lié à une candidémie. Seules les données recueillies au moment de la première hémoculture de chaque épisode ont été conservées pour l’analyse, afin que la prédiction de candidémie soit effectuée au début de l’épisode de suspicion. Enfin, tous les épisodes survenant après un premier épisode de candidémie chez un même patient ont été exclus de l’analyse. La méthode de regroupement est présentée dans la @fig-regroupement.
 
 ```{r}
 #| label: fig-regroupement
@@ -90,33 +104,31 @@ knitr::include_graphics("figures/regroupement.png")
 
 ## Source des données
 
-Il s'agissait d'une étude observationnelle monocentrique rétrospective. Celle-ci utilisait les données des patients hospitalisés en surveillance continue et réanimation au CHU de Lille du 1er Janvier 2013 au 31 Décembre 2023, contenues dans l’entrepôt de données de santé *Include* du CHU de Lille. Cet entrepôt intègre différentes sources informatisées de données recueillies dans le cadre d’une prise en charge au CHU de Lille, notamment le système de gestion des données de réanimation ICCA (Philips), le système d’information de laboratoire MOLIS (CompuGroupMedical) et le logiciel CORA PMSI pour le codage des diagnostics et des actes CCAM. L'extraction des données a été réalisée à partir de l'entrepôt de donnée Include conjointement avec les équipes dédiées. Le pré-traitement et la mise en forme des données, ainsi que les analyses statistiques ont été effectués sur le logiciel R, version 4.6.0.
+Il s'agissait d'une étude observationnelle monocentrique rétrospective. Celle-ci utilisait les données des patients hospitalisés en surveillance continue et réanimation au CHU de Lille du 1er Janvier 2013 au 31 Décembre 2023, contenues dans l’entrepôt de données de santé *Include* du CHU de Lille. Cet entrepôt intègre différentes sources informatisées de données recueillies dans le cadre d’une prise en charge au CHU de Lille, notamment le système de gestion des données de réanimation ICCA (Philips), le système d’information de laboratoire MOLIS (CompuGroupMedical) et le logiciel CORA PMSI pour le codage des diagnostics et des actes CCAM. L'extraction des données a été réalisée à partir de l'entrepôt de donnée Include conjointement avec les équipes dédiées. Le pré-traitement et la mise en forme des données, ainsi que les analyses statistiques ont été effectués sur le logiciel R, version 4.6.0, en utilisant les packages du tidyverse (*dplyr*, *ggplot2*, *forcats*), *mice*, *lme4*, *gtsummary*, *pROC*, *rms*, et *broom*.mixed.
 
 ## Variables
 
-Les variables candidates pour la modélisation ont été sélectionnées à partir de facteurs de risque identifiés dans la littérature (17). Les données démographiques (âge, sexe, antécédents) ont été receuillies à l'admission et considérées comme inchangées au décours.
+Les variables candidates pour la modélisation ont été sélectionnées à partir de facteurs de risque identifiés dans la littérature @thomas-ruddel_risk_2022. Les données démographiques (âge, sexe, antécédents) ont été receuillies à l'admission et considérées comme inchangées au décours.
 
-Les données cliniques et biologiques reflétant l'état à l'admission du patient ont été extraites dans les 24 heures suivants l'horaire d'admission en médecine intensive réanimation : score IGS2, score SOFA, poids, températures minimale et maximale, diurèse totale et normalisée, exposition à des amines (adrénaline, noradrénaline, terlipressine, dobutamine), la présence d'une ventilation invasive, la présence d'une épuration extra-rénale, ainsi que la présence d'un remplissage vasculaire. Les valeurs maximales de créatinémie, lactatémie et urémie ont été recueillies, ainsi que les valeurs minimales de leucocytémie et de rapport PaO₂/FiO₂. La présence d'un état de choc était définie par la présence d'amines vasopressives, d'une lactatémie [\>]{.underline} 2 mmol/L ou d'un score SOFA cardiovasculaire [\>]{.underline} à 2.
+Les données cliniques et biologiques reflétant l'état à l'admission du patient ont été extraites dans les 24 heures suivants l'horaire d'admission en médecine intensive réanimation : score Indice de gravité simplifié 2 (IGS 2), score SOFA, poids, températures minimale et maximale, diurèse totale et normalisée, exposition à des amines (adrénaline, noradrénaline, terlipressine, dobutamine), la présence d'une ventilation invasive, la présence d'une épuration extra-rénale, ainsi que la présence d'un remplissage vasculaire. Les valeurs maximales de créatinémie, lactatémie et urémie ont été recueillies, ainsi que les valeurs minimales de leucocytémie et de rapport PaO₂/FiO₂.
 
 Ces mêmes données clinico-biologiques, à l'exception du score IGS 2, étaient également receuillies dans les 24 heures précédants la première hémoculture d'un épisode de suspicion d'infection.
 
-Les variables explicatives cumulées au cours des séjours en soins critiques jusqu'à la première hémoculture du groupe comprennaient la présence de fibroscopie(s) digestive(s), de chirurgie(s) abdominale(s), de chirurgie(s) majeures, de chirurgie(s) sus-mésocolique(s), de chirurgie(s) hépato-biliaire(s),les durées de ventilation mécanique invasive, de nutrition parentérale, les durées de présence de cathéters (artériels, veineux centraux, de dialyse, ou d'ECMO), la durée d'exposition aux antibiotiques, aux immunosuppresseurs ou aux corticoïdes, et le nombre de culots globulaires, plaquettaires et poches de plasma. Les durées cumulées de neutrophilie, neutropénie et de lymphopénie ont également été receuillies.
+Les variables explicatives cumulées au cours des séjours en soins critiques jusqu’à la première hémoculture de l’épisode comprenaient le recours à au moins une fibroscopie digestive, la réalisation d’une chirurgie abdominale,  majeure, sus-mésocolique, hépato-biliaire, les durées de ventilation mécanique invasive, de nutrition parentérale, de présence de cathéters (artériels, veineux centraux, d'épuration extra-rénale, ou d’Extra Corporal Membrane Oxygenation), d’exposition aux antibiotiques, aux immunosuppresseurs ou aux corticoïdes, et le nombre de concentrés de globules rouges (CGR), concentrés plaquettaires (CP) et d’unités de plasma frais congelé (PFC) transfusé. Les durées cumulées de neutropénie (<0,5 G/L) et de lymphopénie (<0,1 G/L) ont également été recueillies. Une chirurgie majeure était définie comme toute chirurgie nécessitant une circulation extracorporelle, une résection d’organe (pneumonectomie, néphrectomie, hépatectomie, résection digestive ), une greffe d’organe, ou toute chirurgie nécessitant une hospitalisation en réanimation.
 
 ## Données manquantes
 
-Après extraction des données, les données manquantes (\< 30%) supposées *Missing-At-Random* ont été imputées par imputation multiple par équation enchainées (MICE) avec 20 imputations ; via "two-level normal model" pour les variables continues et par "two-level normal model using lmer" pour les variables catégorielles.
-
-Les données manquantes > 30% étaient exclues.
+Les variables présentant plus de 30% de données manquantes ont été exclues de l’analyse. Les données manquantes restantes, supposées manquantes de manière aléatoire (Missing-At-Random, MAR) ont été traitées par imputation multiple par équations chainées (MICE) avec 20 imputations ; via “two-level normal model” pour les variables continues et par “two-level normal model using lmer” pour les variables catégorielles.
 
 ## Sélection des variables
 
-Pour sélectionner les variables à inclure dans la modélisation finale, nous avons appliqué la stratégie proposée par Heymans et al. (19) : 200 réplications bootstrap ont été réalisées sur chacun des 20 jeux imputés. Pour chaque réplication, une régression logistique multivariée avec sélection ascendante (stepwise forward) a été estimée. Les variables candidates retenues et significatives (p < 0.05 de significativité) dans plus de 60% des 4000 modèles (200 réplications x 20 imputations) ont été conservées.
+Pour sélectionner les variables à inclure dans la modélisation finale, nous avons appliqué la stratégie proposée par Heymans et al. @heymans_variable_2007  : 200 réplications bootstrap ont été réalisées sur chacun des 20 jeux imputés. Pour chaque réplication, une régression logistique multivariée avec sélection ascendante (stepwise forward) a été estimée. Les variables candidates retenues et significatives (p < 0.15 de significativité) dans plus de 50% des 4000 modèles (200 réplications x 20 imputations) ont été conservées.
 
 ## Analyses statistiques
 
-Les variables catégorielles sont décrites en effectifs et pourcentage. Les variables continues sont présentées par médiane et intervalle interquartile. Les données démographiques sont identifiées et décrites en premier lieu. Une analyse univariée a été réalisée par régression logistique mixte simple . Les Odds Ratios (OR) ont été présentés avec leur intervalle de confiance à 95% après combinaison des estimations selon les règles de Rubin. Les variables jugées cliniquement pertinentes, rapportées comme facteurs de risque dans la littérature, ou issues de la sélection précédemment décrite (cf. Sélection des variables) ont ensuite été incluses dans une analyse multivariée. L'analyse multivariée a utilisé une régression logistique mixte avec effet aléatoire afin de tenir compte des mesures répétées chez un même patient. Les performances du modèle final étaient évaluées par l'aire sous la courbe ROC (Receiving Operation Characteristic) et par une courbe de calibration.
+Les variables catégorielles sont décrites en effectifs et pourcentage. Les variables continues sont présentées par médiane et intervalle interquartile. Les données démographiques sont identifiées et décrites en premier lieu. Une analyse univariée a été réalisée par régression logistique mixte simple à visée exploratoire. L'analyse multivariée a utilisé une régression logistique mixte avec effet aléatoire afin de tenir compte des mesures répétées chez un même patient. Les Odds Ratios (OR) ont été présentés avec leur intervalle de confiance à 95% après combinaison des estimations selon les règles de Rubin. Les performances du modèle final étaient évaluées par l'aire sous la courbe ROC (Receiving Operation Characteristic) et par une courbe de calibration. Tous les tests statistiques étaient bilatéraux, avec un seuil de significativité fixé à p \< 0,05.
 
-Tous les tests statistiques étaient bilatéraux, avec un seuil de significativité fixé à p \< 0,05.
+À partir des probabilités individuelles prédites par le modèle multivarié, une stratification en trois catégories de risque a été réalisée. Les seuils ont été déterminés par analyse de la distribution des probabilités prédites au sein de la cohorte, en tenant compte de leur pertinence clinique : risque faible (probabilité prédite < 2,5 %), risque intermédiaire (2,5–10 %) et risque élevé (> 10 %). Pour chaque catégorie, la prévalence observée de candidémie, la sensibilité, la spécificité, la valeur prédictive positive et la valeur prédictive négative ont été calculées.
 
 ## Cadre réglementaire
 
@@ -124,14 +136,13 @@ La conformité au Règlement Général sur la Protection des Données (RGPD) du 
 
 ## Utilisation de large language models (LLMs)
 
-Nous déclarons avoir employé un modèle LLM (Vibe - Mistral AI) à des fins de débuggage ou d'optimisation de fonctions complexes (parrallélisation pour optimisation du temps de calcul). L'ensemble de la bibliographie, de la réflexion méthodologique, du code (hors débuggage), et de la rédaction de ce manuscrit ont été réalisées sans utilisation de modèles LLMs.
+Je déclare avoir employé un modèle LLM (Vibe - Mistral AI) à des fins de débuggage ou d'optimisation de fonctions complexes (parrallélisation pour optimisation du temps de calcul). L'ensemble de la bibliographie, de la réflexion méthodologique, du code (hors débuggage), et de la rédaction de ce manuscrit ont été réalisées sans utilisation de modèles LLMs.
 
 # [Résultats]{.underline}
 
-## Caractéristiques de la population
+## Population et épisodes de suspicion d'infection
 
-Au cours de la période d'étude, **104 620** hémocultures ont été réalisées après 48 heures d'hospitalisation en médecine intensive réanimation. Ces hémocultures correspondaient à **31 671 épisodes de suspicion d'infection**, sur 9813 séjours, chez 9714 individus (@fig_flowchart). Parmis ces épisodes, **376 (1,2 %)** étaient liés à une candidémie ; contre 29 577 (98.8%) liées à une autre cause ou sans cause identifiée.
-En moyenne, 2 hémocultures par séjour ont été prélevées chez chaque patient.
+Au cours de la période d'étude, 102 301 hémocultures ont été réalisées après 48 heures d'hospitalisation en médecine intensive réanimation. Ces hémocultures correspondaient à 29 953 épisodes de suspicion d'infection, sur 9813 séjours, chez 9714 individus (@fig-flowchart). Parmis ces épisodes, 376 (1,2 %) étaient liés à une candidémie ; contre 29 577 (98.8%) liées à une autre cause ou sans cause identifiée.
 
 ```{r}
 #| label: fig-flowchart
@@ -141,16 +152,13 @@ En moyenne, 2 hémocultures par séjour ont été prélevées chez chaque patien
 knitr::include_graphics("figures/flow_chart.png")
 ```
 
-## Description de la population
+## Caractéristiques à l'admission
 
-Dans notre cohorte, les patients étaient majoritairement de **sexe masculin** (66,0 %) et avaient un **âge médian de 61 ans** [49-70]. 4,7 % présentaient des antécédents de maladie hématologique maligne, 26 % de diabète, et 18% de tumeurs solides et 3,1 % de transplantation d'organe solide. Au cours de leur hospitalisation, 16 % de nos patients ont eu une chirurgie abdominale et 9,7 % ont eu une fibroscopie digestive. A l'admission, le **score IGS 2 médian était de 46** [33-61] ; 84,0 % des patients présentaient un état de choc et 67,0 % étaient sous ventilation invasive invasive. L'ensemble des caractéristiques est présentée dans le @tbl-demographique .
+Dans notre cohorte, les patients étaient majoritairement de sexe masculin (66,0 %) et avaient un âge médian de 61 ans (49-70). 4,7 % présentaient des antécédents de maladie hématologique maligne, 26 % de diabète, et 18% de tumeurs solides et 3,1 % de transplantation d'organe solide. A l'admission, le score IGS 2 médian était de 46 (33-61). L'ensemble des caractéristiques est présentée dans le @tbl-demographique.
 
 ```{r}
 #| label: tbl-demographique
-#| message: false
-#| warning: false
-#| code-fold: true
-#| tbl-cap: "Description démographique de la population, données clinico-biologiques à l'admission en médecine intensive réanimation"
+#| tbl-cap: "Description démographique de la population, données clinico-biologiques à l'admission en réanimation"
 #| lightbox: true
 source("scripts/brutes/_setup.R")
 source("scripts/brutes/tbl1_demo.R")
@@ -160,50 +168,89 @@ tbl1_gt <- tbl1 |>
 tbl1_gt
 ```
 
-## Modélisation en régression logistique sur données imputées
+## Caractéristiques d'exposition au cours de l'hospitalisation
 
-Après sélection, les variables significativement associées au risque de candidémie étaient la ventilation invasive, la transfusion, la présence d'une épuration extra-rénale, l'urémie maximale dans les 48 heures précédant la réalisation de l'hémoculture ; le score IGS 2 à l'admission et que la durée de traitement par corticoïdes. En analyse multivariée, xxx était associée avec le risque de candidémie avec un OR ajusté à xxx (IC  95% : - ). Les variables et leurs intervalles de confiance à 95% sont présentés dans la @fig-meta.
+Au cours de leur hospitalisation, 36 % de nos patients avaient eu une chirurgie majeure et 16 % une chirurgie abdominale. 9,7 % ont eu une fibroscopie digestive. 24 % ont reçu une nutrition parentérale. La durée médiane de ventilation invasive était de 50 heures. La mortalité en réanimation était de 28 %. L'ensemble des données d'exposition sont présentées dans le @tbl-hospit.
+
+```{r}
+#| label: tbl-hospit
+#| tbl-cap: "Description des données clinico-biologiques au cours de l'hospitalisatione en réanimation"
+
+source("scripts/brutes/tbl2_hospit.R")
+
+tbl2_gt <- tbl2 |>
+  as_gt()
+tbl2_gt
+```
+
+## Modélisation multivariée
+
+Après application de la procédure de sélection par bootstrap, les variables retenues pour le modèle multivarié étaient : le score IGS 2 à l’admission, la ventilation mécanique invasive dans les 24 heures précédant l'hémoculture, la transfusion (présence ou absence - Culots de globules rouges (CGR) ou Plasma Frais Congelé (PFC) ou Culot Plaquettaire (CP)) dans les 24 heures précédant l'hémoculture, l’épuration extra-rénale dans les 24 heures précédant la réalisation de l’hémoculture, la présence d’un cathéter veineux central dans les 24 heures précédant l'hémoculture, la chirurgie abdominale préalablement à l'épisode infectieux, et la durée de traitement par corticoïdes (en jours).
+
+En analyse multivariée, les facteurs les plus fortement associés au risque de candidémie étaient la ventilation invasive avec un OR ajusté à 2,23 (IC 95% : 1,72 – 2,91), l’épuration extra-rénale avec un OR ajusté à 1,76 (IC 95% : 1,35 – 2,28) et la transfusion avec un OR ajusté à 2,42 (IC 95% : 1,85 – 3,18). Les variables et leurs intervalles de confiance à 95% sont présentés dans le tableau 2.
+
+Les variables et leurs intervalles de confiance à 95% sont présentés dans le @tbl-meta.
 
 ```{r}
 #| label: tbl-meta
 #| fig-cap: "Modèle de régression logistique mixte sur données imputées"
 #| lightbox: true
-tbl_multi <- readRDS("figures/tableau_uni_multivarie.rds")
-tbl_multi |> as_gt()
-# knitr::include_graphics("figures/forest_plot.png")
+
+source("scripts/imputees/tbl_mv.R")
+tbl_multi
 ```
 
-L'AUC (IC à 95%) de ce score était de 0.734 [ ; ], avec une sensibilité à ..., une spécificité à ... ; une valeur prédictive positive à ... et une valeur prédictive négative à ... .
-Le rapport de vraisemblance positif était à .
+## Score prédictif et stratification du risque
 
-L'analyse de la courbe de calibration révélait ... (@fig-cc)
+A partir des coefficients du modèle multivarié, un score prédictif a été construit selon l’équation suivante :
 
-## Score et prédiction
+S   =       -4,99
+             + 0,80   x   Ventilation invasive (1 si présente ; 0 si absence)
+             + 0,88   x   Transfusion (1 si présente ; 0 si absence)
+             + 0,56   x   Epuration extra-rénale (1 si présente ; 0 si absence)
+             + 0,009 x   Durée de corticothérapie (en jours)
+             + 0,009 x   IGS 2 à l’admission
+             + 0,62   x   Cathéter veineux central (1 si présent ; 0 si absent)
+             + 0,019 x   Nombre de CGR administrés
+             + 0,35   x   Chirurgie abdominale (1 si présente ; 0 si absente)
 
-Le score prédicitif a été construit à partir de l'équation suivante :
-S = x Ventilation invasive (1 si présente ; 0 si absence) +
-x transfusion (1 si présente ; 0 si absence) +
-x dialyse (1 si présente ; 0 si absence) +
-x urémie maximale,
-x IGS à l'admission,
-x durée de traitement par corticothérapie.
+où la probabilité de candidémie = (exp(S) / (1+ exp(S))) x 100
 
-Où la probabilité de candidémie = (exp(S) / (1+ exp(S))) x 100
+Le score présentait des performances discriminatives modestes avec une AUC de 0.73 (IC 95 % : 0.71–0.76) @fig-roc. La courbe de calibration mettait en évidence une tendance à la surestimation du risque pour une probabilité prédite inférieure à 5 %, et une tendance à la sous-estimation au-delà @fig-cc.
+
+```{r}
+#| label: fig-roc
+#| fig-cap: "Courbes ROC de la modélisation"
+#| lightbox: true
+
+knitr::include_graphics("figures/roc_plot.png")
+```
 
 ```{r}
 #| label: fig-cc
-#| fig-cap: "Courbes ROC & de calibration de la modélisation"
+#| fig-cap: "Courbe de calibration de la modélisation"
 #| lightbox: true
-#| layout-ncol: 2
 
-knitr::include_graphics("figures/cal_plot.png")
 knitr::include_graphics("figures/cal_plot.png")
 ```
 
-La réparition de probabilités prédites par notre modélisation a été évaluée sur notre population. Après analyse visuelle, il semble se dégager de cette inspection 3 catégories cohérentes :
-- Une population pour laquelle la probabilité prédite est ...
-- Une population pour laquelle la probabilité prédite est ...
-- Une population pour laquelle la probabilité prédite est située ...
+La répartition de probabilités prédites par notre modélisation a été évaluée sur notre population. L’analyse de la répartition des probabilités prédites au sein de la cohorte permettait d’identifier 3 catégories de risque pertinentes cliniquement
+-	Risque faible (probabilité prédite < 2.5 %) : 15 % des épisodes, prévalence de candidémie de 15 %, VPP de 0,4 % VPN de 99,6 %
+-	Risque intermédiaire (probabilité prédite [>]{.underline} 2,5% et < 10%) : 64 % des épisodes, prévalence de candidémie de 1,6 %, VPP de 1,5 %, VPN de 98,5 %
+- Risque élevé (probabilité prédite [>]{.underline} 10%) : 21 % des épisodes, prévalence de candidémie de 4,4 %, VPP de 4,2 %, VPN de 95,8 %
+
+```{r}
+#| label: tbl-distrib
+#| tbl-cap: "Répartition des probabilités au sein de la cohorte"
+
+tibble::tribble(
+  ~"Catégorie de risque"        , ~"Episodes, n (%)" , ~"Candidémies, n (%)" , ~"Prévalence" , ~"VPN"   , ~"VPP"  ,
+  "Faible (< 2,5%)"             , "13 252"           , "57 (15 %)"           , "0,4 %"       , "99,6 %" , "0,4 %" ,
+  "Intermédiaire (2,5 % - 10%)" , "14 960"           , "241 (61 %)"          , "1,6 %"       , "98,5 %" , "1,5 %" ,
+  "Elevé (> 10%)"               , "1 741"            , "78 (21 %)"           , "4,4 %"       , "95,8 %" , "4,2 %"
+) |>
+  gt::gt()
+```
 
 
 ```{r}
@@ -217,57 +264,25 @@ knitr::include_graphics("figures/hist_probs_pooled.png")
 
 # [Discussion]{.underline}
 
-Dans cette étude monocentrique rétrospective, xxx étaient associés à un surrisque de candidémie acquise en réanimation. Un nouveau score prédictif était réalisé, avec des performances diagnostiques satisfaisantes, permettant de stratifier la population décrite en 3 catégories de risque : une population à très faible risque prédit, permettant d'éliminer presque formellement le risque de candidémie, une population à risque modéré, pour laquelle des examens spécifiques (PCR, marqueurs fongiques) peuvent être indiqués, et une population à haut risque, pour laquelle il faudrait probablement introduire un traitement antifongique empirique.
+Dans cette étude rétrospective multicentrique, la ventilation invasive, l’épuration extrarénale, la transfusion, le score IGS 2 à l’admission, les cathéters veineux centraux et la corticothérapie étaient indépendamment associés à la candidémie acquise en soins critiques Un score prédictif a été développé à partir de ces variables,  avec des performances discriminatives modestes, et sa capacitéà stratifier la population en 3 catégories de risque a été explorée.
 
-À notre connaissance, cette étude constitue la plus grande cohorte à ce jour s'intéressant à la stratification du risque de candidémie en réanimation, avec 104 620 hémocultures et 31 671 épisodes analysés. De plus, la population étudiée était fortement représentative, avec une variété de patients hospitalisés dans différents secteurs de réanimation. En effet, notre modélisation intéresse à la fois les secteurs médicaux, chirurgicaux, les patients immunodéprimés ou non. Ainsi, malgré son caractère monocentrique, notre étude pourrait être généralisable à une large population et applicable à de multiples services de réanimation. La validité externe de notre score devra néanmoins être évaluée de manière prospective, dans le cadre d’une étude multicentrique.
+Les facteurs de risque identifiés dans notre modèle sont cohérents avec ceux rapportés dans la littérature. La méta-analyse de Thomas-Rüddel et al. retrouvait des OR poolés à 4,40 (2,60 - 7,44) pour la ventilation mécanique ou 2,53 (1,84 - 3,49). Les OR observés dans notre cohorte sont globalement plus faibles, ce qui peut s'expliquer par la taille de l'échantillon, l'ajustement multivarié et la prévalence plus basse de candidémie dans notre population.
+Les performances discriminatives de notre modèle (AUC = 0,73) sont comparables à celles des scores existants. Le Candida score de León et al. rapportait une AUC de 0,84 et plus récemment la règle CandID une AUC de 0,78 (@vazquezomana_development_2026). Ces performances modestes semblent constituer un plafond commun aux approches fondées sur les seules variables cliniques.
+Contrairement aux scores antérieurs qui dichotomisent les patients en haut risque/bas risque, notre approche propose une stratification en trois niveaux. Cette stratification pourrait constituer une aide à la décision au lit du patient, avec une catégorie à faible risque, permettant d’exclure le diagnostic de candidémie et d’éviter la prescription d’antifongiques ou d’examens complémentaires couteux, la catégorie à haut risque, pour laquelle il pourrait être intéressant de débuter un traitement empirique (@cornely_global_2025, @martin-loeches_esicmescmid_2019, @prescott_surviving_2026) tout en tentant de confirmer le diagnostic par des examens complémentaires non culture-dépendants (β-D-glucanes, PCR Candida), et une catégorie intermédiaire, pour laquelle seuls des examens complémentaires pourraient être préconisés, et un traitement préemptif proposé si nécessaire.
+Cette étude constitue l'une des plus grande cohorte à ce jour s’intéressant à la stratification du risque de candidémie en réanimation, avec 102 301 hémocultures et 29 953 épisodes de suspicion d’infection analysés. La population étudiée était diversifiée, incluant des patients médicaux, chirurgicaux, immunodéprimés ou non, représentative d’une population générale de soins critiques. Les variables retenues sont facilement accessibles, et une implémentation automatisée du score est envisageable.
 
-En analyse multivariée, la présence ou non de ventilation invasive, de dialyse, de transfusion, ainsi que l'urémie maximale, l'IGS 2 à l'admission et la durée de corticothérapie étaient associés à un surrisque de candidémie. Ces marqueurs sont facilement identifiables, sont récoltés pluri-quotidiennement au lit du patient, est permettent donc d'évaluer la probabilité de candidémie instantanément en soins courants. Ces facteurs ne dépendent pas non plus de technologies supplémentaires et ce score pourrait ainsi être réalisé dans tous types d'hôpitaux, indépendemment des moyens de chaque centre.
+Plusieurs limites doivent être soulignées. Premièrement, le caractère rétrospectif de l'étude limite la validité externe du score. Deuxièmement, la prévalence de candidémie dans notre cohorte (1,2 %) est faible, bien qu’en accord avec les données de la littérature @harrison_development_2013 ce qui réduit la puissance statistique et la valeur prédictive positive du modèle. Troisièmement, les données de colonisation à Candida, facteur de risque majeur (OR poolé 4,7 dans la méta-analyse de Thomas-Rüddel et al.) et composant du Candida score, n’étant pas réalisé en routine au CHU de Lille, n'ont pas pu être intégrées au modèle. Enfin, l'imputation multiple des données manquantes reposait sur l'hypothèse de données manquantes aléatoires (MAR), dont la violation éventuelle pourrait introduire un biais.
 
-Une autre force de notre modélisation est sa continuité avec la littérature existante : les facteurs prédictifs employés pour la modélisation sont des facteurs de risques reconnus et identifiés. Malgré la faible spécificité de ces facteurs, et la rareté de la candidémie, les performances de notre modélisation se montrent supérieures aux modèles précédemment décrits dans la littérature.
-
-Le modèle créé est aussi marqué par sa facilité d'application : avec un faible nombre de variables, il serait facile de l'implémenter dans les logiciels informatiques au lit du malade, d'automatiser la requête des facteurs prédictifs et obtenir rapidement une aide à la décision au lit du patient.
-
-Il faut toutefois souligner le caractère rétrospectif et monocentrique de notre étude qui, malgré sa taille, nécessite une évaluation prospective au lit du patient pour évaluer de façon fiable ses performances. De plus, nous notons un taux plus faible de candidémie au sein de notre cohorte (1,2 %) que ce qui est habituellement décrit dans la littérature, limitant l'extrapolabilité de nos données.
+Les performances modestes de notre modèle, malgré l'intégration de données dynamiques et l'utilisation d'une modélisation mixte, suggèrent que les variables cliniques seules ne suffisent pas à prédire de manière fiable un événement de faible prévalence tel que la candidémie. Nous avons prévu de comparer, dans notre cohorte, les performances du score développé à celles des scores existants (Candida score, règles d’Ostrosky-Zeichner). Deux axes d'amélioration se dégagent avant d’envisager une validation externe puis prospective : d'une part, l'intégration de biomarqueurs (β-D-glucanes) comme variables prédictives ; d'autre part, le recours à des approches de modélisation non linéaires (apprentissage automatique), potentiellement plus adaptées à la capture d'interactions complexes entre facteurs de risque.
 
 # [Conclusion]{.underline}
 
-Dans cette étude rétrospective monocentrique, xxx étaient associés à un surrisque de candidémie chez les patients hospitalisés en médecine intensive réanimation. Une modélisation a été crée afin de stratifier le risque de candidémie à la survenue d'une suspicion d'infection acquise en réanimation. Les performances de notre modèle étaient satisfaisantes mais nécessitent d'être évaluées en condition réelles de façon prospective et multicentrique pour confirmation.
+Dans cette étude rétrospective multicentrique portant sur 29 953 épisodes de suspicion d'infection en soins critiques, la ventilation invasive, l’épuration extra-rénale, la transfusion, la corticothérapie, la chirurgie abdominale et la gravité à l’admission étaient associés à la survenue de candidémie chez les patients hospitalisés en soins critiques. Un score a été développé  afin de stratifier le risque de candidémie acquise en soins critiques en 3 catégories. Toutefois, les performances discriminatives modestes du modèle (AUC = 0,73) suggèrent que les approches de régression logistique fondées sur les seules variables cliniques atteignent un plafond de performance pour la prédiction d'un événement de faible prévalence tel que la candidémie. L'intégration de biomarqueurs, et le recours à des méthodes de modélisation non linéaires constituent des pistes à explorer pour améliorer la prédiction du risque de candidémie en soins critiques.
 
 # [Bibliographie]{.underline}
 
-1.  Arendrup MC, Sulim S, Holm A, Nielsen L, Nielsen SD, Knudsen JD, et al. Diagnostic Issues, Clinical Characteristics, and Outcomes for Patients with Fungemia. J Clin Microbiol. 2011;49(9):3300‑8. 
-
-2.  Paiva JA, Pereira JM, Tabah A, Mikstacki A, De Carvalho FB, Koulenti D, et al. Characteristics and risk factors for 28-day mortality of hospital acquired fungemias in ICUs: data from the EUROBACT study. Crit Care. 2016;20(1):53. 
-
-3.  Arendrup MC. Epidemiology of invasive candidiasis: Current Opinion in Critical Care. 2010;16(5):445‑52. 
-
-4.  Vincent JL. International Study of the Prevalence and Outcomes of Infection in Intensive Care Units. JAMA.  2009;302(21):2323. 
-
-5.  The French Mycosis Study Group, Lortholary O, Renaudat C, Sitbon K, Madec Y, Denoeud-Ndam L, et al. Worrisome trends in incidence and mortality of candidemia in intensive care units (Paris area, 2002–2010). Intensive Care Med. 2014;40(9):1303‑12 
-
-6.  Lamoth F, Lockhart SR, Berkow EL, Calandra T. Changes in the epidemiological landscape of invasive candidiasis. Journal of Antimicrobial Chemotherapy. 2018;73(suppl_1):i4‑13. 
-
-7.  Cleveland AA, Farley MM, Harrison LH, Stein B, Hollick R, Lockhart SR, et al. Changes in Incidence and Antifungal Drug Resistance in Candidemia: Results From Population-Based Laboratory Surveillance in Atlanta and Baltimore, 2008-2011. Clinical Infectious Diseases. 2012;55(10):1352‑61. 
-
-8.  Kollef M, Micek S, Hampton N, Doherty JA, Kumar A. Septic Shock Attributed to Candida Infection: Importance of Empiric Therapy and Source Control. Clinical Infectious Diseases. 2012;54(12):1739‑46. 
-
-9.  Guinea J. Global trends in the distribution of Candida species causing candidemia. Clinical Microbiology and Infection. 2014;20:510. 
-
-10. Garey KW, Rege M, Pai MP, Mingo DE, Suda KJ, Turpin RS, et al. Time to Initiation of Fluconazole Therapy Impacts Mortality in Patients with Candidemia: A Multi-Institutional Study. Clin Infect Dis. 2011;52(10):1219-1226.
-
-11. Timsit JF, Azoulay E, Schwebel C, Charles PE, Cornet M, Souweine B, et al. Empirical Micafungin Treatment and Survival Without Invasive Fungal Infection in Adults With ICU-Acquired Sepsis, *Candida* Colonization, and Multiple Organ Failure: The EMPIRICUS Randomized Clinical Trial. JAMA. 2016;316(15):1555.
-
-12. Guillamet CV, Vazquez R, Micek ST, Ursu O, Kollef M. Development and validation of a clinical prediction rule for candidemia in hospitalized patients with severe sepsis and septic shock. Journal of Critical Care. 2015;30(4):715‑20. doi:\[10.1016/j.jcrc.2015.03.010\]
-
-13. Leroy G, Lambiotte F, Thévenin D, Lemaire C, Parmentier E, Devos P, et al. Evaluation of « Candida score » in critically ill patients: a prospective, multicenter, observational, cohort study. Annals of Intensive Care. 2011;1(1):50. doi:\[10.1186/2110-5820-1-50\]
-
-14. Playford EG, Lipman J, Jones M, Lau AF, Kabir M, Chen SCA, et al. Problematic Dichotomization of Risk for Intensive Care Unit (ICU)–Acquired Invasive Candidiasis: Results Using a Risk-Predictive Model to Categorize 3 Levels of Risk From a Multicenter Prospective Cohort of Australian ICU Patients. Clin Infect Dis. 2016;63(11):1463‑9. doi:\[10.1093/cid/ciw610\]
-
-15. Martin-Loeches I, Antonelli M, Cuenca-Estrella M, Dimopoulos G, Einav S, De Waele JJ, et al. ESICM/ESCMID task force on practical management of invasive candidiasis in critically ill patients. Intensive Care Med. 2019;45(6):789‑805. doi:\[10.1007/s00134-019-05599-w\]
-
-16. Cornely OA, Sprute R, Bassetti M, Chen SCA, Groll AH, Kurzai O, et al. Global guideline for the diagnosis and management of candidiasis: an initiative of the ECMM in cooperation with ISHAM and ASM. The Lancet Infectious Diseases. 2025;25(5):e280‑93. doi:\[10.1016/S1473-3099(24)00749-7\]
-
-17. Thomas-Rüddel DO, Schlattmann P, Pletz M, Kurzai O, Bloos F. Risk Factors for Invasive Candida Infection in Critically Ill Patients. CHEST. 2022;161(2):345‑55. doi:10.1016/j.chest.2021.08.081
+::: {#refs}
+:::
 
 **\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_**
 

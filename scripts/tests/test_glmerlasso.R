@@ -34,7 +34,7 @@
 packages <- c("glmmLasso", "tidyverse", "dplyr", "purrr", "mice")
 invisible(lapply(packages, library, character.only = TRUE))
 
-imp <- readRDS("donnees/df_impute.rds")
+imp <- readRDS("donnees/df_imput_3.rds")
 
 variable_cible <- "resultat_candida_def"
 variable_cluster <- "iep"

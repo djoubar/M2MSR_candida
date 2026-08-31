@@ -21,9 +21,9 @@ if (!exists("df_base")) {
 df_imp <- df_base |>
   select(
     -c(
-      date_adm_hospit,
-      date_adm_rea,
-      date_hemoc,
+      # date_adm_hospit,
+      # date_adm_rea,
+      # date_hemoc,
       date_deces,
       deces_rea,
       demo_centre,

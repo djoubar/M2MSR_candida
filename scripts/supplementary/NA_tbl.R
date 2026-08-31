@@ -188,7 +188,7 @@ tbl_na_adm <-
     label = list(
       adm_igs2 = "IGS 2",
       adm_choc = "Etat de choc",
-      adm_pancreatite_aigue = "Pancréatite aigue",
+      # adm_pancreatite_aigue = "Pancréatite aigue",
       adm_poids = "Poids",
       adm_vi_cat = "Ventilation mécanique invasive",
       adm_pfio2_min = "PaO2/FiO2 minimal",
@@ -212,7 +212,7 @@ tbl_na_adm <-
     ),
     type = list(
       c(
-        adm_pancreatite_aigue,
+        # adm_pancreatite_aigue,
         adm_choc,
         adm_amines,
         adm_vi_cat,
@@ -221,14 +221,14 @@ tbl_na_adm <-
         adm_pfc,
         adm_cp,
         adm_transfu,
-        adm_hypothermie,
-        adm_fievre,
+        adm_temp_min,
+        adm_temp_max,
         adm_pfio2_min
       ) ~ "dichotomous"
     ),
     value = list(
       c(
-        adm_pancreatite_aigue,
+        # adm_pancreatite_aigue,
         adm_choc,
         adm_vi_cat,
         adm_amines,
@@ -237,8 +237,8 @@ tbl_na_adm <-
         adm_pfc,
         adm_cp,
         adm_transfu,
-        adm_hypothermie,
-        adm_fievre
+        adm_temp_min,
+        adm_temp_max,
       ) ~ "Oui",
       adm_pfio2_min = "< 100"
     )
@@ -268,8 +268,8 @@ tbl_na_hc <-
       hc_choc = "Etat de choc",
       hc_transfu = "Transfusion",
       hc_amines = "Amines",
-      hc_temp_min = "Température minimale",
-      hc_temp_max = "Température maximale",
+      hc_temp_min = "Température minimale (en °C)",
+      hc_temp_max = "Température maximale (en °C)",
       hc_diurese_tot = "Diurèse totale",
       hc_diurese_norm = "Diurèse normalisée",
       hc_pfio2_min = "PaO2/FiO2",
@@ -283,7 +283,7 @@ tbl_na_hc <-
       hc_glucanes_max = "Glucanes positifs",
       hc_mannanes_max = "Mannanes positifs",
       hc_vi_cat = "Ventilation invasive ",
-      hc_dialyse = "Dialyse ",
+      hc_dialyse = "Epuration extra-rénale",
       hc_kta = "KTA ",
       hc_vvc = "VVC ",
       hc_ktd = "Cathéter de dialyse",
@@ -310,8 +310,8 @@ tbl_na_hc <-
         hc_amines,
         hc_glucanes_max,
         hc_mannanes_max,
-        hc_hypothermie,
-        hc_fievre,
+        hc_temp_min,
+        hc_temp_max,
         hc_pfio2_min,
         hc_catheter_majeur,
         hc_antifongique
@@ -331,8 +331,8 @@ tbl_na_hc <-
         hc_cp,
         hc_transfu,
         hc_amines,
-        hc_hypothermie,
-        hc_fievre,
+        hc_temp_min,
+        hc_temp_max,
         hc_antifongique
       ) ~ "Oui",
       c(hc_glucanes_max, hc_mannanes_max) ~ "Positif",

@@ -58,8 +58,8 @@ df_base <- df_base |>
     adm_sofa_tot = sofa_total_ap_adm,
     ## cliniques
     adm_poids = poids_admission,
-    adm_hypothermie = min_temperature_24h_apres_adm,
-    adm_fievre = max_temperature_24h_apres_adm,
+    adm_temp_min = min_temperature_24h_apres_adm,
+    adm_temp_max = max_temperature_24h_apres_adm,
     adm_diurese_tot = total_vol_urines_24h_apres_adm,
     adm_diurese_norm = total_vol_urines_norm_24h_apres_adm,
     ## biologiques
@@ -99,8 +99,8 @@ df_base <- df_base |>
     hc_sofa_renal = sofa_renal_av_hemoc,
     hc_sofa_tot = sofa_total_av_hemoc,
     ## cliniques
-    hc_hypothermie = min_temperature_24h_avant_hemoc,
-    hc_fievre = max_temperature_24h_avant_hemoc,
+    hc_temp_min = min_temperature_24h_avant_hemoc,
+    hc_temp_max = max_temperature_24h_avant_hemoc,
     hc_diurese_tot = total_vol_urines_24h_avant_hemoc,
     hc_diurese_norm = total_vol_urines_norm_24h_avant_hemoc,
     ## biologiques
@@ -211,27 +211,27 @@ df_base <- df_base |>
     # admission
     adm_vi_cat = factor(adm_vi_cat, levels = c("non", "oui"), labels = c("Non", "Oui")),
     adm_dialyse = factor(adm_dialyse, levels = c("non", "oui"), labels = c("Non", "Oui")),
-    adm_pancreatite_aigue = factor(
-      adm_pancreatite_aigue,
-      levels = c("0", "1"),
-      labels = c("Non", "Oui")
-    ),
+    # adm_pancreatite_aigue = factor(
+    #   adm_pancreatite_aigue,
+    #   levels = c("0", "1"),
+    #   labels = c("Non", "Oui")
+    # ),
     adm_dialyse = as.factor(adm_dialyse),
     adm_amines = as.factor(ifelse(
       adm_adre > 0 | adm_noradre > 0 | adm_dobu > 0 | adm_isoprenaline > 0 | adm_terlipressine > 0,
       "Oui",
       "Non"
     )),
-    adm_hypothermie = as.factor(ifelse(
-      adm_hypothermie < 36,
-      "Oui",
-      "Non"
-    )),
-    adm_fievre = as.factor(ifelse(
-      adm_fievre > 38.3,
-      "Oui",
-      "Non"
-    )),
+    # adm_hypothermie = as.factor(ifelse(
+    #   adm_hypothermie < 36,
+    #   "Oui",
+    #   "Non"
+    # )),
+    # adm_fievre = as.factor(ifelse(
+    #   adm_fievre > 38.3,
+    #   "Oui",
+    #   "Non"
+    # )),
     adm_pfio2_min = (case_when(
       adm_pfio2_min < 100 ~ "< 100",
       adm_pfio2_min >= 100 & adm_pfio2_min < 200 ~ "100-200",
@@ -314,16 +314,16 @@ df_base <- df_base |>
       "Non"
     )),
     # hemoculture
-    hc_hypothermie = as.factor(ifelse(
-      hc_hypothermie < 36,
-      "Oui",
-      "Non"
-    )),
-    hc_fievre = as.factor(ifelse(
-      hc_fievre > 38.3,
-      "Oui",
-      "Non"
-    )),
+    # hc_hypothermie = as.factor(ifelse(
+    #   hc_hypothermie < 36,
+    #   "Oui",
+    #   "Non"
+    # )),
+    # hc_fievre = as.factor(ifelse(
+    #   hc_fievre > 38.3,
+    #   "Oui",
+    #   "Non"
+    # )),
     hc_aki = as.factor(ifelse(
       hc_dialyse == "Oui" | hc_creat_max > adm_creat_max,
       "Oui",
@@ -597,15 +597,15 @@ var_label(df_base) <- list(
   demo_atcd_diabete = "Antécédent de diabète",
 
   adm_igs2 = "IGS 2 à l'admission",
-  adm_pancreatite_aigue = "Admission pour pancréatite aigue",
+  # adm_pancreatite_aigue = "Admission pour pancréatite aigue",
   adm_poids = "Poids à l'admission",
   adm_vi_cat = "Ventilation invasive à l'admission",
   adm_pfio2_min = "PaO2/FiO2 minimal à l'admission",
   adm_creat_max = "Créatinémie maximale (en mg/L) à l'admission",
   adm_uree_max = "Urée maximale (en g/L) à l'admission",
   adm_dialyse = "Dialyse à l'admission",
-  adm_hypothermie = "Hypothermie à l'admission",
-  adm_fievre = "Fièvre à l'admission",
+  # adm_hypothermie = "Hypothermie à l'admission",
+  # adm_fievre = "Fièvre à l'admission",
   adm_diurese_tot = "Diurèse totale à l'admission",
   adm_diurese_norm = "Diurèse normalisée",
   adm_lactates_max = "Lactatémie maximale (en mmol/L) à l'admission",
@@ -623,8 +623,8 @@ var_label(df_base) <- list(
   hc_sofa_cardio = "SOFA cardiologique à l'hémoculture",
   hc_sofa_renal = "SOFA rénal à l'hémoculture",
   hc_sofa_tot = "SOFA total à l'hémoculture",
-  hc_hypothermie = "Hypothermie Hc",
-  hc_fievre = "Fièvre Hc",
+  # hc_hypothermie = "Hypothermie Hc",
+  # hc_fievre = "Fièvre Hc",
   hc_diurese_tot = "Diurèse totale à l'hémoculture",
   hc_diurese_norm = "Diurèse normalisée à l'hémoculture",
   hc_pfio2_min = "PaO2/FiO2 à l'hémoculture",
@@ -721,11 +721,13 @@ df_base <- df_base %>%
     adm_sofa_neuro,
     adm_sofa_cardio,
     adm_sofa_renal,
-    adm_pancreatite_aigue,
+    # adm_pancreatite_aigue,
     ## cliniques
     adm_poids,
-    adm_hypothermie,
-    adm_fievre,
+    adm_temp_min,
+    adm_temp_max,
+    # adm_hypothermie,
+    # adm_fievre,
     adm_diurese_tot,
     adm_diurese_norm,
     ## biologiques
@@ -770,8 +772,10 @@ df_base <- df_base %>%
     hc_sofa_renal,
     hc_sofa_tot,
     ## cliniques
-    hc_hypothermie,
-    hc_fievre,
+    hc_temp_min,
+    hc_temp_max,
+    # hc_hypothermie,
+    # hc_fievre,
     hc_diurese_tot,
     hc_diurese_norm,
     ## biologiques
@@ -869,6 +873,6 @@ df_base <- df_base |>
       levels = c("< 100", "100-200", "200-300", "> 300"),
       labels = c("< 100", "100-200", "200-300", "> 300")
     ),
-    hc_deficit_neutro = ifelse(hospit_neutropen_duree > 0 | hospit_ctc_duree > 0, "1", "0"),
-    hc_deficit_lympho = ifelse(hospit_lymphopenie_duree > 0 | hospit_immunosup_duree > 0, "1", "0")
+    # hc_deficit_neutro = ifelse(hospit_neutropen_duree > 0 | hospit_ctc_duree > 0, "1", "0"),
+    # hc_deficit_lympho = ifelse(hospit_lymphopenie_duree > 0 | hospit_immunosup_duree > 0, "1", "0")
   )

@@ -8,6 +8,7 @@ library(gt)
 library(pROC)
 library(broom)
 library(rms)
+library(yardstick)
 
 imp <- readRDS("donnees/df_impute_surv.rds")
 m_imputations <- imp$m
@@ -73,11 +74,11 @@ tidy_pooled <- resume_logodds %>%
 
 labels_lisibles <- c(
   "hc_vi_catOui" = "Ventilation mécanique invasive dans les 48h précédant l'épisode de suspicion d'infection",
-  "hc_transfuOui" = "Transfusion (CGR/PFC/CP)",
-  "hc_dialyseOui" = "Epuration extra-rénale",
+  "hc_transfuOui" = "Transfusion (CGR/PFC/CP) dans les 48h précédant l'épisode de suspicion d'infection",
+  "hc_dialyseOui" = "Epuration extra-rénale dans les 48h précédant l'épisode de suspicion d'infection",
   "adm_igs2" = "IGS 2 à l'admission",
   "hospit_ctc_duree" = "Durée corticothérapie (en jours)",
-  "hc_catheter_majeurOui" = "Cathéter veineux central dans les 48h précédant l'épisode de suspicion d'infection",
+  "hc_catheter_majeur1" = "Cathéter veineux central dans les 48h précédant l'épisode de suspicion d'infection",
   "hospit_cgr" = "Nombre de CGR administrés au cours de l'hospitalisation",
   "hospit_chirurgie_abdominaleOui" = "Chirurgie abdominale au cours de l'hospitalisation"
 )
@@ -91,13 +92,13 @@ tidy_pooled <- resume_logodds %>%
     label = case_when(
       term %in% names(labels_lisibles) ~ labels_lisibles[term],
       TRUE ~ term
-    ),
-    label = factor(label, levels = rev(unique(label)))
+    )
+    # label = factor(label, levels = rev(unique(label)))
   )
 
 forest_plot <- ggplot(tidy_pooled, aes(x = OR, y = label)) +
-  geom_point(size = 3, color = "steelblue") +
-  geom_errorbar(aes(xmin = OR_low, xmax = OR_high), height = 0.25, color = "steelblue") +
+  geom_point(size = 3, color = "black") +
+  geom_errorbar(aes(xmin = OR_low, xmax = OR_high), height = 0.25, color = "black") +
   geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
   scale_x_log10() +
   labs(
@@ -116,17 +117,30 @@ ggsave(filename = "figures/fp_imp.png", plot = forest_plot)
 # ==================================================================================================
 #                                  DISCRIMINATION : AUC & COURBE ROC
 # ==================================================================================================
-
 # tentative simplification
 preds <- sapply(fit_imp$analyses, function(m) predict(m, type = "response"))
 pred_moy <- rowMeans(preds)
-var_predire <- complete(imp, 1)
-var_predire <- var_predire$resultat_candida_def
+df_1 <- complete(imp, 1)
+var_predire <- df_1$resultat_candida_def
 roc_obj <- roc(var_predire, pred_moy)
-auc(roc_obj)
-ci.auc(roc_obj)
+auc_val <- auc(roc_obj)
+ci_val <- ci.auc(roc_obj)
 val.prob(pred_moy, Y_obs)
-# =================================
+plot(roc_obj)
+
+auc_label <- sprintf("AUC = %.3f (IC 95%%: %.3f - %.3f)", auc_val, ci_val[1], ci_val[3])
+
+roc_plot <- ggroc(roc_obj) +
+  # geom_abline(intercept = 1, slope = 1, linetype = "dashed", color = "red") +
+  geom_segment(aes(x = 1, xend = 0, y = 0, yend = 1), linetype = "dashed", color = "red") +
+  coord_equal(xlim = c(0, 1), ylim = c(0, 1)) +
+  theme_classic() +
+  labs(caption = auc_label) +
+  theme(plot.caption = element_text(hjust = 0.5, size = 12, face = "bold"))
+
+ggsave(plot = roc_plot, filename = "figures/roc_plot.png")
+
+# courbe calibration
 n_imp <- imp$m
 auc_list <- numeric(n_imp)
 roc_list <- vector("list", n_imp)
@@ -134,110 +148,111 @@ cal_list <- vector("list", n_imp)
 
 for (i in seq_len(n_imp)) {
   imp_data <- complete(imp, i)
-  fit_i <- tryCatch(
-    glm(formule_glm, data = imp_data, family = binomial(link = "logit")),
-    error = function(e) {
-      warning("Erreur dans glm pour l'imputation ", i, ": ", e$message)
-      return(NULL)
-    }
+
+  fit_i <- glm(
+    formule_glm,
+    data = imp_data,
+    family = "binomial"
+    # control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 2e5))
   )
-  if (is.null(fit_i) || !fit_i$converged) {
-    warning("Modèle non convergent pour l'imputation ", i, ". AUC = NA.")
-    auc_list[i] <- NA
-    next # Passe à l'imputation suivante
-  }
   probs <- predict(fit_i, type = "response")
   outcome <- imp_data$resultat_candida_def
 
-  if (length(unique(outcome)) == 1) {
-    warning("Outcome constant pour l'imputation ", i, ". AUC = NA.")
-    auc_list[i] <- NA
-    next
-  }
-  roc_i <- tryCatch(
-    roc(outcome, probs, quiet = TRUE),
-    error = function(e) {
-      warning("Erreur dans roc() pour l'imputation ", i, ": ", e$message)
-      return(NULL)
-    }
+  # AUC
+  roc_i <- roc(outcome, probs, quiet = TRUE)
+  auc_list[i] <- as.numeric(auc(roc_i))
+
+  # Points ROC
+  roc_list[[i]] <- data.frame(
+    fpr = 1 - roc_i$specificities,
+    tpr = roc_i$sensitivities
   )
-  if (is.null(roc_i)) {
-    auc_list[i] <- NA
-  } else {
-    auc_list[i] <- auc(roc_i)
-    roc_list[[i]] <- data.frame(
-      fpr = 1 - roc_i$specificities,
-      tpr = roc_i$sensitivities
-    )
-    deciles <- ntile(probs, 10)
-    cal_list[[i]] <- data.frame(
-      decile = 1:10,
-      pred = tapply(probs, deciles, mean),
-      observed = tapply(as.numeric(outcome), deciles, mean)
-    )
-  }
-}
 
-# --- Nettoyage des NA et calcul de l'AUC poolée ---
-auc_list_clean <- auc_list[!is.na(auc_list)] # Supprime les NA
-
-if (length(auc_list_clean) == 0) {
-  stop(
-    "❌ Tous les modèles ont échoué. Vérifiez :
-      - La formule (séparation complète ?)
-      - Les données (outcome constant ?)
-      - La convergence des modèles."
+  # Calibration par déciles
+  deciles <- ntile(probs, 10)
+  cal_list[[i]] <- data.frame(
+    decile = 1:10,
+    pred = tapply(probs, deciles, mean),
+    observed = tapply(as.numeric(outcome), deciles, mean)
   )
 }
 
-# Calcul de l'AUC poolée avec IC (méthode de Rubin simplifiée)
+# ── AUC poolée ────────────────────────────────────────────────────────────────
 auc_pooled <- c(
-  mean = mean(auc_list_clean),
-  lower = quantile(auc_list_clean, 0.02),
-  upper = quantile(auc_list_clean, 0.98)
+  mean = mean(auc_list),
+  lower = quantile(auc_list, 0.025),
+  upper = quantile(auc_list, 0.975)
 )
-
-# Affichage
 cat(sprintf(
-  "\n✅ AUC poolée : %.3f [%.3f – %.3f] (n = %d imputations valides)\n",
+  "\nAUC poolée : %.3f [%.3f – %.3f]\n",
   auc_pooled["mean"],
   auc_pooled["lower"],
-  auc_pooled["upper"],
-  length(auc_list_clean)
+  auc_pooled["upper"]
 ))
 
-# --- Courbe ROC poolée (uniquement si au moins une imputation valide) ---
-if (length(auc_list_clean) > 0) {
-  roc_pooled <- bind_rows(roc_list[!sapply(roc_list, is.null)]) %>%
-    mutate(fpr = round(fpr, 3)) %>%
-    group_by(fpr) %>%
-    summarise(tpr = mean(tpr), .groups = "drop") %>%
-    arrange(fpr)
+# ── Courbe ROC poolée ─────────────────────────────────────────────────────────
+roc_pooled <- bind_rows(roc_list) %>%
+  mutate(fpr = round(fpr, 3)) %>%
+  group_by(fpr) %>%
+  summarise(tpr = mean(tpr), .groups = "drop") %>%
+  arrange(fpr)
 
-  roc_plot <- ggplot(roc_pooled, aes(x = fpr, y = tpr)) +
-    geom_line(color = "steelblue", linewidth = 1) +
-    geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "red") +
-    annotate(
-      "text",
-      x = 0.75,
-      y = 0.10,
-      label = sprintf(
-        "AUC = %.3f [%.3f – %.3f]",
-        auc_pooled["mean"],
-        auc_pooled["lower"],
-        auc_pooled["upper"]
-      ),
-      color = "steelblue",
-      size = 4
-    ) +
-    labs(x = "1 − Spécificité", y = "Sensibilité", title = "Courbe ROC poolée") +
-    theme_classic() +
-    theme(aspect.ratio = 1)
+roc_plot <- ggplot(roc_pooled, aes(x = fpr, y = tpr)) +
+  geom_line(color = "steelblue", linewidth = 1) +
+  geom_abline(linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    x = 0.75,
+    y = 0.10,
+    label = sprintf("AUC = %.3f", auc_pooled["mean"]),
+    color = "steelblue",
+    size = 4
+  ) +
+  labs(
+    x = "1 − Spécificité",
+    y = "Sensibilité",
+    title = "Courbe ROC poolée — Modèle mixte"
+  ) +
+  theme_classic() +
+  theme(aspect.ratio = 1)
 
-  print(roc_plot)
-  ggsave(filename = "figures/ROC_imp.png", plot = roc_plot)
-}
+# =============================================================================
+#                          CALIBRATION POOLÉE
+# =============================================================================
+cal_pooled <- bind_rows(cal_list) %>%
+  group_by(decile) %>%
+  summarise(
+    pred = mean(pred),
+    observed = mean(observed),
+    n = n(), # nb de folds/points agrégés dans ce décile
+    .groups = "drop"
+  )
 
+# 2. Calcul des IC (approximation normale sur la proportion observée)
+#    Si vous avez le vrai nombre d'individus par bin (ex: n_obs), remplacez n par n_obs.
+z <- qnorm(0.975)
+cal_pooled <- cal_pooled %>%
+  mutate(
+    se = sqrt(observed * (1 - observed) / n),
+    lower = pmax(0, observed - z * se),
+    upper = pmin(1, observed + z * se)
+  )
+
+# 3. Graphique avec ruban de confiance
+cal_plot <- ggplot(cal_pooled, aes(x = pred, y = observed - 1)) +
+  geom_abline(linetype = "dashed", color = "red", intercept = 0, slope = 1, ) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), fill = "black", alpha = 0.2) +
+  geom_line(color = "black") +
+  geom_point(size = 1.5, color = "black") +
+  labs(
+    x = "Probabilité prédite",
+    y = "Probabilité observée",
+    title = "Courbe de calibration"
+  ) +
+  theme_classic()
+
+print(cal_plot)
+ggsave(plot = cal_plot, filename = "figures/cal_plot.png")
 
 # =============================================================================
 #         DISTRIBUTION DES PROBABILITÉS PRÉDITES POOLÉES (par statut réel)
@@ -267,21 +282,22 @@ df_hist <- data.frame(
 
 hist_plot <- ggplot(df_hist, aes(x = prob, fill = statut)) +
   geom_histogram(
+    aes(y = ..count.. / sum(..count..) * 100), # Normalisation en %
     position = "identity",
-    alpha = 0.6,
-    bins = 30,
+    alpha = 0.5,
+    # bins = 30,
     color = "white"
   ) +
-  xlim(0, 0.1) +
+  xlim(0, 0.2) +
   scale_fill_manual(
     values = c("Négative" = "steelblue", "Positive" = "firebrick"),
     labels = c("Négatif", "Positif")
   ) +
   labs(
     x = "Probabilité prédite (poolée)",
-    y = "Effectifs",
+    y = "Pourcentage de l'effectif total",
     fill = "Résultat candidémie",
-    title = "Distribution des probabilités prédites poolées",
+    title = "Distribution des probabilités prédites",
     subtitle = "Selon le statut réel de candidémie"
   ) +
   theme_classic(base_size = 12)
@@ -391,3 +407,57 @@ tbl_final
 # gt::gtsave(tbl_final, filename = "figures/tableau_uni_multivarie.png")
 saveRDS(tbl_multi, "figures/tableau_uni_multivarie.rds")
 saveRDS(tbl_final, file = "models/tbl_uni_multi.rds")
+
+df_1 <- df_1 %>%
+  mutate(pred_probs = pred_pooled)
+
+
+df_1 <- df_1 |>
+  mutate(
+    probs_cat = (case_when(
+      pred_probs < 0.025 ~ "Faible",
+      pred_probs >= 0.025 & pred_probs < 0.10 ~ "Intermédiaire",
+      pred_probs >= 0.10 ~ "Fort",
+    ))
+  )
+
+table(df_1$probs_cat, df_1$resultat_candida_def)
+
+
+df_1 <- df_1 %>%
+  mutate(
+    pred_binaire = factor(
+      ifelse(probs_cat == "Fort", "Positive", "Négative"),
+      levels = c("Positive", "Négative") # Positive = niveau 1 = événement
+    )
+  )
+
+# vérifiez aussi les niveaux de la vérité terrain
+levels(df_1$resultat_candida_def)
+
+df_1 %>%
+  group_by(probs_cat) %>%
+  summarise(
+    n = n(),
+    n_events = sum(resultat_candida_def == "Positive"), # adaptez au bon niveau
+    taux_observe = mean(resultat_candida_def == "Positive"),
+    .groups = "drop"
+  )
+
+df_1 <- df_1 %>%
+  mutate(
+    seuil_bas = factor(
+      ifelse(probs_cat == "Faible", "Positive", "Négative"),
+      levels = c("Négative", "Positive")
+    ),
+    seuil_haut = factor(
+      ifelse(probs_cat == "Fort", "Positive", "Négative"),
+      levels = c("Négative", "Positive")
+    )
+  )
+
+metric_set(sens, spec, ppv, npv)(df_1, truth = resultat_candida_def, estimate = seuil_bas)
+metric_set(sens, spec, ppv, npv)(df_1, truth = resultat_candida_def, estimate = seuil_haut)
+
+
+source("scripts/brutes/_setup.R")
