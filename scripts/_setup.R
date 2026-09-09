@@ -3,6 +3,7 @@
 #                             SETUP / DATA MANAGEMENT
 #
 # ==============================================================================
+
 library(tidyverse)
 library(labelled)
 library(gtsummary)
@@ -17,20 +18,27 @@ df_base <- read_xlsx("~/M2MSR/donnees/20260619_extraction_fusionnee.xlsx") |>
     -sexe_x,
     -atcd,
     -atcd_pancreatite_aigue_ctx,
+    -atcd_maladie_hemato_maligne_ctx,
     -atcd_diabete_ctx,
     -atcd_tumeur_solide_ctx,
-    -sexe_y,
+    -code_chir_abdo,
+    -code_chir_maj,
+    -diabete_pmsi,
     -motif_adm,
     -adm_pancreatite_aigue_ctx,
+    -maladie_hemato_maligne,
+    -libelle_chirurgie_abdominale_diane_hm,
+    -libelle_chirurgie_majeure_diane_hm,
     -poids,
-    -libelle_uf_x
+    -libelle_uf_x,
+    -libelle_uf_y
   ) |>
-  mutate(across(where(is.numeric), ~ round(., 2)))
+  mutate(across(where(is.numeric), ~ round(., 2))) |>
 
-# ==============================================================================
-#                                  RENOMMER
-# ==============================================================================
-df_base <- df_base |>
+  # ==============================================================================
+  #                                  RENOMMER
+  # ==============================================================================
+
   rename(
     # dates et informations de base
     n_sejour = cisencounterid,
@@ -39,7 +47,6 @@ df_base <- df_base |>
     date_sortie_rea = sortie_rea,
     # informations démographiques/atcd
     demo_centre = base,
-    demo_uf = libelle_uf_y,
     demo_age = age_entree,
     demo_atcd_hemato = atcd_maladie_hemato_maligne,
     demo_atcd_diabete = atcd_diabete,
@@ -158,9 +165,11 @@ df_base <- df_base |>
     hospit_chirurgie_majeure = chirurgie_majeure_ccam,
     hospit_chirurgie_abdominale = chirurgie_abdominale_ccam,
     hospit_chirurgie_susmesocolique = use_chirurgie_sus_mesocolique,
-    hospit_chirurgie_hepatobiliaire = use_chir_hepatobiliaire,
+    hospit_chirurgie_hepatobiliaire = use_chir_hepatobiliaire
   )
 
+df_base <- df_base |>
+  select(sort(names(df_base)))
 
 # ==============================================================================
 #                                   REFORMATER
@@ -173,7 +182,7 @@ df_base <- df_base |>
       hc_glucanes_max_num >= 80 ~ "1",
       TRUE ~ NA_character_
     )
-  ) %>%
+  ) |>
   dplyr::select(-hc_glucanes_max_num) |>
   mutate(
     hc_mannanes_max_num = as.numeric(gsub("[<>]", "", hc_mannanes_max)),
@@ -182,13 +191,13 @@ df_base <- df_base |>
       hc_mannanes_max_num > 20 ~ "1",
       TRUE ~ NA_character_
     )
-  ) %>%
+  ) |>
   dplyr::select(-hc_mannanes_max_num) |>
   mutate(
     # demographiques
-    demo_sexe = as.factor(demo_sexe),
+    # demo_sexe = as.factor(demo_sexe),
     demo_centre = as.factor(demo_centre),
-    demo_sexe = factor(demo_sexe, levels = c("F", "M"), labels = c("Féminin", "Masculin")),
+    demo_sexe = factor(demo_sexe, levels = c("F", "M"), labels = c("Feminin", "Masculin")),
     demo_atcd_tumeur = factor(demo_atcd_tumeur, levels = c("0", "1"), labels = c("Non", "Oui")),
     demo_atcd_hemato = factor(demo_atcd_hemato, levels = c("0", "1"), labels = c("Non", "Oui")),
     demo_atcd_diabete = factor(demo_atcd_diabete, levels = c("0", "1"), labels = c("Non", "Oui")),
@@ -198,40 +207,40 @@ df_base <- df_base |>
       levels = c("0", "1"),
       labels = c("Non", "Oui")
     ),
-    demo_atcd_pancreatite = factor(
-      demo_atcd_pancreatite,
-      levels = c("0", "1"),
-      labels = c("Non", "Oui")
-    ),
-    demo_type_rea = ifelse(
-      demo_uf %in% c("UNITE A", "UNITE B", "UNITE C", "UNITE D", "UNITE E", "UNITE F", "UNITE G"),
-      "Medicale",
-      "Chirurgicale"
-    ),
-    # admission
-    adm_vi_cat = factor(adm_vi_cat, levels = c("non", "oui"), labels = c("Non", "Oui")),
-    adm_dialyse = factor(adm_dialyse, levels = c("non", "oui"), labels = c("Non", "Oui")),
-    # adm_pancreatite_aigue = factor(
-    #   adm_pancreatite_aigue,
+    # demo_atcd_pancreatite = factor(
+    #   demo_atcd_pancreatite,
     #   levels = c("0", "1"),
     #   labels = c("Non", "Oui")
     # ),
+    # demo_type_rea = ifelse(
+    #   demo_uf %in% c("UNITE A", "UNITE B", "UNITE C", "UNITE D", "UNITE E", "UNITE F", "UNITE G"),
+    #   "Medicale",
+    #   "Chirurgicale"
+    # ),
+    # admission
+    adm_vi_cat = factor(adm_vi_cat, levels = c("non", "oui"), labels = c("Non", "Oui")),
+    adm_dialyse = factor(adm_dialyse, levels = c("non", "oui"), labels = c("Non", "Oui")),
+    adm_pancreatite_aigue = factor(
+      adm_pancreatite_aigue,
+      levels = c("0", "1"),
+      labels = c("Non", "Oui")
+    ),
     adm_dialyse = as.factor(adm_dialyse),
     adm_amines = as.factor(ifelse(
       adm_adre > 0 | adm_noradre > 0 | adm_dobu > 0 | adm_isoprenaline > 0 | adm_terlipressine > 0,
       "Oui",
       "Non"
     )),
-    # adm_hypothermie = as.factor(ifelse(
-    #   adm_hypothermie < 36,
-    #   "Oui",
-    #   "Non"
-    # )),
-    # adm_fievre = as.factor(ifelse(
-    #   adm_fievre > 38.3,
-    #   "Oui",
-    #   "Non"
-    # )),
+    adm_hypothermie = as.factor(ifelse(
+      adm_temp_min < 36,
+      "Oui",
+      "Non"
+    )),
+    adm_fievre = as.factor(ifelse(
+      adm_temp_max > 38.3,
+      "Oui",
+      "Non"
+    )),
     adm_pfio2_min = (case_when(
       adm_pfio2_min < 100 ~ "< 100",
       adm_pfio2_min >= 100 & adm_pfio2_min < 200 ~ "100-200",
@@ -314,16 +323,16 @@ df_base <- df_base |>
       "Non"
     )),
     # hemoculture
-    # hc_hypothermie = as.factor(ifelse(
-    #   hc_hypothermie < 36,
-    #   "Oui",
-    #   "Non"
-    # )),
-    # hc_fievre = as.factor(ifelse(
-    #   hc_fievre > 38.3,
-    #   "Oui",
-    #   "Non"
-    # )),
+    hc_hypothermie = as.factor(ifelse(
+      hc_temp_min < 36,
+      "Oui",
+      "Non"
+    )),
+    hc_fievre = as.factor(ifelse(
+      hc_temp_max > 38.3,
+      "Oui",
+      "Non"
+    )),
     hc_aki = as.factor(ifelse(
       hc_dialyse == "Oui" | hc_creat_max > adm_creat_max,
       "Oui",
@@ -479,14 +488,27 @@ df_base <- df_base |>
       hc_vvc == "Oui" | hc_ktd == "Oui" | hc_ecmo == "Oui",
       "1",
       "0"
-    ))
-  )
+    )),
+    demo_sexe = factor(
+      demo_sexe,
+      levels = c("Feminin", "Masculin"),
+      labels = c("Feminin", "Masculin")
+    ),
+    adm_pfio2_min = factor(
+      adm_pfio2_min,
+      levels = c("< 100", "100-200", "200-300", "> 300"),
+      labels = c("< 100", "100-200", "200-300", "> 300")
+    ),
+    hc_pfio2_min = factor(
+      hc_pfio2_min,
+      levels = c("< 100", "100-200", "200-300", "> 300"),
+      labels = c("< 100", "100-200", "200-300", "> 300")
+    )
+  ) |>
 
-# ==============================================================================
-#              REGROUPEMENT DES HEMOCULTURES + SUPPRESSION CONTROLES
-# ==============================================================================
-
-df_base <- df_base |>
+  # ==============================================================================
+  #              REGROUPEMENT DES HEMOCULTURES + SUPPRESSION CONTROLES
+  # ==============================================================================
   # 1. Regroupement par épisode de sepsis
   group_by(n_sejour) |>
   arrange(n_sejour, date_hemoc) |>
@@ -516,13 +538,9 @@ df_base <- df_base |>
 df_base <- df_base |>
   mutate(
     demo_sexe = case_when(
-      iep %in% c("16123204", "22517597", "14926498") ~ "Féminin",
+      iep %in% c("16123204", "22517597", "14926498") ~ "Feminin",
       TRUE ~ demo_sexe
-    )
-  )
-# compléter sexe masculin
-df_base <- df_base |>
-  mutate(
+    ),
     demo_sexe = case_when(
       iep %in%
         c(
@@ -535,36 +553,21 @@ df_base <- df_base |>
           "14814310"
         ) ~ "Masculin",
       TRUE ~ demo_sexe
-    )
-  )
-
-# compléter atcd_diabete
-df_base <- df_base |>
-  mutate(
+    ),
     demo_atcd_diabete = case_when(
       iep %in%
         c(
           "19627822"
         ) ~ "Oui",
       TRUE ~ demo_atcd_diabete
-    )
-  )
-
-# compléter atcd_transplant
-df_base <- df_base |>
-  mutate(
+    ),
     demo_atcd_transplantation = case_when(
       iep %in%
         c(
           "19627822"
         ) ~ "Oui",
       TRUE ~ demo_atcd_transplantation
-    )
-  )
-
-# compléter atcd tumeur
-df_base <- df_base |>
-  mutate(
+    ),
     demo_atcd_tumeur = case_when(
       iep %in%
         c(
@@ -573,16 +576,6 @@ df_base <- df_base |>
       TRUE ~ demo_atcd_tumeur
     )
   )
-
-df_base <- df_base |>
-  mutate(across(
-    starts_with("demo_atcd"),
-    ~ fct_explicit_na(., na_level = "Non")
-  )) |>
-  mutate(across(
-    starts_with("hospit_chirurgie"),
-    ~ fct_explicit_na(., na_level = "Non")
-  ))
 
 # ==============================================================================
 #                                  LABELS
@@ -604,8 +597,8 @@ var_label(df_base) <- list(
   adm_creat_max = "Créatinémie maximale (en mg/L) à l'admission",
   adm_uree_max = "Urée maximale (en g/L) à l'admission",
   adm_dialyse = "Dialyse à l'admission",
-  # adm_hypothermie = "Hypothermie à l'admission",
-  # adm_fievre = "Fièvre à l'admission",
+  adm_hypothermie = "Hypothermie à l'admission",
+  adm_fievre = "Fièvre à l'admission",
   adm_diurese_tot = "Diurèse totale à l'admission",
   adm_diurese_norm = "Diurèse normalisée",
   adm_lactates_max = "Lactatémie maximale (en mmol/L) à l'admission",
@@ -686,7 +679,7 @@ var_label(df_base) <- list(
 df_base <- df_base %>%
   dplyr::select(
     # dates et informations de base
-    id_hemoc,
+    # id_hemoc,
     iep,
     resultat_candida_def,
     # resultat_candida,
@@ -701,13 +694,13 @@ df_base <- df_base %>%
     deces_rea,
     # informations démographiques/atcd
     demo_centre,
-    demo_type_rea,
-    demo_uf,
+    # demo_type_rea,
+    # demo_uf,
     demo_age,
     demo_sexe,
     demo_atcd_hemato,
     demo_atcd_diabete,
-    demo_atcd_pancreatite,
+    # demo_atcd_pancreatite,
     demo_atcd_tumeur,
     demo_atcd_transplantation,
     # variables à l'admission
@@ -726,8 +719,8 @@ df_base <- df_base %>%
     adm_poids,
     adm_temp_min,
     adm_temp_max,
-    # adm_hypothermie,
-    # adm_fievre,
+    adm_hypothermie,
+    adm_fievre,
     adm_diurese_tot,
     adm_diurese_norm,
     ## biologiques
@@ -746,20 +739,19 @@ df_base <- df_base %>%
     adm_pfc,
     adm_cp,
     adm_transfu,
-    # adm_albu_20,
-    # adm_albu_4,
-    # adm_bicar,
-    # adm_gelo,
-    # adm_nacl,
-    # adm_plasmalyte,
-    # adm_ringer,
+    adm_albu_20,
+    adm_albu_4,
+    adm_bicar,
+    adm_gelo,
+    adm_nacl,
+    adm_plasmalyte,
+    adm_ringer,
     adm_amines,
-    # adm_adre,
-    # adm_dobu,
-    # adm_isoprenaline,
-    # adm_noradre,
-    # adm_terlipressine,
-
+    adm_adre,
+    adm_dobu,
+    adm_isoprenaline,
+    adm_noradre,
+    adm_terlipressine,
     # variables à l'hémoculture
     hc_delai,
     hc_choc,
@@ -774,8 +766,8 @@ df_base <- df_base %>%
     ## cliniques
     hc_temp_min,
     hc_temp_max,
-    # hc_hypothermie,
-    # hc_fievre,
+    hc_hypothermie,
+    hc_fievre,
     hc_diurese_tot,
     hc_diurese_norm,
     ## biologiques
@@ -783,7 +775,7 @@ df_base <- df_base %>%
     hc_creat_max,
     hc_uree_max,
     hc_lactates_max,
-    # hc_lactates_moy,
+    hc_lactates_moy,
     hc_neutro_min,
     hc_leuco_min,
     hc_lympho_min,
@@ -801,20 +793,20 @@ df_base <- df_base %>%
     hc_pfc,
     hc_cp,
     hc_transfu,
-    # hc_albu_20,
-    # hc_albu_4,
-    # hc_bicar,
-    # hc_gelo,
-    # hc_nacl,
-    # hc_plasmalyte,
-    # hc_ringer,
-    # hc_voluven,
+    hc_albu_20,
+    hc_albu_4,
+    hc_bicar,
+    hc_gelo,
+    hc_nacl,
+    hc_plasmalyte,
+    hc_ringer,
+    hc_voluven,
     hc_amines,
-    # hc_adre,
-    # hc_dobu,
-    # hc_isoprenaline,
-    # hc_noradre,
-    # hc_terlipressine,
+    hc_adre,
+    hc_dobu,
+    hc_isoprenaline,
+    hc_noradre,
+    hc_terlipressine,
     hc_antifongique,
     # variables expo hospit
     hospit_vi_duree,
@@ -853,26 +845,10 @@ df_base <- df_base %>%
       resultat_candida_def == "Positive",
       date_hemoc,
       NA
-    ))
-  )
-
-df_base <- df_base |>
-  mutate(
-    demo_sexe = factor(
-      demo_sexe,
-      levels = c("Féminin", "Masculin"),
-      labels = c("Féminin", "Masculin")
-    ),
-    adm_pfio2_min = factor(
-      adm_pfio2_min,
-      levels = c("< 100", "100-200", "200-300", "> 300"),
-      labels = c("< 100", "100-200", "200-300", "> 300")
-    ),
-    hc_pfio2_min = factor(
-      hc_pfio2_min,
-      levels = c("< 100", "100-200", "200-300", "> 300"),
-      labels = c("< 100", "100-200", "200-300", "> 300")
-    ),
-    # hc_deficit_neutro = ifelse(hospit_neutropen_duree > 0 | hospit_ctc_duree > 0, "1", "0"),
-    # hc_deficit_lympho = ifelse(hospit_lymphopenie_duree > 0 | hospit_immunosup_duree > 0, "1", "0")
+    )),
+    adm_poids = ifelse(
+      adm_poids < 30,
+      NA,
+      adm_poids
+    )
   )

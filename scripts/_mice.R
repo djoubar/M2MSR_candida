@@ -3,6 +3,7 @@
 #                                  M2MSR_MICE
 #
 # ==============================================================================
+
 library(tidyverse)
 library(mice)
 library(miceadds)
@@ -17,6 +18,7 @@ if (!exists("df_base")) {
   source("scripts/brutes/_setup.R")
 }
 
+# penser à supprimer le décès
 
 df_imp <- df_base |>
   select(
