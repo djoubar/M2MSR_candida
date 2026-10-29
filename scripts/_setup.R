@@ -10,6 +10,9 @@ library(gtsummary)
 library(patchwork)
 library(readxl)
 
+df_add <- read_xlsx("~/M2MSR/donnees/20261022_complement_72h.xlsx") |>
+  select(-c(iep, cisencounterid))
+
 df_base <- read_xlsx("~/M2MSR/donnees/20260619_extraction_fusionnee.xlsx") |>
   set_names(tolower) |>
   mutate(demo_sexe = as.factor(sexe_y)) |>
@@ -33,12 +36,13 @@ df_base <- read_xlsx("~/M2MSR/donnees/20260619_extraction_fusionnee.xlsx") |>
     -libelle_uf_x,
     -libelle_uf_y
   ) |>
-  mutate(across(where(is.numeric), ~ round(., 2))) |>
+  mutate(across(where(is.numeric), ~ round(., 2)))
 
+ df_base <- left_join(df_base, df_add, by = "id_hemoc")
   # ==============================================================================
   #                                  RENOMMER
   # ==============================================================================
-
+df_base <- df_base |>
   rename(
     # dates et informations de base
     n_sejour = cisencounterid,
@@ -165,7 +169,12 @@ df_base <- read_xlsx("~/M2MSR/donnees/20260619_extraction_fusionnee.xlsx") |>
     hospit_chirurgie_majeure = chirurgie_majeure_ccam,
     hospit_chirurgie_abdominale = chirurgie_abdominale_ccam,
     hospit_chirurgie_susmesocolique = use_chirurgie_sus_mesocolique,
-    hospit_chirurgie_hepatobiliaire = use_chir_hepatobiliaire
+    hospit_chirurgie_hepatobiliaire = use_chir_hepatobiliaire,
+    # os
+    os_atb = duree_exposition_antibiotiques_72h,
+    os_cvc = catheter_veineux_72h_avant_hemoc,
+    os_parenterale = duree_nutrition_parenterale_72h_avant_hemoc,
+    os_eer = dialyse_72h_avant_hemoc
   )
 
 df_base <- df_base |>
@@ -503,13 +512,34 @@ df_base <- df_base |>
       hc_pfio2_min,
       levels = c("< 100", "100-200", "200-300", "> 300"),
       labels = c("< 100", "100-200", "200-300", "> 300")
+    ),
+    # os
+    os_atb = as.factor(ifelse(
+      os_atb > 0,
+      "1",
+      "0"
+    )),
+    os_cvc = factor(
+      os_cvc,
+      levels =c("non", "oui"),
+      labels =c("non", "oui")),
+    os_parenterale = as.factor(ifelse(
+      os_parenterale > 0,
+      "1",
+      "0"
     )
-  ) |>
+    ),
+    os_eer = factor(
+      os_eer,
+      levels =c("non", "oui"),
+      labels =c("non", "oui"))
+  )
 
-  # ==============================================================================
-  #              REGROUPEMENT DES HEMOCULTURES + SUPPRESSION CONTROLES
-  # ==============================================================================
-  # 1. Regroupement par épisode de sepsis
+# ==============================================================================
+#              REGROUPEMENT DES HEMOCULTURES + SUPPRESSION CONTROLES
+# ==============================================================================
+# 1. Regroupement par épisode de sepsis
+df_base <- df_base |>
   group_by(n_sejour) |>
   arrange(n_sejour, date_hemoc) |>
   mutate(
@@ -533,7 +563,6 @@ df_base <- df_base |>
 # ==============================================================================
 #                            COMPLETER MANUELLEMENT
 # ==============================================================================
-
 # compléter sexe_féminin
 df_base <- df_base |>
   mutate(
@@ -590,7 +619,7 @@ var_label(df_base) <- list(
   demo_atcd_diabete = "Antécédent de diabète",
 
   adm_igs2 = "IGS 2 à l'admission",
-  # adm_pancreatite_aigue = "Admission pour pancréatite aigue",
+  adm_pancreatite_aigue = "Admission pour pancréatite aigue",
   adm_poids = "Poids à l'admission",
   adm_vi_cat = "Ventilation invasive à l'admission",
   adm_pfio2_min = "PaO2/FiO2 minimal à l'admission",
@@ -681,6 +710,7 @@ df_base <- df_base %>%
     # dates et informations de base
     # id_hemoc,
     iep,
+    n_sejour,
     resultat_candida_def,
     # resultat_candida,
     groupehc,
@@ -714,7 +744,7 @@ df_base <- df_base %>%
     adm_sofa_neuro,
     adm_sofa_cardio,
     adm_sofa_renal,
-    # adm_pancreatite_aigue,
+    adm_pancreatite_aigue,
     ## cliniques
     adm_poids,
     adm_temp_min,
@@ -829,18 +859,19 @@ df_base <- df_base %>%
     hospit_chirurgie_majeure,
     hospit_chirurgie_abdominale,
     hospit_chirurgie_susmesocolique,
-    hospit_chirurgie_hepatobiliaire
+    hospit_chirurgie_hepatobiliaire,
+    # os_atb,
+    # os_cvc,
+    # os_parenterale,
+    # os_eer
   ) |>
-  arrange(iep, groupehc) |>
+  arrange(iep, groupehc, date_hemoc) |>
   group_by(iep, groupehc) |>
   slice(1) |>
   ungroup() |>
   mutate(
-    resultat_candida_def = factor(
-      resultat_candida_def,
-      levels = c(0, 1),
-      labels = c("Négative", "Positive")
-    ),
+  resultat_candida_def = factor(as.integer(resultat_candida_def), levels = c(0, 1),
+                              labels = c("Négative", "Positive")),
     date_candidemie = as.POSIXct(ifelse(
       resultat_candida_def == "Positive",
       date_hemoc,
@@ -852,3 +883,10 @@ df_base <- df_base %>%
       adm_poids
     )
   )
+
+#
+#
+#
+
+# df_base <- df_base |>
+#   subset(hc_antifongique == "Non")

@@ -10,81 +10,147 @@ library(mice)
 # --------------------------------------------------------------------------------------------------
 # Paramètres
 # --------------------------------------------------------------------------------------------------
-# insérer le dataframe
-df <- readRDS("donnees/df_impute.rds")
-df <- complete(df, 1)
 
-# insérer la variable à prédire
 variable_a_predire <- "resultat_candida_def"
+variables_predictives <- setdiff(
+  names(df_train),
+  variable_a_predire
+)
 
-# insérer les variables prédictives
-variables_predictives <- setdiff(names(df), c("id_hemoc", "iep", "groupehc", variable_a_predire))
+# Matrices x/y pour train et test (mêmes colonnes !)
+.x_train <- model.matrix(~ . - 1, df_train[, variables_predictives])
+.x_test <- model.matrix(~ . - 1, df_test[, variables_predictives])
+.y_train <- df_train[[variable_a_predire]]
+.y_test <- df_test[[variable_a_predire]]
 
-# ! valeurs manquantes = modèle infaisable
-df <- na.omit(df[, c(variable_a_predire, variables_predictives)])
+# Poids de classe (déséquilibre 376 vs 29 000)
+.w_train <- ifelse(
+  .y_train == levels(.y_train)[2],
+  sum(.y_train == levels(.y_train)[1]) / sum(.y_train == levels(.y_train)[2]),
+  1
+)
 
-x <- model.matrix(~ . - 1, data = df[, variables_predictives])
-y <- df[[variable_a_predire]]
+# --------------------------------------------------------------------------------------------------
+# Modèle Lasso
+# --------------------------------------------------------------------------------------------------
+cv_lasso <- cv.glmnet(
+  .x_train,
+  .y_train,
+  family = "binomial",
+  alpha = 1,
+  weights = .w_train,
+  type.measure = "auc",
+  nfolds = 5
+)
+
+cl <- coef(cv_lasso, s = "lambda.1se")
+vars_lasso <- setdiff(rownames(cl)[as.vector(cl != 0)], "(Intercept)")
+
 
 # --------------------------------------------------------------------------------------------------
 # Modèle Ridge
 # --------------------------------------------------------------------------------------------------
-cv_model <- cv.glmnet(
-  x = x, # Matrice des variables explicatives (standardisées)
-  y = y, # Variable cible (binaire)
-  family = "binomial", # Régression logistique
-  alpha = 0, # Ridge (L2) => alpha = 0 // Lasso => alpha = 1
-  nfolds = 5, # Nombre de folds pour la validation croisée
-  type.measure = "class" # Métrique : erreur de classification (ou "auc" pour l'AUC)
+cv_ridge <- cv.glmnet(
+  .x_train[, vars_lasso],
+  .y_train,
+  family = "binomial",
+  alpha = 0,
+  weights = .w_train,
+  type.measure = "auc",
+  nfolds = 5
 )
 
-# Afficher le lambda optimal (paramètre de régularisation)
-print(paste("Lambda optimal :", cv_model$lambda.min))
+pred_lasso <- predict(cv_lasso, newx = .x_test, s = "lambda.1se", type = "response")
+pred_ridge <- predict(cv_ridge, newx = .x_test[, vars_lasso], s = "lambda.min", type = "response")
 
-# Afficher les coefficients du modèle avec le lambda optimal
-coef(cv_model, s = "lambda.min")
 
-# Prédire les probabilités
-pred_proba <- predict(cv_model, newx = x, type = "response", s = "lambda.min")
+#
 
-# Convertir en classe (0 ou 1) avec un seuil de 0.5
-pred_class <- ifelse(pred_proba > 0.03, 1, 0)
+####################################################################################################
+#                                        METRICS                                                   #
+####################################################################################################
 
-# Évaluer avec une matrice de confusion
-confusionMatrix(
-  factor(pred_class), # Prédictions
-  factor(y) # Vraies valeurs
+library(tidyverse)
+library(pROC)
+library(caret)
+library(MLmetrics)
+
+# model <- pred_ridge # modifier pred_proba si pred_lasso ou pred_ridge
+df_test |>
+  na.omit(df_test)
+
+# --------------------------------------------------------------------------------------------------
+# Probabilités prédites & seuil
+# --------------------------------------------------------------------------------------------------
+# ! si rigdge/lasso, utiliser :
+# pred_proba <- pred_lasso
+pred_proba <- pred_ridge
+# sinon :
+# pred_proba <- predict(model, newdata = df_test, type = "prob")[, "Positive"]
+
+pred_reelle <- df_test$resultat_candida_def
+
+# --------------------------------------------------------------------------------------------------
+# Courbe ROC
+# --------------------------------------------------------------------------------------------------
+# Courbe ROC
+roc_obj <- roc(
+  response = pred_reelle,
+  predictor = pred_proba
 )
+
+# ROC_df
+roc_df <- data.frame(
+  FPR = 1 - roc_obj$specificities,
+  TPR = roc_obj$sensitivities
+)
+
 # AUC (Area Under the Curve)
-auc_value <- auc(y, pred_proba)
-print(paste("AUC :", auc_value))
+auc_value <- auc(roc_obj)
+auc_ci <- ci.auc(roc_obj, method = "bootstrap", boot.n = 2000)
+print(paste("AUC :", round(auc_value, 4)))
+print(paste("IC 95% :", round(auc_ci[1], 4), "-", round(auc_ci[3], 4)))
+
+# ROC_plot
+ggplot(roc_df, aes(x = FPR, y = TPR)) +
+  geom_line(color = "black", linewidth = 1) +
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "grey50") +
+  annotate(
+    "text",
+    x = 0.5,
+    y = 0.25,
+    label = paste0("AUC = ", round(auc_value, 3)),
+    color = "black",
+    size = 5
+  ) +
+  labs(title = "Courbe ROC", x = "1 - Spécificité", y = "Sensibilité") +
+  theme_classic()
+
+# --------------------------------------------------------------------------------------------------
+# Mesures principales
+# --------------------------------------------------------------------------------------------------
+best_seuil <- coords(
+  roc_obj,
+  x = "best",
+  best.method = "youden",
+  ret = c("threshold", "sensitivity", "specificity")
+)
+print(best_seuil)
+
+# --------------------------------------------------------------------------------------------------
+# Matrice de confusion
+# --------------------------------------------------------------------------------------------------
+pred_class <- ifelse(pred_proba > best_seuil$threshold, "Positive", "Négative") |>
+  as_factor()
+
+mtx_confusion <- confusionMatrix(
+  pred_class, # Prédictions
+  pred_reelle # Vraies valeurs
+)
+
 
 # Précision, rappel, F1-score
-library(MLmetrics)
-print(paste("Accuracy :", Accuracy(pred_class, y)))
-print(paste("Precision :", Precision(pred_class, y)))
-print(paste("Recall :", Recall(pred_class, y)))
-print(paste("F1-Score :", F1_Score(pred_class, y)))
-
-# Tracer les coefficients
-plot(cv_model, xvar = "lambda", main = "Coefficients en fonction de lambda (Ridge)")
-
-# Tracer l'erreur en fonction de lambda
-plot(cv_model, main = "Erreur de validation croisée")
-# --------------------------------------------------------------------------------------------------
-# Modèle Lasso
-# --------------------------------------------------------------------------------------------------
-xcol <- df[, variables_predictives]
-mod_pen <- glmnet(x, y, family = "binomial", data = df, standardize = TRUE)
-print(mod_pen)
-plot(mod_pen, xvar = "lambda", label = TRUE)
-exp(coef(mod_pen, s = 0.002))
-
-# --------------------------------------------------------------------------------------------------
-# Lambda optimal
-# --------------------------------------------------------------------------------------------------
-cv.mod_pen <- cv.glmnet(x, y, family = "binomial", data = df, standardize = TRUE)
-cv.mod_pen
-plot(cv.mod_pen)
-coef(cv.mod_pen, s = "lambda.min") # minimum mean cross-validated error
-coef(cv.mod_pen, s = "lambda.1se") # most regularized model such that the cross-validated error is within one standard error of the minimum.
+print(paste("Accuracy :", Accuracy(pred_class, pred_reelle)))
+print(paste("Precision :", Precision(pred_class, pred_reelle)))
+print(paste("Recall :", Recall(pred_class, pred_reelle)))
+print(paste("F1-Score :", F1_Score(pred_class, pred_reelle)))
