@@ -104,7 +104,7 @@ knitr::include_graphics("figures/regroupement.png")
 
 ## Source des données
 
-Il s'agissait d'une étude observationnelle monocentrique rétrospective. Celle-ci utilisait les données des patients hospitalisés en surveillance continue et réanimation au CHU de Lille du 1er Janvier 2013 au 31 Décembre 2023, contenues dans l’entrepôt de données de santé *Include* du CHU de Lille. Cet entrepôt intègre différentes sources informatisées de données recueillies dans le cadre d’une prise en charge au CHU de Lille, notamment le système de gestion des données de réanimation ICCA (Philips), le système d’information de laboratoire MOLIS (CompuGroupMedical) et le logiciel CORA PMSI pour le codage des diagnostics et des actes CCAM. L'extraction des données a été réalisée à partir de l'entrepôt de donnée Include conjointement avec les équipes dédiées. Le pré-traitement et la mise en forme des données, ainsi que les analyses statistiques ont été effectués sur le logiciel R, version 4.6.0, en utilisant les packages du tidyverse (*dplyr*, *ggplot2*, *forcats*), *mice*, *lme4*, *gtsummary*, *pROC*, *rms*, et *broom*.mixed.
+Il s'agissait d'une étude observationnelle monocentrique rétrospective. Celle-ci utilisait les données des patients hospitalisés en surveillance continue et réanimation au CHU de Lille du 1er Janvier 2013 au 31 Décembre 2023, contenues dans l’entrepôt de données de santé *Include* du CHU de Lille. Cet entrepôt intègre différentes sources informatisées de données recueillies dans le cadre d’une prise en charge au CHU de Lille, notamment le système de gestion des données de réanimation ICCA (Philips), le système d’information de laboratoire MOLIS (CompuGroupMedical) et le logiciel CORA PMSI pour le codage des diagnostics et des actes CCAM. L'extraction des données a été réalisée à partir de l'entrepôt de donnée Include conjointement avec les équipes dédiées. Le pré-traitement et la mise en forme des données, ainsi que les analyses statistiques ont été effectués sur le logiciel R, version 4.6.0, en utilisant les packages du tidyverse (*dplyr*, *ggplot2*, *forcats*), *mice*, *lme4*, *gtsummary*, *pROC*, *rms*, *broom.mixed*, *rsample*, *glmnet*, *randomForest* et *xgboost*.
 
 ## Variables
 
@@ -129,6 +129,10 @@ Pour sélectionner les variables à inclure dans la modélisation finale, nous a
 Les variables catégorielles sont décrites en effectifs et pourcentage. Les variables continues sont présentées par médiane et intervalle interquartile. Les données démographiques sont identifiées et décrites en premier lieu. Une analyse univariée a été réalisée par régression logistique mixte simple à visée exploratoire. L'analyse multivariée a utilisé une régression logistique mixte avec effet aléatoire afin de tenir compte des mesures répétées chez un même patient. Les Odds Ratios (OR) ont été présentés avec leur intervalle de confiance à 95% après combinaison des estimations selon les règles de Rubin. Les performances du modèle final étaient évaluées par l'aire sous la courbe ROC (Receiving Operation Characteristic) et par une courbe de calibration. Tous les tests statistiques étaient bilatéraux, avec un seuil de significativité fixé à p \< 0,05.
 
 À partir des probabilités individuelles prédites par le modèle multivarié, une stratification en trois catégories de risque a été réalisée. Les seuils ont été déterminés par analyse de la distribution des probabilités prédites au sein de la cohorte, en tenant compte de leur pertinence clinique : risque faible (probabilité prédite < 2,5 %), risque intermédiaire (2,5–10 %) et risque élevé (> 10 %). Pour chaque catégorie, la prévalence observée de candidémie, la sensibilité, la spécificité, la valeur prédictive positive et la valeur prédictive négative ont été calculées.
+
+## Approches d'apprentissage automatique
+
+Afin d'explorer l'apport de méthodes de modélisation alternatives, plusieurs modèles ont été développés sur le premier jeu imputé : une régression logistique pénalisée Lasso, une régression Ridge réestimée sur les variables retenues par le Lasso, une forêt aléatoire (*Random Forest*) et un modèle de *gradient boosting* (XGBoost). Les données ont été découpées par patient en un jeu d'apprentissage (70 %) et un jeu de test (30 %), stratifié sur la survenue d'une candidémie, de sorte que tous les épisodes d'un même patient appartiennent au même jeu. Les hyperparamètres ont été optimisés par validation croisée à 5 plis constitués par patient sur le jeu d'apprentissage (pénalité pour Lasso et Ridge, nombre de variables tirées à chaque nœud pour la forêt aléatoire, profondeur, poids minimal des feuilles et taux d'apprentissage pour XGBoost). Le déséquilibre des classes était pris en compte par pondération (Lasso, Ridge, XGBoost) ou par sous-échantillonnage équilibré (forêt aléatoire). Les performances de ces modèles et du score issu de la régression logistique mixte ont été comparées sur le même jeu de test par l'AUC (IC 95 % et comparaisons appariées par la méthode de DeLong), ainsi que par la sensibilité, la spécificité, les valeurs prédictives et le score F1 au seuil maximisant l'indice de Youden.
 
 ## Cadre réglementaire
 
@@ -259,6 +263,43 @@ tibble::tribble(
 #| lightbox: true
 
 knitr::include_graphics("figures/hist_probs_pooled.png")
+```
+
+## Comparaison avec des modèles d'apprentissage automatique
+
+```{r}
+#| label: ml-setup
+# Les modèles sont entraînés au préalable par scripts/0_run_ml.R ; ici on relit les prédictions
+source("scripts/3_metrics.R")
+source("scripts/4_roc.R")
+.meilleur <- tbl_perf |> slice_max(auc, n = 1)
+.auc_fr <- \(x) format(round(x, 2), nsmall = 2, decimal.mark = ",")
+```
+
+Les performances des différents modèles sur le jeu de test (`r format(length(preds[[1]]$obs), big.mark = " ")` épisodes, dont `r sum(preds[[1]]$obs == levels(preds[[1]]$obs)[2])` candidémies) sont présentées dans le @tbl-perf et la @fig-roc-ml. Le modèle le plus discriminant était le modèle `r .meilleur$label`, avec une AUC de `r .auc_fr(.meilleur$auc)` (IC 95 % : `r .auc_fr(.meilleur$auc_inf)`–`r .auc_fr(.meilleur$auc_sup)`). Les comparaisons d'AUC au modèle de référence sont présentées dans le @tbl-delong.
+
+```{r}
+#| label: tbl-perf
+#| tbl-cap: "Performances des modèles sur le jeu de test"
+
+gt_perf
+```
+
+```{r}
+#| label: fig-roc-ml
+#| fig-cap: "Courbes ROC des différents modèles sur le jeu de test"
+#| lightbox: true
+#| fig-width: 7
+#| fig-height: 7
+
+plot_roc
+```
+
+```{r}
+#| label: tbl-delong
+#| tbl-cap: "Comparaison des AUC au modèle de référence (test de DeLong apparié)"
+
+gt_delong
 ```
 
 

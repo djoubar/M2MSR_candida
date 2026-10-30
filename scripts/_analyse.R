@@ -4,9 +4,8 @@
 #
 # ==============================================================================
 
-library(ggplot2)
+library(tidyverse)
 library(gtsummary)
-library(dplyr)
 
 # ------------------------------------------------------------------------------
 # Dataframe
@@ -26,7 +25,7 @@ analyse_variable <- function(data, var_name) {
 
   # Type de la variable
   var_type <- class(data[[var_name]])
-  cat("Type de variable:", paste(var_type, collapse=", "), "\n\n")
+  cat("Type de variable:", paste(var_type, collapse = ", "), "\n\n")
 
   # Statistiques descriptives
   if (is.numeric(data[[var_name]])) {
@@ -54,7 +53,6 @@ analyse_variable <- function(data, var_name) {
     #        y = "Densité") +
     #   theme_classic()
     # print(p)
-
   } else if (is.factor(data[[var_name]]) || is.character(data[[var_name]])) {
     cat("Statistiques pour variable catégorielle:\n")
     freq_table <- table(data[[var_name]], useNA = "always")
@@ -70,7 +68,6 @@ analyse_variable <- function(data, var_name) {
     #   theme_classic() +
     #   theme(axis.text.x = element_text(angle = 45, hjust = 1))
     # print(p)
-
   } else {
     cat("Type de variable non supporté pour cette analyse automatique.\n")
     cat("Affichage des premières valeurs:\n")
@@ -113,7 +110,9 @@ analyse_dataframe <- function(data) {
     # Demander à l'utilisateur s'il veut continuer
     if (length(var_names) > 1) {
       cat("\n\n")
-      readline(prompt = "Appuyez sur Entrée pour continuer vers la prochaine variable ou tapez 'quit' pour arrêter...")
+      readline(
+        prompt = "Appuyez sur Entrée pour continuer vers la prochaine variable ou tapez 'quit' pour arrêter..."
+      )
       if (tolower(readline()) == "quit") {
         break
       }
