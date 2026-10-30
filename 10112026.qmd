@@ -33,12 +33,15 @@ comments: false
 
 ```{r}
 #| label: splits
-#| lightbox: true
-#| fig-align: center
 
-# knitr::include_graphics("resume.png")
+# Les modèles sont entraînés au préalable par scripts/0_run_ml.R (à relancer après toute
+# modification d'un modèle) ; ce document ne fait que relire les résultats enregistrés dans models/
 source("scripts/1_splits.R")
+source("scripts/_ml_utils.R")
+.n_evt <- \(d) sum(d[[variable_a_predire]] == niv[2])
 ```
+
+Les données ont été découpées par patient en un jeu d'apprentissage (`r nrow(df_train)` épisodes, dont `r .n_evt(df_train)` candidémies) et un jeu de test (`r nrow(df_test)` épisodes, dont `r .n_evt(df_test)` candidémies). Tous les modèles sont évalués sur le même jeu de test.
 
 
 # Modèles
@@ -55,56 +58,108 @@ print(resultats)
 
 
 ## Pénalisation
+
 ```{r}
 #| label: penalisation
-#| lightbox: true
-#| fig-align: center
 
-source("scripts/2_mod_penalisation.R")
-print(vars_lasso)
+mod_pen <- readRDS(file.path(dossier_modeles, "mod_penalisation.rds"))
 ```
 
-## Random Forrest
+Le Lasso a retenu `r length(mod_pen$vars_lasso)` variables, utilisées ensuite pour la réestimation par Ridge :
 
 ```{r}
-#| label: random_forrest
-#| fig-cap: "Regroupement des hémocultures par épisode de suspicion d'infection"
+#| label: vars-lasso
+
+print(mod_pen$vars_lasso)
+```
+
+```{r}
+#| label: fig-cv-lasso
+#| fig-cap: "Validation croisée du Lasso (AUC selon la pénalité)"
 #| lightbox: true
 #| fig-align: center
 
-source("scripts/2_mod_random_forrest.R")
+plot(mod_pen$cv_lasso)
+```
 
+## Random Forest
+
+```{r}
+#| label: tbl-tune-rf
+#| tbl-cap: "Optimisation du nombre de variables tirées à chaque nœud (AUC out-of-bag)"
+
+mod_rf <- readRDS(file.path(dossier_modeles, "mod_rf.rds"))
+mod_rf$tune |>
+  gt::gt() |>
+  gt::fmt_number(auc_oob, decimals = 3, dec_mark = ",")
+```
+
+```{r}
+#| label: fig-importance-rf
+#| fig-cap: "Importance des variables (Random Forest)"
+#| lightbox: true
+#| fig-align: center
+
+randomForest::varImpPlot(mod_rf$model, n.var = 15, main = "")
 ```
 
 ## XGBoost
 
 ```{r}
-#| label: fig-regroupement
-#| fig-cap: "Regroupement des hémocultures par épisode de suspicion d'infection"
+#| label: tbl-tune-xgb
+#| tbl-cap: "Meilleures combinaisons d'hyperparamètres (validation croisée par patient)"
+
+mod_xgb <- readRDS(file.path(dossier_modeles, "mod_xgboost.rds"))
+mod_xgb$tuning |>
+  arrange(desc(auc)) |>
+  head(5) |>
+  gt::gt() |>
+  gt::fmt_number(auc, decimals = 3, dec_mark = ",")
+```
+
+```{r}
+#| label: fig-importance-xgb
+#| fig-cap: "Importance des variables (XGBoost, gain)"
 #| lightbox: true
 #| fig-align: center
 
-source("scripts/2_mod_xgboost.R")
-
+xgboost::xgb.plot.importance(mod_xgb$importance, top_n = 15)
 ```
 
 # Résumé
 
 ```{r}
-#| label: roc_resumé
-#| fig-cap: "Courbes ROCs des différentes modélisations "
+#| label: resume-setup
+
+source("scripts/3_metrics.R")
+source("scripts/4_roc.R")
+.meilleur <- tbl_perf |> slice_max(auc, n = 1)
+.auc_fr <- \(x) format(round(x, 2), nsmall = 2, decimal.mark = ",")
+```
+
+Le modèle le plus discriminant sur le jeu de test était le modèle `r .meilleur$label`, avec une AUC de `r .auc_fr(.meilleur$auc)` (IC 95 % : `r .auc_fr(.meilleur$auc_inf)`–`r .auc_fr(.meilleur$auc_sup)`) (@fig-roc-resume, @tbl-perf-resume, @tbl-delong-resume).
+
+```{r}
+#| label: fig-roc-resume
+#| fig-cap: "Courbes ROC des différentes modélisations sur le jeu de test"
 #| lightbox: true
 #| fig-align: center
+#| fig-width: 7
+#| fig-height: 7
 
-
+plot_roc
 ```
 
 ```{r}
-#| label: tbl_resumé
-#| fig-cap: "Tableau de résumé des performances des différents modèles"
-#| lightbox: true
-#| fig-align: center
+#| label: tbl-perf-resume
+#| tbl-cap: "Tableau de résumé des performances des différents modèles"
 
+gt_perf
+```
 
+```{r}
+#| label: tbl-delong-resume
+#| tbl-cap: "Comparaison des AUC au modèle de référence (test de DeLong apparié)"
 
+gt_delong
 ```
