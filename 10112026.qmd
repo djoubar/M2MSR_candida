@@ -1,0 +1,110 @@
+---
+title: "CANADIAG - Suite"
+author:
+  name: "BAERT Julien"
+  email: julien1.baert@chu-lille.fr
+  affiliation: CHU de Lille
+date: last-modified
+format:
+  html:
+    code-tools:
+      source: "https://github.com/djoubar/M2MSR_candida"
+    toc: true
+    toc-depth: 2
+    css: |
+      p {
+        text-align: justify;
+      }
+  docx:
+    toc: true
+    toc-depth: 3
+execute:
+  # cache: true
+  # freeze: auto
+  message: false
+  warning: false
+  echo: false
+  editor: source
+lang: fr
+comments: false
+---
+
+# Méthodes
+
+```{r}
+#| label: splits
+#| lightbox: true
+#| fig-align: center
+
+# knitr::include_graphics("resume.png")
+source("scripts/1_splits.R")
+```
+
+
+# Modèles
+## Comparaisons avec Ostrosky-Zeichner
+
+```{r}
+#| label: O-Z
+#| lightbox: true
+#| fig-align: center
+
+source("scripts/_oz.R")
+print(resultats)
+```
+
+
+## Pénalisation
+```{r}
+#| label: penalisation
+#| lightbox: true
+#| fig-align: center
+
+source("scripts/2_mod_penalisation.R")
+print(vars_lasso)
+```
+
+## Random Forrest
+
+```{r}
+#| label: random_forrest
+#| fig-cap: "Regroupement des hémocultures par épisode de suspicion d'infection"
+#| lightbox: true
+#| fig-align: center
+
+source("scripts/2_mod_random_forrest.R")
+
+```
+
+## XGBoost
+
+```{r}
+#| label: fig-regroupement
+#| fig-cap: "Regroupement des hémocultures par épisode de suspicion d'infection"
+#| lightbox: true
+#| fig-align: center
+
+source("scripts/2_mod_xgboost.R")
+
+```
+
+# Résumé
+
+```{r}
+#| label: roc_resumé
+#| fig-cap: "Courbes ROCs des différentes modélisations "
+#| lightbox: true
+#| fig-align: center
+
+
+```
+
+```{r}
+#| label: tbl_resumé
+#| fig-cap: "Tableau de résumé des performances des différents modèles"
+#| lightbox: true
+#| fig-align: center
+
+
+
+```

@@ -34,7 +34,11 @@ csl: elsevier-vancouver.csl
 ---
 
 ```{css, label}
-body{text-align: justify};
+body {
+    text-align: justify
+}
+
+;
 }
 ```
 
@@ -99,7 +103,7 @@ Le critère de jugement principal était la survenue d’une candidémie acquise
 #| fig-cap: "Regroupement des hémocultures par épisode de suspicion d'infection"
 #| lightbox: true
 #| fig-align: center
-knitr::include_graphics("figures/regroupement.png")
+# knitr::include_graphics("figures/regroupement.png")
 ```
 
 ## Source des données
@@ -153,7 +157,7 @@ Au cours de la période d'étude, 102 301 hémocultures ont été réalisées ap
 #| fig-cap: "Flow chart"
 #| lightbox: true
 #| fig-align: center
-knitr::include_graphics("figures/flow_chart.png")
+# knitr::include_graphics("figures/flow_chart.png")
 ```
 
 ## Caractéristiques à l'admission
@@ -164,12 +168,12 @@ Dans notre cohorte, les patients étaient majoritairement de sexe masculin (66,0
 #| label: tbl-demographique
 #| tbl-cap: "Description démographique de la population, données clinico-biologiques à l'admission en réanimation"
 #| lightbox: true
-source("scripts/brutes/_setup.R")
-source("scripts/brutes/tbl1_demo.R")
+# source("scripts/brutes/_setup.R")
+# source("scripts/brutes/tbl1_demo.R")
 
-tbl1_gt <- tbl1 |>
-  as_gt()
-tbl1_gt
+# tbl1_gt <- tbl1 |>
+#   as_gt()
+# tbl1_gt
 ```
 
 ## Caractéristiques d'exposition au cours de l'hospitalisation
@@ -180,11 +184,11 @@ Au cours de leur hospitalisation, 36 % de nos patients avaient eu une chirurgie 
 #| label: tbl-hospit
 #| tbl-cap: "Description des données clinico-biologiques au cours de l'hospitalisatione en réanimation"
 
-source("scripts/brutes/tbl2_hospit.R")
+# source("scripts/brutes/tbl2_hospit.R")
 
-tbl2_gt <- tbl2 |>
-  as_gt()
-tbl2_gt
+# tbl2_gt <- tbl2 |>
+#   as_gt()
+# tbl2_gt
 ```
 
 ## Modélisation multivariée
@@ -200,8 +204,8 @@ Les variables et leurs intervalles de confiance à 95% sont présentés dans le 
 #| fig-cap: "Modèle de régression logistique mixte sur données imputées"
 #| lightbox: true
 
-source("scripts/imputees/tbl_mv.R")
-tbl_multi
+# source("scripts/imputees/tbl_mv.R")
+# tbl_multi
 ```
 
 ## Score prédictif et stratification du risque
@@ -227,7 +231,7 @@ Le score présentait des performances discriminatives modestes avec une AUC de 0
 #| fig-cap: "Courbes ROC de la modélisation"
 #| lightbox: true
 
-knitr::include_graphics("figures/roc_plot.png")
+# knitr::include_graphics("figures/roc_plot.png")
 ```
 
 ```{r}
@@ -235,7 +239,7 @@ knitr::include_graphics("figures/roc_plot.png")
 #| fig-cap: "Courbe de calibration de la modélisation"
 #| lightbox: true
 
-knitr::include_graphics("figures/cal_plot.png")
+# knitr::include_graphics("figures/cal_plot.png")
 ```
 
 La répartition de probabilités prédites par notre modélisation a été évaluée sur notre population. L’analyse de la répartition des probabilités prédites au sein de la cohorte permettait d’identifier 3 catégories de risque pertinentes cliniquement
@@ -247,22 +251,22 @@ La répartition de probabilités prédites par notre modélisation a été éval
 #| label: tbl-distrib
 #| tbl-cap: "Répartition des probabilités au sein de la cohorte"
 
-tibble::tribble(
-  ~"Catégorie de risque"        , ~"Episodes, n (%)" , ~"Candidémies, n (%)" , ~"Prévalence" , ~"VPN"   , ~"VPP"  ,
-  "Faible (< 2,5%)"             , "13 252"           , "57 (15 %)"           , "0,4 %"       , "99,6 %" , "0,4 %" ,
-  "Intermédiaire (2,5 % - 10%)" , "14 960"           , "241 (61 %)"          , "1,6 %"       , "98,5 %" , "1,5 %" ,
-  "Elevé (> 10%)"               , "1 741"            , "78 (21 %)"           , "4,4 %"       , "95,8 %" , "4,2 %"
-) |>
-  gt::gt()
-```
+# tibble::tribble(
+#   ~"Catégorie de risque"        , ~"Episodes, n (%)" , ~"Candidémies, n (%)" , ~"Prévalence" , ~"VPN"   , ~"VPP"  ,
+#   "Faible (< 2,5%)"             , "13 252"           , "57 (15 %)"           , "0,4 %"       , "99,6 %" , "0,4 %" ,
+#   "Intermédiaire (2,5 % - 10%)" , "14 960"           , "241 (61 %)"          , "1,6 %"       , "98,5 %" , "1,5 %" ,
+#   "Elevé (> 10%)"               , "1 741"            , "78 (21 %)"           , "4,4 %"       , "95,8 %" , "4,2 %"
+# ) |>
+#   gt::gt()
+# ```
 
 
-```{r}
-#| label: fig-hist-score
-#| fig-cap: "Répartition des probabilités au sein de la cohorte"
-#| lightbox: true
+# ```{r}
+# #| label: fig-hist-score
+# #| fig-cap: "Répartition des probabilités au sein de la cohorte"
+# #| lightbox: true
 
-knitr::include_graphics("figures/hist_probs_pooled.png")
+# knitr::include_graphics("figures/hist_probs_pooled.png")
 ```
 
 ## Comparaison avec des modèles d'apprentissage automatique
@@ -270,6 +274,7 @@ knitr::include_graphics("figures/hist_probs_pooled.png")
 ```{r}
 #| label: ml-setup
 # Les modèles sont entraînés au préalable par scripts/0_run_ml.R ; ici on relit les prédictions
+source("scripts/0_run_ml.R")
 source("scripts/3_metrics.R")
 source("scripts/4_roc.R")
 .meilleur <- tbl_perf |> slice_max(auc, n = 1)
@@ -338,7 +343,7 @@ Le nombre de données manquantes à la phase à l'issue de l'extraction est dét
 #| tbl-cap: "Données manquantes"
 #| lightbox: true
 
-source("scripts/supplementary/NA_tbl.R")
+# source("scripts/supplementary/NA_tbl.R")
 
-tbl_NA
+# tbl_NA
 ```
