@@ -131,13 +131,18 @@ xgboost::xgb.plot.importance(mod_xgb$importance, top_n = 15)
 ```{r}
 #| label: resume-setup
 
+source("scripts/_oz_test.R") # score d'Ostrosky-Zeichner restreint aux patients du jeu de test
 source("scripts/3_metrics.R")
 source("scripts/4_roc.R")
 .meilleur <- tbl_perf |> slice_max(auc, n = 1)
+.oz <- tbl_perf |> filter(id == "oz")
 .auc_fr <- \(x) format(round(x, 2), nsmall = 2, decimal.mark = ",")
+.pct_fr <- \(x) format(round(100 * x, 1), nsmall = 1, decimal.mark = ",")
 ```
 
 Le modèle le plus discriminant sur le jeu de test était le modèle `r .meilleur$label`, avec une AUC de `r .auc_fr(.meilleur$auc)` (IC 95 % : `r .auc_fr(.meilleur$auc_inf)`–`r .auc_fr(.meilleur$auc_sup)`) (@fig-roc-resume, @tbl-perf-resume, @tbl-delong-resume).
+
+À titre de comparaison, le score d'Ostrosky-Zeichner, appliqué aux `r length(pred_oz$obs)` épisodes des patients du jeu de test (dont `r sum(pred_oz$obs == levels(pred_oz$obs)[2])` candidémies), avait une sensibilité de `r .pct_fr(.oz$sensibilite)` %, une spécificité de `r .pct_fr(.oz$specificite)` %, une VPP de `r .pct_fr(.oz$vpp)` % et une VPN de `r .pct_fr(.oz$vpn)` %, soit une AUC de `r .auc_fr(.oz$auc)` (IC 95 % : `r .auc_fr(.oz$auc_inf)`–`r .auc_fr(.oz$auc_sup)`).
 
 ```{r}
 #| label: fig-roc-resume

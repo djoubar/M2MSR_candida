@@ -84,11 +84,15 @@ ggsave(
 # --------------------------------------------------------------------------------------------------
 tbl_delong <- setdiff(names(rocs), id_ref) |>
   map(\(id) {
-    t <- roc.test(rocs[[id_ref]], rocs[[id]], method = "delong", paired = TRUE)
+    # apparié seulement si les deux modèles portent sur les mêmes épisodes (pas toujours le cas
+    # du score d'Ostrosky-Zeichner, calculé hors du jeu imputé)
+    apparie <- identical(rocs[[id]]$response, rocs[[id_ref]]$response)
+    t <- roc.test(rocs[[id_ref]], rocs[[id]], method = "delong", paired = apparie)
     tibble(
       id = id,
       diff_auc = as.numeric(auc(rocs[[id]]) - auc(rocs[[id_ref]])),
-      p = t$p.value
+      p = t$p.value,
+      apparie = apparie
     )
   }) |>
   list_rbind() |>
@@ -106,5 +110,14 @@ gt_delong <- tbl_delong |>
     modeles_ref$label[modeles_ref$id == id_ref],
     "."
   ))
+
+if (any(!tbl_delong$apparie)) {
+  gt_delong <- gt_delong |>
+    tab_footnote(paste0(
+      "Test de DeLong non apparié (épisodes différents du jeu de test) pour : ",
+      paste(tbl_delong$label[!tbl_delong$apparie], collapse = ", "),
+      "."
+    ))
+}
 
 plot_roc

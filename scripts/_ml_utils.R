@@ -18,7 +18,8 @@ modeles_ref <- tribble(
   "lasso"  , "Lasso"                         , "#eb6834" , "dashed"  ,
   "ridge"  , "Ridge (variables Lasso)"       , "#1baf7a" , "dotdash" ,
   "rf"     , "Random Forest"                 , "#eda100" , "longdash",
-  "xgboost", "XGBoost"                       , "#e87ba4" , "twodash"
+  "xgboost", "XGBoost"                       , "#e87ba4" , "twodash" ,
+  "oz"     , "Ostrosky-Zeichner"             , "#555555" , "dotted"
 )
 
 # --------------------------------------------------------------------------------------------------
